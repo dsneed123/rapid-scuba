@@ -1,5 +1,18 @@
 import { Link } from 'react-router-dom'
 
+const PHONE = '206-240-2687'
+const PHONE_HREF = 'tel:+12062402687'
+
+const SERVICE_AREAS = [
+  'Seattle',
+  'Puget Sound',
+  'Lake Union',
+  'Lake Washington',
+  'Shilshole Bay',
+  'Elliott Bay',
+  'Bainbridge Island',
+]
+
 export function Footer() {
   return (
     <footer className="footer">
@@ -8,28 +21,39 @@ export function Footer() {
           <strong>Rapid Scuba</strong>
           <p>Professional underwater marine services in Seattle, WA.</p>
           <p>Licensed · Insured · ADCI Certified</p>
+          <div className="footer__brand-contact">
+            <a href={PHONE_HREF}>{PHONE}</a>
+            <a href="mailto:info@rapidscuba.com">info@rapidscuba.com</a>
+          </div>
+          <div className="footer__hours">
+            <p>Mon–Sat: 7am – 6pm</p>
+            <p>Emergency: 24/7</p>
+          </div>
         </div>
 
         <div className="footer__links">
           <h4>Services</h4>
-          <Link to="/services">Hull Cleaning</Link>
-          <Link to="/services">Underwater Welding</Link>
-          <Link to="/services">Zinc Replacement</Link>
-          <Link to="/services">Propeller Polishing</Link>
+          <Link to="/hull-cleaning-seattle">Hull Cleaning</Link>
+          <Link to="/underwater-welding-seattle">Underwater Welding</Link>
+          <Link to="/propeller-cleaning-seattle">Propeller Cleaning</Link>
+          <Link to="/boat-repair-underwater-seattle">Underwater Boat Repair</Link>
+          <Link to="/zinc-anode-replacement-seattle">Zinc Anode Replacement</Link>
+          <Link to="/hull-inspection-seattle">Hull Inspection</Link>
         </div>
 
         <div className="footer__links">
           <h4>Company</h4>
-          <Link to="/about">About Us</Link>
+          <Link to="/pricing">Pricing</Link>
+          <Link to="/reviews">Reviews</Link>
           <Link to="/contact">Contact</Link>
-          <Link to="/book">Book a Dive</Link>
+          <Link to="/blog/how-often-clean-boat-hull-seattle">Blog</Link>
         </div>
 
         <div className="footer__contact">
-          <h4>Contact</h4>
-          <p>📍 Seattle, WA</p>
-          <p>📞 (206) 555-0192</p>
-          <p>✉️ dive@rapidscuba.com</p>
+          <h4>Service Areas</h4>
+          {SERVICE_AREAS.map((area) => (
+            <p key={area}>{area}</p>
+          ))}
         </div>
       </div>
 
