@@ -1,3 +1,6 @@
+# GitHub Actions workflows (deploy via gh-pages branch, not Actions)
+.github/workflows/
+
 # Logs
 logs
 *.log
