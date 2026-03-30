@@ -3,20 +3,20 @@ import type { Service } from '@/types'
 export const SERVICES: Service[] = [
   {
     id: 'hull-cleaning',
-    name: 'Hull Cleaning',
+    name: 'Hull Cleaning & Scrubbing',
     description:
-      'Professional underwater hull cleaning using hydraulic brushes and scrapers. Removes barnacles, algae, and marine growth while your vessel stays in the water. Puget Sound hulls need cleaning every 60–90 days. Improves fuel efficiency by 10–40%.',
-    priceFrom: 150,
-    unit: 'starting price',
+      'Professional underwater hull cleaning using hydraulic brushes and scrapers. Removes barnacles, algae, and marine growth while your vessel stays in the water. Packages from $3,000 include cleaning, scrubbing, welding, and emergency repair.',
+    priceFrom: 3000,
+    unit: 'small boat package',
     icon: '🐚',
   },
   {
     id: 'underwater-welding',
-    name: 'Underwater Welding',
+    name: 'Underwater Welding & Repair',
     description:
-      'AWS D3.6-certified wet welding using shielded metal arc welding (SMAW). Crack repair, hole patching, corroded steel replacement, dock piling repair — all below the waterline without dry-docking. $300–$500/hr.',
-    priceFrom: 300,
-    unit: 'per hour',
+      'AWS D3.6-certified wet welding using shielded metal arc welding (SMAW). Crack repair, hole patching, corroded steel replacement, dock piling repair. Included in all service packages; standalone welding from $300/hr.',
+    priceFrom: 3000,
+    unit: 'included in packages',
     icon: '⚡',
   },
   {
@@ -50,9 +50,9 @@ export const SERVICES: Service[] = [
     id: 'emergency',
     name: 'Emergency Dive Services',
     description:
-      'Diver in the water within 2 hours. 24/7 emergency response for sinking vessels, fouled propellers, lost objects, and urgent hull repairs. We respond day or night, any marina in Puget Sound.',
+      'Diver in the water within 2 hours. 24/7 emergency response for sinking vessels, fouled propellers, lost objects, and urgent hull repairs. Standard emergency repair included in all packages.',
     priceFrom: 500,
-    unit: 'emergency call',
+    unit: 'standalone call-out',
     icon: '🚨',
   },
 ]

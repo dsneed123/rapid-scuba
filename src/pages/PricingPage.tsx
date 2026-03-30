@@ -3,56 +3,59 @@ import { Link } from 'react-router-dom'
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
 
-const SERVICES = [
+const PACKAGES = [
   {
-    icon: '🐚',
-    name: 'Hull Cleaning',
-    price: 350,
-    unit: 'per vessel',
-    desc: 'Full underwater hull cleaning — barnacles, algae, and slime removal. Safe for all antifouling paint types.',
-    to: '/hull-cleaning-seattle',
+    tier: 'Small Boat',
+    size: 'Up to 30 ft',
+    price: '$3,000 – $3,500',
+    icon: '⛵',
+    features: [
+      'Underwater hull cleaning & scrubbing',
+      'Barnacle, algae & marine growth removal',
+      'Minimal welding repairs',
+      'Standard emergency repair coverage',
+      'Before/after photo report',
+      'Visual inspection included',
+    ],
   },
   {
-    icon: '🔄',
-    name: 'Propeller Cleaning',
-    price: 200,
-    unit: 'per propeller',
-    desc: 'Propeller cleaning, polishing, and inspection. Shaft and cutlass bearing check included.',
-    to: '/propeller-cleaning-seattle',
-  },
-  {
-    icon: '🛡️',
-    name: 'Zinc Anode Replacement',
-    price: 150,
-    unit: 'per set',
-    desc: 'Replace hull, shaft, and running gear zincs in-water at your slip. Parts not included.',
-    to: '/zinc-anode-replacement-seattle',
-  },
-  {
-    icon: '🔍',
-    name: 'Hull Inspection',
-    price: 250,
-    unit: 'per inspection',
-    desc: 'Full below-waterline inspection with HD video documentation and written report.',
-    to: '/hull-inspection-seattle',
-  },
-  {
-    icon: '⚡',
-    name: 'Underwater Welding',
-    price: 800,
-    unit: 'starting from',
-    desc: 'Structural wet welding for hull repairs, fittings, docks, and pilings. Custom quote based on scope.',
-    to: '/underwater-welding-seattle',
+    tier: 'Medium Boat',
+    size: '31 – 60 ft',
+    price: '$3,500 – $4,250',
+    icon: '🚤',
     featured: true,
+    features: [
+      'Extensive underwater cleaning & scrubbing',
+      'Full hull barnacle & growth removal',
+      'Moderate welding repairs',
+      'Emergency repair coverage',
+      'HD video documentation',
+      'Propeller inspection included',
+    ],
   },
   {
-    icon: '🔧',
-    name: 'Underwater Boat Repair',
-    price: 400,
-    unit: 'starting from',
-    desc: 'Through-hull fitting replacement, transducer installation, and minor hull repairs in-water.',
-    to: '/boat-repair-underwater-seattle',
+    tier: 'Large Boat',
+    size: '61 ft +',
+    price: '$4,250 – $5,000+',
+    icon: '🚢',
+    features: [
+      'Full underwater cleaning & scrubbing',
+      'Complete hull restoration',
+      'Extensive welding repairs',
+      'Priority emergency repair',
+      'HD video & written report',
+      'Zinc anode inspection included',
+    ],
   },
+]
+
+const ADD_ONS = [
+  { name: 'Propeller Cleaning & Polish', price: 'From $75/prop' },
+  { name: 'Zinc Anode Replacement', price: 'From $30/anode + parts' },
+  { name: 'Underwater Hull Inspection (standalone)', price: 'From $200' },
+  { name: 'HD Video Documentation Add-On', price: '$75' },
+  { name: '24/7 Emergency Dive Call-Out', price: 'From $500' },
+  { name: 'Underwater Welding (additional scope)', price: '$300–$500/hr' },
 ]
 
 export function PricingPage() {
@@ -61,38 +64,44 @@ export function PricingPage() {
       <section className="page-hero">
         <div className="page-hero__inner">
           <span className="page-hero__label">Transparent Pricing</span>
-          <h1>Seattle Marine Services Pricing</h1>
+          <h1>Seattle Underwater Services Pricing</h1>
           <p>
-            Straightforward pricing with no hidden fees. All services performed in-water at your
-            slip — no haul-out costs.
+            All-inclusive packages by vessel size. Every package includes cleaning, scrubbing,
+            welding, and emergency repair — performed in-water at your slip.
           </p>
         </div>
       </section>
 
+      {/* Pricing tiers */}
       <section className="section">
         <div className="container">
-          <h2 className="section__title">Service Rates</h2>
+          <h2 className="section__title">Service Packages</h2>
           <p className="section__subtitle">
-            Prices listed are starting rates. Final price depends on vessel size and job scope.
-            Contact us for a custom quote.
+            Choose your vessel size. All packages include on-site service at any Seattle-area marina — no haul-out needed.
           </p>
 
           <div className="pricing-grid">
-            {SERVICES.map((s) => (
+            {PACKAGES.map((pkg) => (
               <div
-                key={s.name}
-                className={['pricing-card', s.featured ? 'pricing-card--featured' : '']
+                key={pkg.tier}
+                className={['pricing-card', pkg.featured ? 'pricing-card--featured' : '']
                   .join(' ')
                   .trim()}
               >
-                <div className="pricing-card__icon">{s.icon}</div>
-                <h3 className="pricing-card__name">{s.name}</h3>
-                <div className="pricing-card__price">
-                  ${s.price} <span>/ {s.unit}</span>
-                </div>
-                <p className="pricing-card__desc">{s.desc}</p>
-                <Link to={s.to} className="btn btn--secondary">
-                  Learn More
+                <div className="pricing-card__icon">{pkg.icon}</div>
+                <h3 className="pricing-card__name">{pkg.tier}</h3>
+                <p style={{ fontSize: '14px', color: 'var(--gray-400)', margin: 0 }}>{pkg.size}</p>
+                <div className="pricing-card__price">{pkg.price}</div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                  {pkg.features.map((f) => (
+                    <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '14px', color: 'var(--gray-600)' }}>
+                      <span style={{ color: 'var(--brand)', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/contact" className="btn btn--primary" style={{ marginTop: '8px' }}>
+                  Get a Quote
                 </Link>
               </div>
             ))}
@@ -100,6 +109,7 @@ export function PricingPage() {
         </div>
       </section>
 
+      {/* Add-ons */}
       <section
         className="about"
         style={{
@@ -109,6 +119,24 @@ export function PricingPage() {
         }}
       >
         <div className="container">
+          <h2 className="section__title">Add-On Services</h2>
+          <p className="section__subtitle">
+            Available as standalone services or add-ons to any package.
+          </p>
+          <div className="card-grid" style={{ marginTop: '32px' }}>
+            {ADD_ONS.map(({ name, price }) => (
+              <div key={name} className="card" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+                <h3 className="card__title" style={{ margin: 0, fontSize: '15px' }}>{name}</h3>
+                <span style={{ fontWeight: 700, color: 'var(--brand-dark)', whiteSpace: 'nowrap', fontSize: '15px' }}>{price}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What's included */}
+      <section className="section">
+        <div className="container">
           <h2 className="section__title">What's Always Included</h2>
           <p className="section__subtitle">
             Every service call includes these at no extra charge.
@@ -117,23 +145,23 @@ export function PricingPage() {
             {[
               {
                 icon: '📍',
-                title: 'On-Site Service',
-                body: 'We come to your slip at any Seattle-area marina. No need to move your vessel.',
+                title: 'On-Site at Your Slip',
+                body: 'We come to any Seattle-area marina. Shilshole, Eastlake, Portage Bay, Lake Union — no need to move your vessel.',
               },
               {
                 icon: '📋',
-                title: 'Visual Inspection',
-                body: 'We always report any issues we spot below the waterline during our visit.',
+                title: 'Full Visual Inspection',
+                body: 'Every dive includes a below-waterline inspection. We report any issues we find at no extra cost.',
               },
               {
                 icon: '📸',
-                title: 'Photo Report',
-                body: 'Before and after photos available on request for all cleaning services.',
+                title: 'Before & After Photos',
+                body: 'Photo documentation of all work performed, delivered same day. HD video available as add-on.',
               },
               {
-                icon: '💬',
-                title: 'Fast Response',
-                body: 'We respond to all service requests within one business day.',
+                icon: '⚡',
+                title: 'Same-Day Availability',
+                body: 'We respond to all requests within 24 hours. Same-day and next-day service available for most jobs.',
               },
             ].map(({ icon, title, body }) => (
               <div key={title} className="card">
@@ -146,10 +174,25 @@ export function PricingPage() {
         </div>
       </section>
 
+      {/* Note */}
+      <section style={{ padding: '0 0 40px' }}>
+        <div className="container">
+          <div className="info-box" style={{ textAlign: 'center' }}>
+            <h3>Custom Quotes Available</h3>
+            <p>
+              Final pricing depends on vessel condition, marine growth severity, and location.
+              Commercial fleet contracts and recurring maintenance plans available at discounted rates.
+              Call <a href={PHONE_HREF} style={{ color: 'var(--ocean-600)', fontWeight: 700 }}>{PHONE}</a> for
+              a free no-obligation quote.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="cta">
         <div className="container cta__inner">
-          <h2>Ready for a custom quote?</h2>
-          <p>Tell us your vessel type, length, and location and we'll get back to you fast.</p>
+          <h2>Ready for a Free Quote?</h2>
+          <p>Tell us your vessel size and location — we'll respond within 24 hours.</p>
           <div className="cta__actions">
             <Link to="/contact" className="btn btn--white btn--lg">
               Get a Quote
