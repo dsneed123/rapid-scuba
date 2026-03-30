@@ -1,6 +1,15 @@
 import { Link } from 'react-router-dom'
 import type { Service } from '@/types'
 
+const SERVICE_ROUTES: Record<string, string> = {
+  'hull-cleaning': '/hull-cleaning-seattle',
+  'underwater-welding': '/underwater-welding-seattle',
+  'propeller-polishing': '/propeller-cleaning-seattle',
+  'zinc-replacement': '/boat-repair-underwater-seattle',
+  'inspection': '/hull-inspection-seattle',
+  'emergency': '/contact',
+}
+
 type Props = {
   service: Service
 }
@@ -15,8 +24,8 @@ export function ServiceCard({ service }: Props) {
         <span className="card__price">
           From <strong>${service.priceFrom}</strong> {service.unit}
         </span>
-        <Link to={`/book?service=${service.id}`} className="btn btn--secondary">
-          Book Now
+        <Link to={SERVICE_ROUTES[service.id] || '/contact'} className="btn btn--secondary">
+          Learn More
         </Link>
       </div>
     </div>

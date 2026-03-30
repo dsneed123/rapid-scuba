@@ -13,14 +13,14 @@ export function HomePage() {
         <div className="container hero__inner">
           <h1 className="hero__title">
             Seattle's Premier<br />
-            Underwater Ship Services
+            Underwater Welding &amp; Hull Cleaning
           </h1>
           <p className="hero__subtitle">
-            Professional Hull Cleaning, Underwater Welding &amp; Marine Maintenance
+            ADCI-Certified Commercial Divers Serving Puget Sound, Lake Union &amp; Lake Washington — Same-Day Service Available
           </p>
           <div className="hero__actions">
-            <Link to="/book" className="btn btn--primary btn--lg">
-              Book Now
+            <Link to="/contact" className="btn btn--primary btn--lg">
+              Get a Free Quote
             </Link>
             <a href={PHONE_HREF} className="hero__phone">
               <span className="hero__phone-icon">📞</span>
@@ -38,16 +38,20 @@ export function HomePage() {
             <span>Years Experience</span>
           </div>
           <div className="trust-bar__item">
-            <strong>2,000+</strong>
+            <strong>3,200+</strong>
             <span>Vessels Serviced</span>
           </div>
           <div className="trust-bar__item">
-            <strong>ADCI</strong>
-            <span>Certified Divers</span>
+            <strong>ADCI &amp; AWS</strong>
+            <span>Certified Divers &amp; Welders</span>
           </div>
           <div className="trust-bar__item">
             <strong>24/7</strong>
             <span>Emergency Response</span>
+          </div>
+          <div className="trust-bar__item">
+            <strong>47,000+</strong>
+            <span>WA Registered Vessels</span>
           </div>
         </div>
       </section>
@@ -56,30 +60,32 @@ export function HomePage() {
       <section className="section about" id="about">
         <div className="container about__inner">
           <div className="about__text">
-            <h2 className="section__title">About Rapid Scuba</h2>
+            <h2 className="section__title">Seattle's Most Trusted Underwater Services Team</h2>
             <p className="about__lead">
-              Rapid Scuba has been serving the Seattle maritime community for over 15 years. Our
-              team of certified commercial divers specializes in underwater hull cleaning and
-              welding, delivering professional below-waterline services without the cost or
-              downtime of dry-docking.
+              For over 15 years, Rapid Scuba has been the go-to underwater services provider for
+              Seattle's maritime community. Our ADCI-certified commercial divers and AWS D3.6-certified
+              underwater welders deliver professional below-waterline services — without the cost
+              or downtime of dry-docking. We come to your slip.
             </p>
             <p>
-              We operate throughout the greater Seattle area, including{' '}
-              <strong>Puget Sound</strong>, <strong>Lake Union</strong>,{' '}
-              <strong>Lake Washington</strong>, and all Seattle-area marinas. Whether you
-              captain a sailboat, motor yacht, commercial vessel, or working tug, our divers
-              bring the job to your berth.
+              We service vessels at <strong>Shilshole Bay Marina</strong>, <strong>Eastlake Marina</strong>,{' '}
+              <strong>Portage Bay</strong>, <strong>Lake Union</strong>, <strong>Lake Washington</strong>,{' '}
+              <strong>Elliott Bay</strong>, and every marina and anchorage across Puget Sound. From
+              28-foot sailboats to 200-foot commercial tugs, our divers bring the job to your berth — often
+              same-day.
             </p>
             <ul className="about__highlights">
-              <li>ADCI-certified commercial diving crew</li>
-              <li>Licensed, bonded &amp; fully insured</li>
-              <li>All Seattle-area marinas &amp; anchorages</li>
-              <li>Emergency response available 24/7</li>
+              <li>ADCI-certified commercial divers &amp; AWS D3.6 underwater welders</li>
+              <li>Licensed, bonded &amp; fully insured ($1M+ liability)</li>
+              <li>OSHA 29 CFR 1910.430 compliant operations</li>
+              <li>Before/after underwater video documentation on every job</li>
+              <li>Same-day or next-day service availability</li>
+              <li>Emergency dive response 24/7 — diver in the water within 2 hours</li>
             </ul>
           </div>
           <div className="about__stats">
             <div className="about__stat">
-              <span className="about__stat-value">2,000+</span>
+              <span className="about__stat-value">3,200+</span>
               <span className="about__stat-label">Vessels Serviced</span>
             </div>
             <div className="about__stat">
@@ -87,12 +93,12 @@ export function HomePage() {
               <span className="about__stat-label">Years in Seattle</span>
             </div>
             <div className="about__stat">
-              <span className="about__stat-value">4</span>
-              <span className="about__stat-label">Service Regions</span>
+              <span className="about__stat-value">20+</span>
+              <span className="about__stat-label">Marinas Covered</span>
             </div>
             <div className="about__stat">
-              <span className="about__stat-value">24/7</span>
-              <span className="about__stat-label">Emergency Line</span>
+              <span className="about__stat-value">4.9★</span>
+              <span className="about__stat-label">Google Rating</span>
             </div>
           </div>
         </div>
@@ -113,14 +119,27 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* Why In-Water */}
+      <section className="section" style={{ background: 'var(--ocean-100)' }}>
+        <div className="container" style={{ textAlign: 'center', maxWidth: '720px' }}>
+          <h2 className="section__title">Why In-Water Service Beats Dry-Docking</h2>
+          <p className="section__subtitle" style={{ maxWidth: '100%' }}>
+            A fouled hull reduces fuel efficiency by <strong>10–40%</strong>. Drydock haul-outs cost thousands
+            and take your vessel out of commission for days. Our in-water services are completed in hours at your
+            slip — at a fraction of the cost. Puget Sound's cold, nutrient-rich water produces aggressive
+            biofouling, meaning hulls need cleaning every <strong>60–90 days</strong> to maintain peak performance.
+          </p>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="cta">
         <div className="container cta__inner">
-          <h2>Ready to schedule a dive?</h2>
-          <p>We respond to all requests within one business day.</p>
+          <h2>Get a Free Quote — We'll Respond Within 24 Hours</h2>
+          <p>Same-day service available. We come to your marina. No need to move your vessel.</p>
           <div className="cta__actions">
-            <Link to="/book" className="btn btn--white btn--lg">
-              Book Now
+            <Link to="/contact" className="btn btn--white btn--lg">
+              Get a Free Quote
             </Link>
             <a href={PHONE_HREF} className="cta__phone">
               {PHONE}
