@@ -3,16 +3,47 @@ import { Link } from 'react-router-dom'
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
 
+const schemaMarkup = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Underwater Welding Seattle',
+  serviceType: 'Underwater Welding & Wet Welding Repairs',
+  provider: {
+    '@type': 'LocalBusiness',
+    name: 'Rapid Scuba',
+    telephone: '+12062402687',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Seattle',
+      addressRegion: 'WA',
+      addressCountry: 'US',
+    },
+    areaServed: 'Seattle, WA and Puget Sound',
+  },
+  description:
+    'Certified wet welding and structural repairs for vessels, docks, pilings, and seawalls in Seattle and Puget Sound. AWS D3.6M certified underwater welders. No dry-dock required.',
+  offers: {
+    '@type': 'Offer',
+    priceRange: '$150–$250/hr',
+    priceCurrency: 'USD',
+  },
+}
+
 export function UnderwaterWeldingPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
+      />
+
       <section className="page-hero">
         <div className="page-hero__inner">
           <span className="page-hero__label">Seattle Marine Services</span>
-          <h1>Underwater Welding Seattle</h1>
+          <h1>Underwater Welding Seattle — Certified Wet Welding &amp; Repairs</h1>
           <p>
-            Certified wet welding and structural repairs for vessels, docks, and pilings in Seattle
-            and Puget Sound — no dry-dock required.
+            AWS D3.6M and ADCI-certified underwater welders serving Seattle marinas, commercial
+            docks, and Puget Sound. Structural wet welding without dry-docking your vessel.
           </p>
           <div className="page-hero__actions">
             <Link to="/contact" className="btn btn--primary btn--lg">
@@ -29,38 +60,249 @@ export function UnderwaterWeldingPage() {
       <section className="page-content">
         <div className="container page-content__grid">
           <div>
-            <h2>Expert Underwater Welding in Seattle Waters</h2>
+            <h2>How Underwater Wet Welding Works</h2>
             <p>
-              Our ADCI-certified commercial divers perform structural wet welding and repairs on
-              vessel hulls, keel attachments, rudder fittings, through-hull hardware, docks, and
-              pilings. We bring the welding to your vessel — eliminating the cost and downtime of
-              dry-docking.
+              Wet welding uses Shielded Metal Arc Welding (SMAW) — a technique adapted specifically
+              for submerged conditions. Our certified divers use waterproofed stick electrodes and
+              specialized welding machines to generate an electric arc that burns at over 6,500°F,
+              hot enough to displace the surrounding water and fuse steel directly underwater. The
+              process requires deep technical knowledge: water rushing past the weld accelerates
+              cooling, which creates hydrogen embrittlement risks that a surface welder would never
+              encounter. Our welders use procedures specifically developed to compensate for rapid
+              quench rates and achieve consistent, sound fusion below the waterline.
             </p>
             <p>
-              We use AWS D3.6M certified techniques for underwater structural welds, ensuring
-              repairs meet or exceed industry standards for strength and durability.
+              Our divers are dual-certified as commercial diving operators and qualified welding
+              technicians. Before entering the water, we assess tidal conditions, water clarity,
+              structural access, and current flow. Each diver works with a hardwired communication
+              system connected to a topside tender who controls the power supply throughout the job.
+              Power can be isolated instantly from the surface — a critical safety feature that sets
+              professional underwater welding apart from improvised repairs.
+            </p>
+            <p>
+              All of our work is performed to AWS D3.6M — the American Welding Society standard for
+              underwater welding. Class-B welds are used for structural repairs where full joint
+              penetration and consistent mechanical properties are required. We maintain documented
+              weld procedures and our welders are individually qualified to these procedures, so
+              every repair we complete can be supported with paperwork for insurance, survey, or
+              Coast Guard requirements.
+            </p>
+
+            <h2 style={{ marginTop: '2rem' }}>Underwater Welding Services We Provide</h2>
+            <ul>
+              <li>Steel crack repair on hulls, keels, and structural frames</li>
+              <li>Hole patching — emergency and scheduled below-waterline plate repairs</li>
+              <li>Corroded steel replacement below the waterline</li>
+              <li>Dock and piling structural welding and bracket repair</li>
+              <li>Seawall repair — sheet pile welding and tie-back plate installation</li>
+              <li>Through-hull fitting installation and reinforcement welding</li>
+              <li>Keel bolt and keel attachment structural repair</li>
+              <li>Rudder fitting, skeg, and stabilizer fin repair</li>
+              <li>Zinc anode welded attachment and replacement</li>
+              <li>Emergency 24/7 response for vessels in immediate danger</li>
+            </ul>
+          </div>
+
+          <div>
+            <div className="info-box">
+              <h3>Underwater Welding Pricing</h3>
+              <p>
+                Certified underwater welders in Seattle bill $150–$250 per hour depending on depth,
+                job complexity, and site access. Most jobs carry a minimum 2-hour booking to cover
+                equipment mobilization and dive preparation.
+              </p>
+              <ul>
+                <li>Hourly rate: $150–$250/hr</li>
+                <li>Minimum booking: 2 hours</li>
+                <li>Materials (rod, plate, fittings) quoted separately</li>
+                <li>Free on-site assessments for most Seattle-area jobs</li>
+                <li>Emergency after-hours callout rate may apply</li>
+              </ul>
+              <p style={{ marginTop: '1rem' }}>
+                <strong>Compare to drydock:</strong> haul-out fees in Seattle run $25–$50 per foot
+                of vessel length — before travel lift charges, yard storage, or the cost of
+                re-applying antifouling paint. For a 40-foot vessel, a drydock welding visit easily
+                exceeds $5,000 before the welder arrives.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ borderTop: '1px solid var(--gray-200)', paddingTop: '4rem', paddingBottom: '4rem' }}>
+        <div className="container page-content__grid">
+          <div>
+            <h2>Why Choose In-Water Welding Over Dry-Dock?</h2>
+            <p>
+              Drydocking a vessel for below-waterline repairs is expensive, slow, and often
+              unnecessary. In-water welding eliminates haul-out fees, travel lift charges, blocking
+              fees, and yard storage costs — savings that add up quickly. For commercial operators
+              including fishing boats, charter vessels, and workboats, keeping the vessel in service
+              during repairs means no lost revenue days.
+            </p>
+            <p>
+              Scheduling is another critical advantage. Haul-out facilities in the Seattle area
+              often have waiting lists of weeks or months, particularly during peak season. An
+              underwater welding crew can typically mobilize within 24–48 hours for non-emergency
+              work and same-day for urgent repairs. Your vessel stays in its slip, and there is no
+              need to re-apply antifouling paint after the job is done.
             </p>
             <ul>
-              <li>Hull plate repair and patch welding</li>
-              <li>Keel bolt and keel attachment repair</li>
-              <li>Rudder fitting and skeg repair</li>
-              <li>Through-hull fitting installation and repair</li>
-              <li>Dock and piling structural welding</li>
-              <li>Zinc anode welded attachment</li>
-              <li>Emergency 24/7 response available</li>
+              <li>No haul-out fees ($25–$50/ft at Seattle-area yards)</li>
+              <li>No yard storage, blocking, or power hook-up fees</li>
+              <li>Vessel stays in service — no lost revenue for commercial operators</li>
+              <li>Faster mobilization — often same day or next day</li>
+              <li>No antifouling paint re-application required after the repair</li>
+              <li>Lower total project cost for most standard repair categories</li>
             </ul>
           </div>
           <div>
             <div className="info-box">
-              <h3>When to Call Us</h3>
-              <p>Underwater welding is the right solution when:</p>
+              <h3>When Dry-Dock Is the Right Choice</h3>
+              <p>
+                We will tell you honestly when dry-dock is the better option for your situation:
+              </p>
               <ul>
-                <li>Your vessel has hull damage below the waterline</li>
-                <li>A through-hull fitting is failing or leaking</li>
-                <li>Keel or rudder fittings need structural repair</li>
-                <li>Dock pilings or brackets require emergency welding</li>
-                <li>Dry-docking would cause unacceptable downtime</li>
+                <li>Extensive hull plating replacement over large sections</li>
+                <li>Repairs requiring full internal access to the vessel</li>
+                <li>Class surveys that mandate out-of-water inspection</li>
+                <li>
+                  Critical structural welds requiring Class-A AWS D3.6M standard with full NDT
+                </li>
               </ul>
+              <p style={{ marginTop: '1rem' }}>
+                For those jobs, we can refer you to trusted Pacific Northwest boatyards and provide
+                our inspection documentation to support the scope of work.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ background: 'var(--ocean-100)', paddingTop: '4rem', paddingBottom: '4rem' }}>
+        <div className="container">
+          <h2 className="section__title">Underwater Welding FAQ</h2>
+          <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div>
+              <h3>Is underwater welding safe?</h3>
+              <p>
+                Underwater welding carries inherent risks that are managed through strict safety
+                protocols and professional certification. Our divers follow ADCI (Association of
+                Diving Contractors International) guidelines, which require continuous topside
+                communication, a dedicated standby diver on every commercial dive, documented
+                power isolation procedures, and a pre-dive safety checklist before any job begins.
+                The welder's equipment is fully insulated and waterproofed, and the welding power
+                supply is controlled exclusively by the topside tender — not by the diver in the
+                water — meaning power can be cut instantly if needed. Wet welding in professional
+                hands, following established procedures, has a strong safety track record in the
+                commercial marine industry.
+              </p>
+            </div>
+            <div>
+              <h3>How long does underwater welding last?</h3>
+              <p>
+                Underwater welds performed correctly to AWS D3.6M Class-B standards have service
+                lives comparable to equivalent surface welds in the same marine environment —
+                typically 10–20 years or more on steel structures in saltwater, depending on
+                cathodic protection maintenance and coating condition at the repair site. We provide
+                zinc anode placement recommendations with every structural weld to slow galvanic
+                corrosion at the repair location. For critical structural applications, we can
+                arrange non-destructive testing (NDT) to document weld quality and provide
+                supporting records for insurance or classification purposes.
+              </p>
+            </div>
+            <div>
+              <h3>What types of vessels and structures can you weld?</h3>
+              <p>
+                We weld steel and cast iron on recreational vessels, commercial fishing boats,
+                tugboats, barges, ferries, and workboats of all sizes. We also weld fixed
+                structures including steel-framed docks, steel sheet pile seawalls, mooring
+                dolphins, piling brackets, and mooring hardware. Aluminum requires TIG or MIG
+                welding processes that are not compatible with wet welding methods — aluminum
+                repairs typically require drydock.
+              </p>
+            </div>
+            <div>
+              <h3>Do I need to move my boat for underwater welding?</h3>
+              <p>
+                For most repairs, no. We work at your berth or anchorage throughout Seattle and
+                surrounding Puget Sound. If the repair requires working around a tight slip or dock
+                structure, we may ask you to shift to an open side-tie, but we coordinate all
+                logistics with you and your marina before arriving on site. Our surface-supply
+                diving equipment travels in a standard pickup truck and can be set up on most docks
+                and piers within 30 minutes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section about" style={{ borderTop: '1px solid var(--gray-200)' }}>
+        <div className="container">
+          <h2 className="section__title">Underwater Welding Service Areas</h2>
+          <p className="section__subtitle">
+            We mobilize to all major Seattle marinas, commercial docks, and Puget Sound locations.
+          </p>
+          <div className="about__stats">
+            {[
+              { v: 'Shilshole', l: 'Bay Marina' },
+              { v: 'Elliott Bay', l: 'Marina' },
+              { v: 'Lake Union', l: 'Commercial Docks' },
+              { v: 'Lake Washington', l: 'Marinas' },
+              { v: 'Puget Sound', l: 'Anchorages' },
+              { v: 'Bainbridge', l: 'Island' },
+              { v: 'Edmonds', l: 'Marina' },
+              { v: 'Des Moines', l: 'Marina' },
+            ].map(({ v, l }) => (
+              <div key={v} className="about__stat">
+                <span className="about__stat-value" style={{ fontSize: '1.1rem' }}>
+                  {v}
+                </span>
+                <span className="about__stat-label">{l}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ borderTop: '1px solid var(--gray-200)', paddingTop: '3rem', paddingBottom: '3rem' }}>
+        <div className="container">
+          <h2 className="section__title">Related Services</h2>
+          <p className="section__subtitle">
+            Combine underwater welding with these services for comprehensive vessel care.
+          </p>
+          <div className="page-content__grid" style={{ marginTop: '2rem' }}>
+            <div className="info-box">
+              <h3>Hull Cleaning Seattle</h3>
+              <p>
+                A clean hull makes it easier to spot new corrosion developing near a weld repair
+                site. We offer regular in-water hull cleaning that removes barnacles and growth,
+                keeps your antifouling paint working, and catches problems before they become
+                expensive repairs.
+              </p>
+              <Link
+                to="/hull-cleaning-seattle"
+                className="btn btn--primary"
+                style={{ marginTop: '1rem', display: 'inline-block' }}
+              >
+                View Hull Cleaning
+              </Link>
+            </div>
+            <div className="info-box">
+              <h3>Hull Inspection Seattle</h3>
+              <p>
+                Not sure whether you need welding? Start with a below-waterline inspection. Our
+                certified divers provide video-documented inspection reports that identify cracks,
+                corrosion, and structural concerns — so you know the full scope before committing
+                to any repair work.
+              </p>
+              <Link
+                to="/hull-inspection-seattle"
+                className="btn btn--primary"
+                style={{ marginTop: '1rem', display: 'inline-block' }}
+              >
+                View Hull Inspection
+              </Link>
             </div>
           </div>
         </div>
@@ -68,11 +310,11 @@ export function UnderwaterWeldingPage() {
 
       <section className="cta">
         <div className="container cta__inner">
-          <h2>Need underwater welding in Seattle?</h2>
-          <p>Starting from $800 per job. 24/7 emergency response available.</p>
+          <h2>Need certified underwater welding in Seattle?</h2>
+          <p>$150–$250/hr for AWS D3.6M certified divers. 24/7 emergency response available.</p>
           <div className="cta__actions">
             <Link to="/contact" className="btn btn--white btn--lg">
-              Request Service
+              Request Welding Service
             </Link>
             <a href={PHONE_HREF} className="cta__phone">
               {PHONE}

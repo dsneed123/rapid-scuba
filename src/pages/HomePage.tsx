@@ -34,14 +34,6 @@ export function HomePage() {
       <section className="trust-bar">
         <div className="container trust-bar__inner">
           <div className="trust-bar__item">
-            <strong>15+</strong>
-            <span>Years Experience</span>
-          </div>
-          <div className="trust-bar__item">
-            <strong>3,200+</strong>
-            <span>Vessels Serviced</span>
-          </div>
-          <div className="trust-bar__item">
             <strong>ADCI &amp; AWS</strong>
             <span>Certified Divers &amp; Welders</span>
           </div>
@@ -62,8 +54,8 @@ export function HomePage() {
           <div className="about__text">
             <h2 className="section__title">Seattle's Most Trusted Underwater Services Team</h2>
             <p className="about__lead">
-              For over 15 years, Rapid Scuba has been the go-to underwater services provider for
-              Seattle's maritime community. Our ADCI-certified commercial divers and AWS D3.6-certified
+              Rapid Scuba is Seattle's go-to underwater services provider. Our ADCI-certified
+              commercial divers and AWS D3.6-certified
               underwater welders deliver professional below-waterline services — without the cost
               or downtime of dry-docking. We come to your slip.
             </p>
@@ -84,14 +76,6 @@ export function HomePage() {
             </ul>
           </div>
           <div className="about__stats">
-            <div className="about__stat">
-              <span className="about__stat-value">3,200+</span>
-              <span className="about__stat-label">Vessels Serviced</span>
-            </div>
-            <div className="about__stat">
-              <span className="about__stat-value">15+</span>
-              <span className="about__stat-label">Years in Seattle</span>
-            </div>
             <div className="about__stat">
               <span className="about__stat-value">20+</span>
               <span className="about__stat-label">Marinas Covered</span>
