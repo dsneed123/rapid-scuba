@@ -1350,3 +1350,38 @@ a.contact-info__value:hover {
 .blog-post__cta .btn {
   margin: 0 8px;
 }
+
+/* ─── Reviews summary bar ────────────────────────────────────── */
+.reviews-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.reviews-summary__score {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1;
+}
+
+.reviews-summary__right {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reviews-summary__stars {
+  color: #f59e0b;
+  font-size: 22px;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.reviews-summary__count {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
