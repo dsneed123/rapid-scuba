@@ -1385,3 +1385,97 @@ a.contact-info__value:hover {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.7);
 }
+
+/* ─── How It Works (Contact page) ───────────────────────────── */
+.how-it-works {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .how-it-works {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .how-it-works {
+    grid-template-columns: 1fr;
+  }
+}
+
+.how-it-works__step {
+  background: var(--ocean-100);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+}
+
+.how-it-works__icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.how-it-works__num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: 6px;
+}
+
+.how-it-works__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin: 0 0 8px;
+}
+
+.how-it-works__body {
+  font-size: 14px;
+  color: var(--gray-600);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ─── Contact phone CTA block ────────────────────────────────── */
+.contact-phone-cta {
+  background: var(--ocean-800);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.contact-phone-cta__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin: 0 0 10px;
+}
+
+.contact-phone-cta__number {
+  display: block;
+  font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+  font-weight: 800;
+  color: white;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.contact-phone-cta__number:hover {
+  color: var(--ocean-100);
+}
+
+.contact-phone-cta__sub {
+  font-size: 14px;
+  opacity: 0.75;
+  margin: 0;
+}
