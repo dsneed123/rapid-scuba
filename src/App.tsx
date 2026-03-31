@@ -1,51 +1,170 @@
+import { lazy, Suspense } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import { Layout } from '@/components/layout/Layout'
-import { HomePage } from '@/pages/HomePage'
-import { HullCleaningPage } from '@/pages/HullCleaningPage'
-import { UnderwaterWeldingPage } from '@/pages/UnderwaterWeldingPage'
-import { PropellerCleaningPage } from '@/pages/PropellerCleaningPage'
-import { BoatRepairPage } from '@/pages/BoatRepairPage'
-import { ZincAnodePage } from '@/pages/ZincAnodePage'
-import { HullInspectionPage } from '@/pages/HullInspectionPage'
-import { PricingPage } from '@/pages/PricingPage'
-import { ReviewsPage } from '@/pages/ReviewsPage'
-import { ContactPage } from '@/pages/ContactPage'
-import { HowOftenCleanPage } from '@/pages/blog/HowOftenCleanPage'
-import { CostHullCleaningPage } from '@/pages/blog/CostHullCleaningPage'
-import { BarnacleRemovalPage } from '@/pages/blog/BarnacleRemovalPage'
-import { UnderwaterWeldingRepairPage } from '@/pages/blog/UnderwaterWeldingRepairPage'
+import { PageLoader } from '@/components/ui/PageLoader'
+
+const HomePage = lazy(() =>
+  import('@/pages/HomePage').then((m) => ({ default: m.HomePage }))
+)
+const HullCleaningPage = lazy(() =>
+  import('@/pages/HullCleaningPage').then((m) => ({ default: m.HullCleaningPage }))
+)
+const UnderwaterWeldingPage = lazy(() =>
+  import('@/pages/UnderwaterWeldingPage').then((m) => ({ default: m.UnderwaterWeldingPage }))
+)
+const PropellerCleaningPage = lazy(() =>
+  import('@/pages/PropellerCleaningPage').then((m) => ({ default: m.PropellerCleaningPage }))
+)
+const BoatRepairPage = lazy(() =>
+  import('@/pages/BoatRepairPage').then((m) => ({ default: m.BoatRepairPage }))
+)
+const ZincAnodePage = lazy(() =>
+  import('@/pages/ZincAnodePage').then((m) => ({ default: m.ZincAnodePage }))
+)
+const HullInspectionPage = lazy(() =>
+  import('@/pages/HullInspectionPage').then((m) => ({ default: m.HullInspectionPage }))
+)
+const PricingPage = lazy(() =>
+  import('@/pages/PricingPage').then((m) => ({ default: m.PricingPage }))
+)
+const ReviewsPage = lazy(() =>
+  import('@/pages/ReviewsPage').then((m) => ({ default: m.ReviewsPage }))
+)
+const ContactPage = lazy(() =>
+  import('@/pages/ContactPage').then((m) => ({ default: m.ContactPage }))
+)
+const HowOftenCleanPage = lazy(() =>
+  import('@/pages/blog/HowOftenCleanPage').then((m) => ({ default: m.HowOftenCleanPage }))
+)
+const CostHullCleaningPage = lazy(() =>
+  import('@/pages/blog/CostHullCleaningPage').then((m) => ({ default: m.CostHullCleaningPage }))
+)
+const BarnacleRemovalPage = lazy(() =>
+  import('@/pages/blog/BarnacleRemovalPage').then((m) => ({ default: m.BarnacleRemovalPage }))
+)
+const UnderwaterWeldingRepairPage = lazy(() =>
+  import('@/pages/blog/UnderwaterWeldingRepairPage').then((m) => ({
+    default: m.UnderwaterWeldingRepairPage,
+  }))
+)
 
 function App() {
   return (
     <HashRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="hull-cleaning-seattle" element={<HullCleaningPage />} />
-          <Route path="underwater-welding-seattle" element={<UnderwaterWeldingPage />} />
-          <Route path="propeller-cleaning-seattle" element={<PropellerCleaningPage />} />
-          <Route path="boat-repair-underwater-seattle" element={<BoatRepairPage />} />
-          <Route path="zinc-anode-replacement-seattle" element={<ZincAnodePage />} />
-          <Route path="hull-inspection-seattle" element={<HullInspectionPage />} />
-          <Route path="pricing" element={<PricingPage />} />
-          <Route path="reviews" element={<ReviewsPage />} />
-          <Route path="contact" element={<ContactPage />} />
+          <Route
+            index
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <HomePage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="hull-cleaning-seattle"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <HullCleaningPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="underwater-welding-seattle"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <UnderwaterWeldingPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="propeller-cleaning-seattle"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <PropellerCleaningPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="boat-repair-underwater-seattle"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <BoatRepairPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="zinc-anode-replacement-seattle"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ZincAnodePage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="hull-inspection-seattle"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <HullInspectionPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="pricing"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <PricingPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="reviews"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ReviewsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="contact"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ContactPage />
+              </Suspense>
+            }
+          />
           <Route
             path="blog/how-often-clean-boat-hull-seattle"
-            element={<HowOftenCleanPage />}
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <HowOftenCleanPage />
+              </Suspense>
+            }
           />
           <Route
             path="blog/cost-hull-cleaning-seattle-marinas"
-            element={<CostHullCleaningPage />}
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <CostHullCleaningPage />
+              </Suspense>
+            }
           />
           <Route
             path="blog/barnacle-removal-seattle-boats"
-            element={<BarnacleRemovalPage />}
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <BarnacleRemovalPage />
+              </Suspense>
+            }
           />
           <Route
             path="blog/underwater-welding-repair-seattle-docks"
-            element={<UnderwaterWeldingRepairPage />}
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <UnderwaterWeldingRepairPage />
+              </Suspense>
+            }
           />
         </Route>
       </Routes>
