@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -84,6 +85,12 @@ const faqs = faqSchema.mainEntity
 export function CostHullCleaningPage() {
   return (
     <>
+      <PageHead
+        title="Cost of Hull Cleaning in Seattle Marinas (2026 Guide) | Rapid Scuba"
+        description="Complete 2026 pricing guide for hull cleaning in Seattle. Package prices by vessel size, add-on services, and comparison against drydock haul-out costs."
+        canonical="/#/blog/cost-hull-cleaning-seattle-marinas"
+        ogType="article"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}

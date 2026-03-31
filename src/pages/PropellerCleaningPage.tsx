@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -99,6 +100,11 @@ const faqs = faqSchema.mainEntity
 export function PropellerCleaningPage() {
   return (
     <>
+      <PageHead
+        title="Propeller Cleaning Seattle — Rapid Scuba | 206-240-2687"
+        description="Professional underwater propeller cleaning and polishing in Seattle by ADCI-certified divers. Marine growth removal, blade polishing, and shaft inspection at your slip. Serving Shilshole Bay, Lake Union, and all Puget Sound marinas. From $75 per prop."
+        canonical="/#/propeller-cleaning-seattle"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}

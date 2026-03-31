@@ -1,11 +1,52 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
 
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Zinc Anode Replacement Seattle',
+  serviceType: 'Underwater Zinc Anode Replacement',
+  provider: {
+    '@type': 'LocalBusiness',
+    name: 'Rapid Scuba',
+    telephone: '+12062402687',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Seattle',
+      addressRegion: 'WA',
+      addressCountry: 'US',
+    },
+    areaServed: 'Seattle, WA and Puget Sound',
+  },
+  description:
+    'Underwater zinc anode replacement in Seattle by ADCI-certified divers. Protect your hull, shaft, and running gear from galvanic corrosion in Puget Sound. At your slip — no haul-out required. From $30 per anode.',
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'USD',
+    price: '30',
+    priceSpecification: {
+      '@type': 'PriceSpecification',
+      minPrice: '30',
+      priceCurrency: 'USD',
+    },
+  },
+}
+
 export function ZincAnodePage() {
   return (
     <>
+      <PageHead
+        title="Zinc Anode Replacement Seattle — Rapid Scuba | 206-240-2687"
+        description="Underwater zinc anode replacement in Seattle by ADCI-certified divers. Protect your hull, shaft, and running gear from galvanic corrosion in Puget Sound. At your slip — no haul-out required. From $30 per anode."
+        canonical="/#/zinc-anode-replacement-seattle"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
       <section className="page-hero">
         <div className="page-hero__inner">
           <span className="page-hero__label">Seattle Marine Services</span>

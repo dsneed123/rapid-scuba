@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -99,6 +100,11 @@ const faqs = faqSchema.mainEntity
 export function BoatRepairPage() {
   return (
     <>
+      <PageHead
+        title="Underwater Boat Repair Seattle — Rapid Scuba | 206-240-2687"
+        description="Emergency and scheduled underwater boat repair by ADCI-certified divers in Seattle. Zinc anode replacement, through-hull fittings, hull inspections, and 24/7 emergency dive response. Serving Puget Sound."
+        canonical="/#/boat-repair-underwater-seattle"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -84,6 +85,12 @@ const faqs = faqSchema.mainEntity
 export function BarnacleRemovalPage() {
   return (
     <>
+      <PageHead
+        title="Barnacle Removal for Seattle Boats | Rapid Scuba"
+        description="How barnacles grow in Puget Sound, why DIY removal carries real risks, the professional barnacle removal process, and prevention strategies for Seattle boat owners."
+        canonical="/#/blog/barnacle-removal-seattle-boats"
+        ogType="article"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
