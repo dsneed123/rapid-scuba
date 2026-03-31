@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -84,6 +85,12 @@ const faqs = faqSchema.mainEntity
 export function HowOftenCleanPage() {
   return (
     <>
+      <PageHead
+        title="How Often Should You Clean a Boat Hull in Seattle? | Rapid Scuba"
+        description="Puget Sound conditions, seasonal fouling patterns, signs your hull needs cleaning, and the true cost of neglecting regular hull maintenance in Seattle."
+        canonical="/#/blog/how-often-clean-boat-hull-seattle"
+        ogType="article"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}

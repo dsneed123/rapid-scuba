@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -84,6 +85,12 @@ const faqs = faqSchema.mainEntity
 export function UnderwaterWeldingRepairPage() {
   return (
     <>
+      <PageHead
+        title="Underwater Welding Repair for Seattle Docks & Pilings | Rapid Scuba"
+        description="How saltwater corrosion damages Seattle docks and pilings, the underwater welding repair process, and how to decide when to repair vs. replace marine structures."
+        canonical="/#/blog/underwater-welding-repair-seattle-docks"
+        ogType="article"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}

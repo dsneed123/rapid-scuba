@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -107,6 +108,11 @@ const faqs = faqSchema.mainEntity
 export function HullCleaningPage() {
   return (
     <>
+      <PageHead
+        title="Hull Cleaning Seattle — Rapid Scuba | 206-240-2687"
+        description="Professional underwater hull cleaning in Seattle by ADCI-certified divers. Barnacle and algae removal at your slip — no haul-out required. Serving Shilshole Bay, Lake Union, Puget Sound."
+        canonical="/#/hull-cleaning-seattle"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -54,6 +55,43 @@ type ContactFormData = {
   message: string
 }
 
+const contactSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'Rapid Scuba',
+  telephone: '+12062402687',
+  email: 'info@rapidscuba.com',
+  url: 'https://rapidscuba.com',
+  description:
+    'ADCI-certified commercial divers offering hull cleaning, underwater welding, propeller cleaning, and boat repair in Seattle and Puget Sound.',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Seattle',
+    addressRegion: 'WA',
+    addressCountry: 'US',
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      opens: '07:00',
+      closes: '18:00',
+    },
+  ],
+  areaServed: [
+    'Seattle',
+    'Puget Sound',
+    'Lake Union',
+    'Lake Washington',
+    'Shilshole Bay',
+    'Elliott Bay',
+    'Edmonds',
+    'Des Moines',
+    'Bainbridge Island',
+  ],
+  priceRange: '$3000-$5000+',
+}
+
 export function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState(false)
@@ -84,6 +122,15 @@ export function ContactPage() {
 
   return (
     <>
+      <PageHead
+        title="Contact Rapid Scuba — Seattle Marine Services | 206-240-2687"
+        description="Request a free quote for hull cleaning, underwater welding, propeller cleaning, or emergency dive service in Seattle. Call 206-240-2687 or fill out our booking form."
+        canonical="/#/contact"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+      />
       <section className="page-hero">
         <div className="page-hero__inner">
           <span className="page-hero__label">Get in Touch</span>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -58,9 +59,72 @@ const ADD_ONS = [
   { name: 'Underwater Welding (additional scope)', price: '$300–$500/hr' },
 ]
 
+const pricingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'Rapid Scuba',
+  telephone: '+12062402687',
+  url: 'https://rapidscuba.com',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Seattle',
+    addressRegion: 'WA',
+    addressCountry: 'US',
+  },
+  priceRange: '$3000-$5000+',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Seattle Underwater Services Pricing',
+    itemListElement: [
+      {
+        '@type': 'Offer',
+        name: 'Small Boat Hull Cleaning Package (Up to 30 ft)',
+        description: 'Underwater hull cleaning, barnacle removal, running gear cleaning, zinc inspection',
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          minPrice: '3000',
+          maxPrice: '3500',
+          priceCurrency: 'USD',
+        },
+      },
+      {
+        '@type': 'Offer',
+        name: 'Medium Boat Hull Cleaning Package (31–60 ft)',
+        description: 'Full hull cleaning, barnacle removal, HD video documentation, propeller inspection',
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          minPrice: '3500',
+          maxPrice: '4250',
+          priceCurrency: 'USD',
+        },
+      },
+      {
+        '@type': 'Offer',
+        name: 'Large Boat Hull Cleaning Package (61 ft+)',
+        description: 'Complete hull restoration, zinc anode inspection, HD video and written report',
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          minPrice: '4250',
+          maxPrice: '5000',
+          priceCurrency: 'USD',
+        },
+      },
+    ],
+  },
+}
+
 export function PricingPage() {
   return (
     <>
+      <PageHead
+        title="Seattle Underwater Services Pricing — Rapid Scuba | 206-240-2687"
+        description="Transparent pricing for hull cleaning, underwater welding, propeller cleaning, and zinc anode replacement in Seattle. All-inclusive packages by vessel size. Hull cleaning from $3,000."
+        canonical="/#/pricing"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema) }}
+      />
       <section className="page-hero">
         <div className="page-hero__inner">
           <span className="page-hero__label">Transparent Pricing</span>

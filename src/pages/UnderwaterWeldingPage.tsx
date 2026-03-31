@@ -1,7 +1,47 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Is underwater welding safe?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Underwater welding carries inherent risks that are managed through strict safety protocols and professional certification. Our divers follow ADCI guidelines, which require continuous topside communication, a dedicated standby diver on every commercial dive, documented power isolation procedures, and a pre-dive safety checklist. The welding power supply is controlled exclusively by the topside tender, meaning power can be cut instantly if needed.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does underwater welding last?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Underwater welds performed correctly to AWS D3.6M Class-B standards have service lives comparable to equivalent surface welds — typically 10–20 years or more on steel structures in saltwater, depending on cathodic protection maintenance and coating condition at the repair site.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What types of vessels and structures can you weld underwater in Seattle?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We weld steel and cast iron on recreational vessels, commercial fishing boats, tugboats, barges, ferries, and workboats of all sizes. We also weld fixed structures including steel-framed docks, steel sheet pile seawalls, mooring dolphins, piling brackets, and mooring hardware. Aluminum repairs typically require drydock.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do I need to move my boat for underwater welding?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'For most repairs, no. We work at your berth or anchorage throughout Seattle and surrounding Puget Sound. Our surface-supply diving equipment travels in a standard pickup truck and can be set up on most docks and piers within 30 minutes.',
+      },
+    },
+  ],
+}
 
 const schemaMarkup = {
   '@context': 'https://schema.org',
@@ -32,9 +72,18 @@ const schemaMarkup = {
 export function UnderwaterWeldingPage() {
   return (
     <>
+      <PageHead
+        title="Underwater Welding Seattle — Rapid Scuba | 206-240-2687"
+        description="AWS D3.6M and ADCI-certified underwater welders in Seattle. Structural wet welding for vessels, docks, and pilings — no dry-dock required. Serving Puget Sound and Lake Union."
+        canonical="/#/underwater-welding-seattle"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <section className="page-hero">

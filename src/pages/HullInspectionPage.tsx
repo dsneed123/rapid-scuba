@@ -1,11 +1,49 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
 
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Hull Inspection Seattle',
+  serviceType: 'Underwater Hull Inspection',
+  provider: {
+    '@type': 'LocalBusiness',
+    name: 'Rapid Scuba',
+    telephone: '+12062402687',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Seattle',
+      addressRegion: 'WA',
+      addressCountry: 'US',
+    },
+    areaServed: 'Seattle, WA and Puget Sound',
+  },
+  description:
+    'Below-waterline hull inspection with HD video documentation in Seattle. Pre-purchase surveys, annual inspections, and insurance reports by ADCI-certified divers. No haul-out required. From $250.',
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'USD',
+    lowPrice: '250',
+    highPrice: '500',
+    offerCount: '2',
+  },
+}
+
 export function HullInspectionPage() {
   return (
     <>
+      <PageHead
+        title="Hull Inspection Seattle — Rapid Scuba | 206-240-2687"
+        description="Below-waterline hull inspection with HD video documentation in Seattle. Pre-purchase surveys, annual inspections, and insurance reports by ADCI-certified divers. No haul-out required."
+        canonical="/#/hull-inspection-seattle"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
       <section className="page-hero">
         <div className="page-hero__inner">
           <span className="page-hero__label">Seattle Marine Services</span>

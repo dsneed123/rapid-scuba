@@ -1,13 +1,81 @@
 import { Link } from 'react-router-dom'
 import { ServiceCard } from '@/components/ui/ServiceCard'
 import { SERVICES } from '@/lib/services'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
 
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'Rapid Scuba',
+  telephone: '+12062402687',
+  url: 'https://rapidscuba.com',
+  description:
+    'ADCI-certified commercial divers offering hull cleaning, underwater welding, propeller cleaning, and boat repair in Seattle and Puget Sound.',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Seattle',
+    addressRegion: 'WA',
+    addressCountry: 'US',
+  },
+  areaServed: [
+    'Seattle',
+    'Puget Sound',
+    'Lake Union',
+    'Lake Washington',
+    'Shilshole Bay',
+    'Elliott Bay',
+    'Edmonds',
+    'Des Moines',
+  ],
+  priceRange: '$3000-$5000+',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Marine Underwater Services',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Hull Cleaning Seattle' } },
+      {
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: 'Underwater Welding Seattle' },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: 'Propeller Cleaning Seattle' },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: 'Zinc Anode Replacement Seattle' },
+      },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Hull Inspection Seattle' } },
+      {
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: 'Underwater Boat Repair Seattle' },
+      },
+    ],
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.9',
+    bestRating: '5',
+    worstRating: '1',
+    reviewCount: '87',
+  },
+}
+
 export function HomePage() {
   return (
     <>
+      <PageHead
+        title="Rapid Scuba — Seattle Underwater Welding & Hull Cleaning | 206-240-2687"
+        description="ADCI-certified commercial divers serving Seattle, Puget Sound, Lake Union & Lake Washington. Hull cleaning, underwater welding, propeller cleaning. Same-day service. Call 206-240-2687."
+        canonical="/"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+      />
       {/* Hero */}
       <section className="hero">
         <div className="container hero__inner">

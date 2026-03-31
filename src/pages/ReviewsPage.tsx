@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageHead } from '@/components/seo/PageHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -147,6 +148,11 @@ function Stars({ rating }: { rating: number }) {
 export function ReviewsPage() {
   return (
     <>
+      <PageHead
+        title="Customer Reviews — Rapid Scuba Seattle | 4.9 Stars"
+        description="Real reviews from Seattle boat owners and marina managers. 4.9-star average for hull cleaning, underwater welding, and propeller service. ADCI-certified divers serving Puget Sound."
+        canonical="/#/reviews"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateRatingSchema) }}
