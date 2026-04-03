@@ -17,6 +17,16 @@ const localBusinessSchema = {
     addressRegion: 'WA',
     addressCountry: 'US',
   },
+  areaServed: [
+    { '@type': 'Place', name: 'Shilshole Bay Marina, Seattle, WA' },
+    { '@type': 'Place', name: 'Lake Union, Seattle, WA' },
+    { '@type': 'Place', name: 'Eastlake, Seattle, WA' },
+    { '@type': 'Place', name: 'Portage Bay, Seattle, WA' },
+    { '@type': 'Place', name: 'Elliott Bay Marina, Seattle, WA' },
+    { '@type': 'Place', name: 'Lake Washington, WA' },
+    { '@type': 'Place', name: 'Bainbridge Island, WA' },
+    { '@type': 'Place', name: 'Puget Sound, WA' },
+  ],
   aggregateRating: {
     '@type': 'AggregateRating',
     ratingValue: '4.9',
@@ -139,6 +149,79 @@ export function HomePage() {
             slip — at a fraction of the cost. Puget Sound's cold, nutrient-rich water produces aggressive
             biofouling, meaning hulls need cleaning every <strong>60–90 days</strong> to maintain peak performance.
           </p>
+        </div>
+      </section>
+
+      {/* Service Areas */}
+      <section className="section" id="service-areas">
+        <div className="container">
+          <h2 className="section__title">Seattle Marina Service Areas</h2>
+          <p className="section__subtitle">
+            We come to your slip throughout Seattle, Puget Sound, and greater King County — no haul-out, no trailering.
+          </p>
+          <div className="card-grid" style={{ marginTop: '2rem' }}>
+            <div className="info-box">
+              <h3>Shilshole Bay Marina — Ballard</h3>
+              <p>
+                The largest marina in the Pacific Northwest with 1,400+ slips, Shilshole Bay Marina
+                is one of our most active service locations. Hull cleaning Shilshole Bay is needed
+                year-round due to the marina's direct saltwater exposure and strong biofouling
+                pressure from Puget Sound tidal exchange. We also perform zinc anode replacement
+                Shilshole Bay for vessels experiencing accelerated corrosion from neighboring shore
+                power connections.
+              </p>
+            </div>
+            <div className="info-box">
+              <h3>Lake Union — Houseboats &amp; Marina Row</h3>
+              <p>
+                Lake Union's mix of liveaboard houseboats, classic sailboats, wooden vessels, and
+                marina restaurants makes it one of Seattle's most diverse mooring areas. Hull
+                cleaning Lake Union targets freshwater algae and slime rather than barnacles —
+                a different fouling profile than saltwater locations. Underwater welding Lake Union
+                is common on older wooden and steel vessels at Westlake Marina and Lake Union Drydock.
+              </p>
+            </div>
+            <div className="info-box">
+              <h3>Eastlake &amp; Portage Bay — Quiet Moorage</h3>
+              <p>
+                Eastlake and Portage Bay offer calm, protected freshwater moorage close to the
+                University of Washington. Hull cleaning Eastlake and propeller cleaning Portage Bay
+                follow the same freshwater schedule as Lake Union — every 3–6 months for most
+                vessels. The proximity to the Ship Canal makes these some of the most conveniently
+                accessible locations for our dive team.
+              </p>
+            </div>
+            <div className="info-box">
+              <h3>Elliott Bay Marina — Downtown Waterfront</h3>
+              <p>
+                Elliott Bay Marina sits on Seattle's downtown waterfront and sees heavy commercial
+                traffic alongside recreational vessels. Saltwater exposure, ferry wakes, and dense
+                mooring conditions make hull cleaning Elliott Bay one of the most frequently
+                scheduled services in our rotation. Underwater welding Elliott Bay is common for
+                dock hardware, piling repairs, and commercial vessel structural work.
+              </p>
+            </div>
+            <div className="info-box">
+              <h3>Lake Washington — Kirkland &amp; Bellevue Side</h3>
+              <p>
+                Lake Washington's freshwater marinas — including Kirkland Marina, Carillon Point,
+                and Meydenbauer Bay on the Bellevue side — require hull cleaning Lake Washington
+                on a longer interval than saltwater locations. Algae and biofilm accumulate quickly
+                in the warm summer months. Zinc anode replacement Lake Washington uses aluminum
+                anodes rather than zinc, which are better suited to freshwater conductivity levels.
+              </p>
+            </div>
+            <div className="info-box">
+              <h3>Bainbridge Island — Ferry Accessible</h3>
+              <p>
+                We serve Bainbridge Island marinas including Eagle Harbor and Port Madison via
+                ferry and private vessel. Hull cleaning Bainbridge Island and propeller cleaning
+                Bainbridge Island follow Puget Sound saltwater schedules — every 60–90 days during
+                summer. Our crew regularly makes the crossing for both scheduled maintenance and
+                emergency dive response on vessels based at Eagle Harbor Marina.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
