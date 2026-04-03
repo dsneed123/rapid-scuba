@@ -29,12 +29,81 @@ const schemaMarkup = {
   },
 }
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Is underwater welding safe?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Underwater welding carries inherent risks that are managed through strict safety protocols and professional certification. Our divers follow ADCI guidelines, which require continuous topside communication, a dedicated standby diver on every commercial dive, documented power isolation procedures, and a pre-dive safety checklist before any job begins. The welding power supply is controlled exclusively by the topside tender — not by the diver — so power can be cut instantly if needed. Wet welding in professional hands, following established procedures, has a strong safety track record in the commercial marine industry.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How much does underwater welding cost in Seattle?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Certified underwater welders in Seattle bill $150–$250 per hour depending on depth, job complexity, and site access. Most jobs carry a minimum 2-hour booking to cover equipment mobilization and dive preparation. Call us at 206-240-2687 for a free on-site estimate — most Seattle-area jobs qualify for a no-cost pre-job assessment before any work begins.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does underwater welding last?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Underwater welds performed correctly to AWS D3.6M Class-B standards have service lives comparable to equivalent surface welds in the same marine environment — typically 10–20 years or more on steel structures in saltwater, depending on cathodic protection maintenance and coating condition at the repair site. We provide zinc anode placement recommendations with every structural weld to slow galvanic corrosion at the repair location.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What types of vessels and structures can you weld?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We weld steel and cast iron on recreational vessels, commercial fishing boats, tugboats, barges, ferries, and workboats of all sizes. We also weld fixed structures including steel-framed docks, steel sheet pile seawalls, mooring dolphins, piling brackets, and mooring hardware. Aluminum requires TIG or MIG welding processes that are not compatible with wet welding methods — aluminum repairs typically require drydock.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do I need to move my boat for underwater welding?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'For most repairs, no. We work at your berth or anchorage throughout Seattle and surrounding Puget Sound. If the repair requires working around a tight slip or dock structure, we may ask you to shift to an open side-tie, but we coordinate all logistics with you and your marina before arriving on site. Our surface-supply diving equipment travels in a standard pickup truck and can be set up on most docks and piers within 30 minutes.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What underwater welding certifications do your divers hold?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Our welding divers are dual-certified: ADCI (Association of Diving Contractors International) certified as commercial divers, and individually qualified to AWS D3.6M underwater welding procedures. AWS D3.6M is the American Welding Society standard specifically developed for underwater welding — it defines Class-A and Class-B weld quality requirements that govern structural marine repairs. We maintain documented weld procedures and qualification records that can be provided for insurance, survey, or Coast Guard purposes.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How does underwater welding compare to dry-dock repairs in cost?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'In-water welding almost always costs less than a comparable dry-dock repair for accessible below-waterline jobs. Haul-out fees at Seattle-area boatyards run $25–$50 per foot of vessel length for the lift alone — before yard storage ($10–$20 per foot per day), blocking, power hook-up, pressure washing, and re-applying antifouling paint. For a 40-foot vessel, a dry-dock welding visit easily exceeds $5,000 before the welder starts work. In-water welding at $150–$250 per hour typically delivers the same structural result at a fraction of the cost.',
+      },
+    },
+  ],
+}
+
+const faqs = faqSchema.mainEntity
+
 export function UnderwaterWeldingPage() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <section className="page-hero">
@@ -182,57 +251,21 @@ export function UnderwaterWeldingPage() {
       <section className="section" style={{ background: 'var(--ocean-100)', paddingTop: '4rem', paddingBottom: '4rem' }}>
         <div className="container">
           <h2 className="section__title">Underwater Welding FAQ</h2>
-          <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div>
-              <h3>Is underwater welding safe?</h3>
-              <p>
-                Underwater welding carries inherent risks that are managed through strict safety
-                protocols and professional certification. Our divers follow ADCI (Association of
-                Diving Contractors International) guidelines, which require continuous topside
-                communication, a dedicated standby diver on every commercial dive, documented
-                power isolation procedures, and a pre-dive safety checklist before any job begins.
-                The welder's equipment is fully insulated and waterproofed, and the welding power
-                supply is controlled exclusively by the topside tender — not by the diver in the
-                water — meaning power can be cut instantly if needed. Wet welding in professional
-                hands, following established procedures, has a strong safety track record in the
-                commercial marine industry.
-              </p>
-            </div>
-            <div>
-              <h3>How long does underwater welding last?</h3>
-              <p>
-                Underwater welds performed correctly to AWS D3.6M Class-B standards have service
-                lives comparable to equivalent surface welds in the same marine environment —
-                typically 10–20 years or more on steel structures in saltwater, depending on
-                cathodic protection maintenance and coating condition at the repair site. We provide
-                zinc anode placement recommendations with every structural weld to slow galvanic
-                corrosion at the repair location. For critical structural applications, we can
-                arrange non-destructive testing (NDT) to document weld quality and provide
-                supporting records for insurance or classification purposes.
-              </p>
-            </div>
-            <div>
-              <h3>What types of vessels and structures can you weld?</h3>
-              <p>
-                We weld steel and cast iron on recreational vessels, commercial fishing boats,
-                tugboats, barges, ferries, and workboats of all sizes. We also weld fixed
-                structures including steel-framed docks, steel sheet pile seawalls, mooring
-                dolphins, piling brackets, and mooring hardware. Aluminum requires TIG or MIG
-                welding processes that are not compatible with wet welding methods — aluminum
-                repairs typically require drydock.
-              </p>
-            </div>
-            <div>
-              <h3>Do I need to move my boat for underwater welding?</h3>
-              <p>
-                For most repairs, no. We work at your berth or anchorage throughout Seattle and
-                surrounding Puget Sound. If the repair requires working around a tight slip or dock
-                structure, we may ask you to shift to an open side-tie, but we coordinate all
-                logistics with you and your marina before arriving on site. Our surface-supply
-                diving equipment travels in a standard pickup truck and can be set up on most docks
-                and piers within 30 minutes.
-              </p>
-            </div>
+          <div
+            style={{
+              maxWidth: '800px',
+              margin: '0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2rem',
+            }}
+          >
+            {faqs.map((faq) => (
+              <div key={faq.name}>
+                <h3>{faq.name}</h3>
+                <p>{faq.acceptedAnswer.text}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
