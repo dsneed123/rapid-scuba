@@ -156,6 +156,24 @@ export function ZincAnodePage() {
               <li>Full corrosion survey available</li>
             </ul>
 
+            <h2 style={{ marginTop: '2rem' }}>Zinc Anode Service by Marina</h2>
+            <p>
+              Zinc anode replacement Shilshole Bay Marina is among the highest-demand services
+              we offer — with 1,400+ slips and dense shore power connections, stray current
+              corrosion is a persistent concern and many vessel owners find their zincs depleting
+              faster than expected. Zinc anode replacement Elliott Bay Marina serves both
+              recreational and commercial vessels, including charter boats and water taxis that
+              require frequent anode inspection to maintain their operating schedules.
+            </p>
+            <p>
+              For freshwater locations, zinc anode replacement Lake Union and zinc anode replacement
+              Lake Washington both call for aluminum anodes rather than zinc — a critical distinction
+              that many boat owners overlook when moving from saltwater moorage. We also serve
+              Bainbridge Island: zinc anode replacement Bainbridge Island follows the Puget Sound
+              saltwater protocol, with zinc anodes preferred over aluminum for Eagle Harbor and Port
+              Madison's saltwater environment.
+            </p>
+
             <h2 style={{ marginTop: '2rem' }}>Stray Current Corrosion in Seattle Marinas</h2>
             <p>
               Beyond natural galvanic corrosion, Seattle-area vessels face an additional threat:
@@ -229,14 +247,14 @@ export function ZincAnodePage() {
           </p>
           <div className="about__stats">
             {[
-              { v: 'Shilshole Bay', l: 'Marina' },
+              { v: 'Shilshole Bay', l: 'Marina — 1,400+ slips' },
               { v: 'Elliott Bay', l: 'Marina' },
               { v: 'Lake Union', l: 'Drydock & Marinas' },
               { v: 'Eastlake', l: 'Marina' },
               { v: 'Portage Bay', l: 'Anchorage & Marinas' },
-              { v: 'Lake Washington', l: 'Marinas' },
+              { v: 'Lake Washington', l: 'Kirkland & Bellevue' },
+              { v: 'Bainbridge Island', l: 'Eagle Harbor & Port Madison' },
               { v: 'Edmonds', l: 'Marina' },
-              { v: 'Des Moines', l: 'Marina' },
             ].map(({ v, l }) => (
               <div key={v} className="about__stat">
                 <span className="about__stat-value" style={{ fontSize: '1.1rem' }}>

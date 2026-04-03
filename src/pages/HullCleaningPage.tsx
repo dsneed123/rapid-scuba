@@ -192,6 +192,25 @@ export function HullCleaningPage() {
               efficiency as a heavy barnacle coating.
             </p>
 
+            <h2 style={{ marginTop: '2rem' }}>Hull Cleaning by Neighborhood</h2>
+            <p>
+              Hull cleaning Shilshole Bay Marina is one of our busiest service routes — the
+              1,400-slip Ballard facility has more registered vessels than any other marina in the
+              Pacific Northwest, and saltwater exposure means aggressive biofouling from spring
+              through fall. Hull cleaning Elliott Bay Marina vessels follows a similar schedule,
+              with the added challenge of commercial ferry traffic stirring up sediment that
+              accelerates fouling on nearby recreational boats.
+            </p>
+            <p>
+              Hull cleaning Bainbridge Island is available year-round. We cross Eagle Harbor and
+              Port Madison regularly for both scheduled maintenance and emergency service. Vessels
+              moored on Bainbridge experience the full Puget Sound fouling cycle and benefit from
+              the same 60–90 day summer interval as mainland saltwater marinas. Hull cleaning Lake
+              Washington (Kirkland and Bellevue side) uses a freshwater fouling protocol — no
+              barnacles, but algae and slime require cleaning every 3–5 months to maintain hull
+              efficiency.
+            </p>
+
             <h2 style={{ marginTop: '2rem' }}>Fuel Efficiency: What a Fouled Hull Actually Costs You</h2>
             <p>
               The fuel penalty from biofouling is well-documented in the marine industry. A hull
@@ -285,14 +304,14 @@ export function HullCleaningPage() {
           </p>
           <div className="about__stats">
             {[
-              { v: 'Shilshole Bay', l: 'Marina' },
+              { v: 'Shilshole Bay', l: 'Marina — 1,400+ slips' },
               { v: 'Lake Union', l: 'Drydock & Marinas' },
               { v: 'Eastlake', l: 'Marina' },
               { v: 'Portage Bay', l: 'Anchorage & Marinas' },
               { v: 'Elliott Bay', l: 'Marina' },
-              { v: 'Lake Washington', l: 'Marinas' },
+              { v: 'Lake Washington', l: 'Kirkland & Bellevue' },
+              { v: 'Bainbridge Island', l: 'Eagle Harbor & Port Madison' },
               { v: 'Edmonds', l: 'Marina' },
-              { v: 'Des Moines', l: 'Marina' },
             ].map(({ v, l }) => (
               <div key={v} className="about__stat">
                 <span className="about__stat-value" style={{ fontSize: '1.1rem' }}>

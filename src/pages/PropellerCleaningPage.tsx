@@ -253,6 +253,15 @@ export function PropellerCleaningPage() {
               and polished props delivers the full fuel efficiency benefit — cleaning the hull alone
               while leaving a fouled prop still costs you thrust efficiency, and vice versa.
             </p>
+            <p>
+              Propeller cleaning Shilshole Bay Marina is one of our most frequent service calls —
+              the 1,400+ slip facility houses everything from small outboard runabouts to large
+              twin-screw motor yachts. Propeller cleaning Bainbridge Island follows the same Puget
+              Sound saltwater schedule and is available via ferry crossing. Propeller cleaning Lake
+              Union and Eastlake/Portage Bay vessels uses a freshwater cleaning protocol with
+              extended intervals, while propeller cleaning Lake Washington (Kirkland and Bellevue)
+              boats benefits from aluminum anode pairing to address freshwater galvanic protection.
+            </p>
           </div>
 
           <div>
@@ -325,20 +334,20 @@ export function PropellerCleaningPage() {
           </p>
           <div className="about__stats">
             {[
-              { v: 'Shilshole Bay', l: 'Marina' },
-              { v: 'Lake Union', l: 'Drydock &amp; Marinas' },
+              { v: 'Shilshole Bay', l: 'Marina — 1,400+ slips' },
+              { v: 'Lake Union', l: 'Drydock & Marinas' },
               { v: 'Elliott Bay', l: 'Marina' },
               { v: 'Eastlake', l: 'Marina' },
-              { v: 'Portage Bay', l: 'Anchorage &amp; Marinas' },
-              { v: 'Lake Washington', l: 'Marinas' },
+              { v: 'Portage Bay', l: 'Anchorage & Marinas' },
+              { v: 'Lake Washington', l: 'Kirkland & Bellevue' },
+              { v: 'Bainbridge Island', l: 'Eagle Harbor & Port Madison' },
               { v: 'Edmonds', l: 'Marina' },
-              { v: 'Des Moines', l: 'Marina' },
             ].map(({ v, l }) => (
               <div key={v} className="about__stat">
                 <span className="about__stat-value" style={{ fontSize: '1.1rem' }}>
                   {v}
                 </span>
-                <span className="about__stat-label" dangerouslySetInnerHTML={{ __html: l }} />
+                <span className="about__stat-label">{l}</span>
               </div>
             ))}
           </div>

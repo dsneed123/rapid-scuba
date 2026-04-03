@@ -233,14 +233,14 @@ export function HullInspectionPage() {
           </p>
           <div className="about__stats">
             {[
-              { v: 'Shilshole Bay', l: 'Marina' },
+              { v: 'Shilshole Bay', l: 'Marina — 1,400+ slips' },
               { v: 'Elliott Bay', l: 'Marina' },
               { v: 'Lake Union', l: 'Drydock & Marinas' },
               { v: 'Eastlake', l: 'Marina' },
               { v: 'Portage Bay', l: 'Anchorage & Marinas' },
-              { v: 'Lake Washington', l: 'Marinas' },
+              { v: 'Lake Washington', l: 'Kirkland & Bellevue' },
+              { v: 'Bainbridge Island', l: 'Eagle Harbor & Port Madison' },
               { v: 'Edmonds', l: 'Marina' },
-              { v: 'Des Moines', l: 'Marina' },
             ].map(({ v, l }) => (
               <div key={v} className="about__stat">
                 <span className="about__stat-value" style={{ fontSize: '1.1rem' }}>

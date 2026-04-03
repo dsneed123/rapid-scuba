@@ -173,6 +173,21 @@ export function UnderwaterWeldingPage() {
           </div>
 
           <div>
+            <h2 style={{ marginTop: '0' }}>Underwater Welding by Location</h2>
+            <p>
+              Underwater welding Lake Union is among our most common structural assignments —
+              Lake Union Drydock and the surrounding commercial docks see heavy vessel traffic,
+              aging dock hardware, and steel vessels that require periodic structural repair.
+              Underwater welding Elliott Bay Marina addresses both recreational vessel repairs and
+              the commercial dock infrastructure serving Seattle's working waterfront.
+            </p>
+            <p>
+              Underwater welding Shilshole Bay Marina covers the full spectrum from recreational
+              sailboats needing keel reinforcement to larger powerboats with hull plate corrosion.
+              We also serve Bainbridge Island — underwater welding Bainbridge Island is accessible
+              via ferry, and we mobilize to Eagle Harbor for emergency structural repairs with the
+              same 24-hour response time available to mainland customers.
+            </p>
             <div className="info-box">
               <h3>Underwater Welding Pricing</h3>
               <p>
@@ -278,14 +293,14 @@ export function UnderwaterWeldingPage() {
           </p>
           <div className="about__stats">
             {[
-              { v: 'Shilshole', l: 'Bay Marina' },
+              { v: 'Shilshole Bay', l: 'Marina — 1,400+ slips' },
               { v: 'Elliott Bay', l: 'Marina' },
               { v: 'Lake Union', l: 'Commercial Docks' },
-              { v: 'Lake Washington', l: 'Marinas' },
+              { v: 'Eastlake', l: 'Marina' },
+              { v: 'Portage Bay', l: 'Anchorage & Marinas' },
+              { v: 'Lake Washington', l: 'Kirkland & Bellevue' },
+              { v: 'Bainbridge Island', l: 'Eagle Harbor & Port Madison' },
               { v: 'Puget Sound', l: 'Anchorages' },
-              { v: 'Bainbridge', l: 'Island' },
-              { v: 'Edmonds', l: 'Marina' },
-              { v: 'Des Moines', l: 'Marina' },
             ].map(({ v, l }) => (
               <div key={v} className="about__stat">
                 <span className="about__stat-value" style={{ fontSize: '1.1rem' }}>

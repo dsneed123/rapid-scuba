@@ -4,13 +4,15 @@ const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
 
 const SERVICE_AREAS = [
-  'Seattle',
-  'Puget Sound',
+  'Shilshole Bay Marina (Ballard)',
   'Lake Union',
-  'Lake Washington',
-  'Shilshole Bay',
-  'Elliott Bay',
+  'Eastlake / Portage Bay',
+  'Elliott Bay Marina',
+  'Lake Washington (Kirkland/Bellevue)',
   'Bainbridge Island',
+  'Edmonds Marina',
+  'Des Moines Marina',
+  'Puget Sound Anchorages',
 ]
 
 export function Footer() {
