@@ -5,9 +5,35 @@ import { SERVICES } from '@/lib/services'
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
 
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'Rapid Scuba',
+  telephone: '+12062402687',
+  url: 'https://rapidscuba.com',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Seattle',
+    addressRegion: 'WA',
+    addressCountry: 'US',
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.9',
+    reviewCount: '47',
+    bestRating: '5',
+    worstRating: '1',
+  },
+}
+
 export function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+      />
+
       {/* Hero */}
       <section className="hero">
         <div className="container hero__inner">
