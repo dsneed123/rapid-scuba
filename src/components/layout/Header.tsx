@@ -36,7 +36,7 @@ export function Header() {
       <div className="container header__inner">
         <Link to="/" className="header__logo" onClick={closeMenu}>
           <img
-            src="/images/1775532760-img-2034.jpg"
+            src="/images/1775538350-img-2034.jpg"
             alt="Rapid Scuba logo"
             className="header__logo-img"
           />
