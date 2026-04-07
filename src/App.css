@@ -157,9 +157,12 @@ img {
   color: var(--white);
 }
 
-.header__logo-icon {
-  font-size: 24px;
-  line-height: 1;
+.header__logo-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .header__logo strong {

@@ -35,7 +35,11 @@ export function Header() {
     <header className="header">
       <div className="container header__inner">
         <Link to="/" className="header__logo" onClick={closeMenu}>
-          <span className="header__logo-icon">⚓</span>
+          <img
+            src="/images/1775532760-img-2034.jpg"
+            alt="Rapid Scuba logo"
+            className="header__logo-img"
+          />
           <span>
             <strong>Rapid Scuba</strong>
             <small>Seattle Marine Services</small>
