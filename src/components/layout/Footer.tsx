@@ -20,6 +20,11 @@ export function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <div className="footer__brand">
+          <img
+            src="/images/1775538350-img-2034.jpg"
+            alt="Rapid Scuba logo"
+            className="footer__brand-logo"
+          />
           <strong>Rapid Scuba</strong>
           <p>Professional underwater marine services in Seattle, WA.</p>
           <p>Licensed · Insured · ADCI Certified</p>

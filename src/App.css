@@ -810,6 +810,15 @@ img {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.footer__brand-logo {
+  display: block;
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
 .footer__brand strong {
   display: block;
   font-size: 18px;
