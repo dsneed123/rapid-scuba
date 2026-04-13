@@ -1,5 +1,4 @@
-# GitHub Actions workflows (deploy via gh-pages branch, not Actions)
-.github/workflows/
+# (auto-deploy workflow in .github/workflows/deploy.yml is tracked)
 
 # Logs
 logs
