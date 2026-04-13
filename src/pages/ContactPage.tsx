@@ -247,11 +247,11 @@ export function ContactPage() {
                 </div>
 
                 {submitError && (
-                  <p style={{ color: '#c0392b', fontSize: '14px', margin: 0 }}>
+                  <div className="form-error-banner" role="alert">
                     Something went wrong. Please call{' '}
                     <a href={PHONE_HREF}>{PHONE}</a> or email{' '}
                     <a href="mailto:info@rapidscuba.com">info@rapidscuba.com</a>.
-                  </p>
+                  </div>
                 )}
 
                 <button

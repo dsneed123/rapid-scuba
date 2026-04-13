@@ -53,8 +53,9 @@ export function Layout() {
 
   return (
     <div className="site">
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <Header />
-      <main className="main">
+      <main className="main" id="main-content">
         <Outlet />
       </main>
       <Footer />
