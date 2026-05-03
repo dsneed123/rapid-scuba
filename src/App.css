@@ -32,7 +32,7 @@
 
   --container-max: 1120px;
   --container-pad: 24px;
-  --header-h: 64px;
+  --header-h: 140px;
 }
 
 /* ─── Reset / base ──────────────────────────────────────────── */
@@ -183,7 +183,7 @@ img {
 }
 
 .header__logo-img {
-  height: 80px;
+  height: 120px;
   width: auto;
   object-fit: contain;
   border-radius: 4px;
@@ -812,7 +812,7 @@ img {
 
 .footer__brand-logo {
   display: block;
-  height: 140px;
+  height: 180px;
   width: auto;
   object-fit: contain;
   border-radius: 6px;
