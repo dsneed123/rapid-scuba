@@ -21,7 +21,7 @@ export function Footer() {
       <div className="container footer__inner">
         <div className="footer__brand">
           <img
-            src="/images/1775538350-img-2034.jpg"
+            src="/images/Logo For RapidScuba Clean & Emergency Repair.png"
             alt="Rapid Scuba logo"
             className="footer__brand-logo"
           />

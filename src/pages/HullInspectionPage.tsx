@@ -67,7 +67,7 @@ export function HullInspectionPage() {
             below-waterline condition using HD video cameras to document every detail. We cover the
             full hull plate surface from stem to stern, the keel and keel attachment area, rudder and
             rudder bearing condition, propeller and shaft, cutlass bearing area, through-hull fittings,
-            and all zinc anodes. A written findings report is provided after every inspection.
+            and all through-hull fittings. A written findings report is provided after every inspection.
           </p>
           <p>
             Pre-purchase inspections are one of our most requested services — we can typically

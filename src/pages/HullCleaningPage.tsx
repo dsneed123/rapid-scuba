@@ -79,7 +79,7 @@ export function HullCleaningPage() {
           </p>
           <p>
             Every hull cleaning includes a full visual below-waterline inspection — we report any
-            blistering, corrosion, or zinc anode issues we find at no extra cost. HD video
+            blistering, corrosion, or other issues we find at no extra cost. HD video
             documentation is included so you have a complete record of the work performed. We serve
             Shilshole Bay, Lake Union, Eastlake, Portage Bay, Elliott Bay, Lake Washington,
             Bainbridge Island, and every marina across Puget Sound.

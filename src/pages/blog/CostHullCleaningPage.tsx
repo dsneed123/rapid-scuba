@@ -199,9 +199,9 @@ export function CostHullCleaningPage() {
             </p>
             <p>
               <strong>Minor underwater repairs:</strong> Small structural issues found during
-              cleaning — loose zincs, minor hull cracks, corroded fittings — can sometimes be
+              cleaning — minor hull cracks, corroded fittings — can sometimes be
               addressed in the same visit. Larger repairs are scoped separately.{' '}
-              <Link to="/boat-repair-seattle">See our boat repair services.</Link>
+              <Link to="/contact">Contact us for details.</Link>
             </p>
 
             <h2 style={{ marginTop: '2rem' }}>In-Water Cleaning vs. Drydock Haul-Out: Full Cost Comparison</h2>
