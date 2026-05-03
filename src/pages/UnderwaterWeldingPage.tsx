@@ -10,7 +10,7 @@ const schemaMarkup = {
   serviceType: 'Underwater Welding & Wet Welding Repairs',
   provider: {
     '@type': 'LocalBusiness',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
     telephone: '+12062402687',
     address: {
       '@type': 'PostalAddress',

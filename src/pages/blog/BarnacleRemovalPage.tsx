@@ -11,11 +11,11 @@ const articleSchema = {
     'How barnacles grow in Puget Sound, why DIY removal carries real risks, the professional barnacle removal process, and prevention strategies for Seattle boat owners.',
   author: {
     '@type': 'Organization',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
   },
   publisher: {
     '@type': 'LocalBusiness',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
     telephone: '+12062402687',
     address: {
       '@type': 'PostalAddress',

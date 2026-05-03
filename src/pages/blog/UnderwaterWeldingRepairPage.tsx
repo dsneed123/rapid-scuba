@@ -11,11 +11,11 @@ const articleSchema = {
     'How saltwater corrosion damages Seattle docks and pilings, the underwater welding repair process, and how to decide when to repair vs. replace marine structures.',
   author: {
     '@type': 'Organization',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
   },
   publisher: {
     '@type': 'LocalBusiness',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
     telephone: '+12062402687',
     address: {
       '@type': 'PostalAddress',

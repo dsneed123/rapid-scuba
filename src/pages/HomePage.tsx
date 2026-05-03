@@ -8,7 +8,7 @@ const PHONE_HREF = 'tel:+12062402687'
 const localBusinessSchema = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  name: 'Rapid Scuba',
+  name: 'RapidScuba',
   telephone: '+12062402687',
   url: 'https://rapidscuba.com',
   address: {
@@ -82,7 +82,7 @@ export function HomePage() {
           <div className="about__text">
             <h2 className="section__title">Seattle's Most Trusted Underwater Services Team</h2>
             <p className="about__lead">
-              Rapid Scuba is Seattle's go-to underwater services provider. Our
+              RapidScuba is Seattle's go-to underwater services provider. Our
               ADCI-certified commercial divers and AWS D3.6-certified underwater welders
               deliver professional below-waterline services — without the cost or downtime
               of dry-docking. We come to your slip.

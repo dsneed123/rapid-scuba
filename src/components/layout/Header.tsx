@@ -34,11 +34,11 @@ export function Header() {
         <Link to="/" className="header__logo" onClick={closeMenu}>
           <img
             src="/images/Logo For RapidScuba Clean & Emergency Repair.png"
-            alt="Rapid Scuba logo"
+            alt="RapidScuba logo"
             className="header__logo-img"
           />
           <span>
-            <strong>Rapid Scuba</strong>
+            <strong>RapidScuba</strong>
             <small>Seattle Marine Services</small>
           </span>
         </Link>

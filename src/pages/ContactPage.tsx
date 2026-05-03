@@ -87,7 +87,7 @@ export function ContactPage() {
       <section className="page-hero">
         <div className="page-hero__inner">
           <span className="page-hero__label">Get in Touch</span>
-          <h1>Contact Rapid Scuba — Seattle Underwater Marine Services</h1>
+          <h1>Contact RapidScuba — Seattle Underwater Marine Services</h1>
           <p>
             Ready to schedule hull cleaning, prop polishing, zinc replacement, or underwater
             repair? Call us for a free quote or fill out the form below.

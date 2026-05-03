@@ -21,7 +21,7 @@ const reviews: Review[] = [
     rating: 5,
     service: 'Hull Cleaning',
     location: 'Lake Union',
-    text: "Had Rapid Scuba out to clean the hull on my 45-foot sloop at Lake Union. They showed up on time, were efficient, and the bottom looked great afterward. The diver also caught a small crack near the keel I hadn't noticed — gave me a heads-up before it became a real problem. Highly recommend for any Lake Union boat owner.",
+    text: "Had RapidScuba out to clean the hull on my 45-foot sloop at Lake Union. They showed up on time, were efficient, and the bottom looked great afterward. The diver also caught a small crack near the keel I hadn't noticed — gave me a heads-up before it became a real problem. Highly recommend for any Lake Union boat owner.",
     date: '2024-09-12',
   },
   {
@@ -31,7 +31,7 @@ const reviews: Review[] = [
     rating: 5,
     service: 'Tenant Hull Inspections',
     location: 'Shilshole Bay Marina',
-    text: "We use Rapid Scuba for tenant underwater inspections at Shilshole. Professional, reliable, and the divers communicate well with both our staff and the boat owners. They handle every vessel size we have in the marina, from 22-foot day sailors to 65-foot trawlers. Wouldn't trust anyone else for our inspection needs.",
+    text: "We use RapidScuba for tenant underwater inspections at Shilshole. Professional, reliable, and the divers communicate well with both our staff and the boat owners. They handle every vessel size we have in the marina, from 22-foot day sailors to 65-foot trawlers. Wouldn't trust anyone else for our inspection needs.",
     date: '2024-08-03',
   },
   {
@@ -49,7 +49,7 @@ const reviews: Review[] = [
     rating: 5,
     service: 'Underwater Welding',
     location: 'Elliott Bay',
-    text: "Had a cracked exhaust port on one of our tow boats and were facing a drydock bill that would have taken us out of service for at least a week. Rapid Scuba's underwater welding team came out to Elliott Bay and made the repair in-water. Saved us the haul-out cost, the yard storage fees, and a week of lost revenue. The weld has held perfectly for six months.",
+    text: "Had a cracked exhaust port on one of our tow boats and were facing a drydock bill that would have taken us out of service for at least a week. RapidScuba's underwater welding team came out to Elliott Bay and made the repair in-water. Saved us the haul-out cost, the yard storage fees, and a week of lost revenue. The weld has held perfectly for six months.",
     date: '2024-06-15',
   },
   {
@@ -67,7 +67,7 @@ const reviews: Review[] = [
     rating: 5,
     service: 'Zinc Anode Replacement',
     location: 'Eastlake Marina',
-    text: "My zincs were nearly completely eaten through and I had no idea. Rapid Scuba came out to Eastlake Marina, replaced all four anodes, and did a full hull clean while they were at it. The diver showed me photos afterward — the electrolysis damage to the prop was worse than I thought. Now on a regular maintenance schedule with them to keep it in check.",
+    text: "My zincs were nearly completely eaten through and I had no idea. RapidScuba came out to Eastlake Marina, replaced all four anodes, and did a full hull clean while they were at it. The diver showed me photos afterward — the electrolysis damage to the prop was worse than I thought. Now on a regular maintenance schedule with them to keep it in check.",
     date: '2024-05-10',
   },
   {
@@ -76,7 +76,7 @@ const reviews: Review[] = [
     rating: 5,
     service: 'Annual Hull Maintenance Contract',
     location: 'Lake Union',
-    text: "We've been on an annual maintenance contract with Rapid Scuba for two years now. They handle our quarterly hull cleans, annual zinc replacement, and running gear inspections on our trawler. Having a consistent team who knows our boat has made a huge difference — they catch things we'd miss and the hull stays in top shape year-round.",
+    text: "We've been on an annual maintenance contract with RapidScuba for two years now. They handle our quarterly hull cleans, annual zinc replacement, and running gear inspections on our trawler. Having a consistent team who knows our boat has made a huge difference — they catch things we'd miss and the hull stays in top shape year-round.",
     date: '2024-10-05',
   },
   {
@@ -85,7 +85,7 @@ const reviews: Review[] = [
     rating: 5,
     service: 'Commercial Fleet Maintenance',
     location: 'Seattle Waterfront',
-    text: "Rapid Scuba manages hull maintenance for our patrol vessel fleet along the Seattle waterfront. Operating on public safety timelines means we can't afford vessels being out of service for scheduled maintenance. Their team works around our patrol schedules and has never missed a window. Truly professional commercial service.",
+    text: "RapidScuba manages hull maintenance for our patrol vessel fleet along the Seattle waterfront. Operating on public safety timelines means we can't afford vessels being out of service for scheduled maintenance. Their team works around our patrol schedules and has never missed a window. Truly professional commercial service.",
     date: '2024-09-30',
   },
   {
@@ -94,7 +94,7 @@ const reviews: Review[] = [
     rating: 5,
     service: 'Pre-Purchase Hull Inspection',
     location: 'Shilshole Bay Marina',
-    text: "Almost bought a ketch at Shilshole that looked great above the waterline. Rapid Scuba's pre-purchase inspection found severe osmotic blistering across the entire underbody, a cracked keel bolt, and a corroded through-hull the seller hadn't disclosed. Saved me from a $40,000 mistake. If you're buying a boat in Seattle, get an underwater inspection first.",
+    text: "Almost bought a ketch at Shilshole that looked great above the waterline. RapidScuba's pre-purchase inspection found severe osmotic blistering across the entire underbody, a cracked keel bolt, and a corroded through-hull the seller hadn't disclosed. Saved me from a $40,000 mistake. If you're buying a boat in Seattle, get an underwater inspection first.",
     date: '2024-04-22',
   },
   {
@@ -103,7 +103,7 @@ const reviews: Review[] = [
     rating: 5,
     service: 'Propeller Polishing',
     location: 'Eastlake Marina',
-    text: "Had Rapid Scuba polish the prop on my 50-foot motor yacht at Eastlake. The performance difference was noticeable immediately — smoother at cruise RPM and a real improvement in fuel economy over the following weeks. They also balanced the shaft while they were under there. Professional job start to finish.",
+    text: "Had RapidScuba polish the prop on my 50-foot motor yacht at Eastlake. The performance difference was noticeable immediately — smoother at cruise RPM and a real improvement in fuel economy over the following weeks. They also balanced the shaft while they were under there. Professional job start to finish.",
     date: '2024-11-08',
   },
 ]
@@ -111,7 +111,7 @@ const reviews: Review[] = [
 const aggregateRatingSchema = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  name: 'Rapid Scuba',
+  name: 'RapidScuba',
   telephone: '+12062402687',
   address: {
     '@type': 'PostalAddress',
@@ -155,7 +155,7 @@ export function ReviewsPage() {
       <section className="page-hero">
         <div className="page-hero__inner">
           <span className="page-hero__label">Seattle Marine Services</span>
-          <h1>Customer Reviews — Rapid Scuba Seattle</h1>
+          <h1>Customer Reviews — RapidScuba Seattle</h1>
           <div className="reviews-summary">
             <span className="reviews-summary__score">4.9</span>
             <div className="reviews-summary__right">
@@ -207,7 +207,7 @@ export function ReviewsPage() {
         <div className="container cta__inner">
           <h2>Ready to Schedule Your Service?</h2>
           <p>
-            Join hundreds of Seattle boat owners who trust Rapid Scuba for hull cleaning,
+            Join hundreds of Seattle boat owners who trust RapidScuba for hull cleaning,
             underwater welding, zinc replacement, and marine inspections.
           </p>
           <div className="cta__actions">

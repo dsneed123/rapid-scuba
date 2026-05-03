@@ -10,7 +10,7 @@ const serviceSchema = {
   serviceType: 'Underwater Hull Cleaning',
   provider: {
     '@type': 'LocalBusiness',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
     telephone: '+12062402687',
     address: {
       '@type': 'PostalAddress',

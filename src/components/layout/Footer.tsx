@@ -22,10 +22,10 @@ export function Footer() {
         <div className="footer__brand">
           <img
             src="/images/Logo For RapidScuba Clean & Emergency Repair.png"
-            alt="Rapid Scuba logo"
+            alt="RapidScuba logo"
             className="footer__brand-logo"
           />
-          <strong>Rapid Scuba</strong>
+          <strong>RapidScuba</strong>
           <p>Professional underwater marine services in Seattle, WA.</p>
           <p>Licensed · Insured · ADCI Certified</p>
           <div className="footer__brand-contact">
@@ -60,7 +60,7 @@ export function Footer() {
       </div>
 
       <div className="footer__bottom">
-        <p>© {new Date().getFullYear()} Rapid Scuba LLC. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} RapidScuba LLC. All rights reserved.</p>
       </div>
     </footer>
   )

@@ -11,11 +11,11 @@ const articleSchema = {
     'Complete 2026 pricing guide for hull cleaning in Seattle. Package prices by vessel size, add-on services, and comparison against drydock haul-out costs.',
   author: {
     '@type': 'Organization',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
   },
   publisher: {
     '@type': 'LocalBusiness',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
     telephone: '+12062402687',
     address: {
       '@type': 'PostalAddress',

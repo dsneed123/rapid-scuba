@@ -11,11 +11,11 @@ const articleSchema = {
     'Puget Sound conditions, seasonal fouling patterns, signs your hull needs cleaning, and the true cost of neglecting regular hull maintenance in Seattle.',
   author: {
     '@type': 'Organization',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
   },
   publisher: {
     '@type': 'LocalBusiness',
-    name: 'Rapid Scuba',
+    name: 'RapidScuba',
     telephone: '+12062402687',
     address: {
       '@type': 'PostalAddress',
