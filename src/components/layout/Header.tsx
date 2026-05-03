@@ -6,10 +6,7 @@ const PHONE_HREF = 'tel:+12062402687'
 
 const SERVICE_LINKS = [
   { to: '/hull-cleaning-seattle', label: 'Hull Cleaning' },
-  { to: '/underwater-welding-seattle', label: 'Underwater Welding' },
   { to: '/propeller-cleaning-seattle', label: 'Propeller Cleaning' },
-  { to: '/boat-repair-underwater-seattle', label: 'Underwater Boat Repair' },
-  { to: '/zinc-anode-replacement-seattle', label: 'Zinc Anode Replacement' },
   { to: '/hull-inspection-seattle', label: 'Hull Inspection' },
 ]
 
@@ -85,9 +82,6 @@ export function Header() {
           <NavLink to="/pricing" className={navLinkClass}>
             Pricing
           </NavLink>
-          <NavLink to="/reviews" className={navLinkClass}>
-            Reviews
-          </NavLink>
           <NavLink to="/contact" className={navLinkClass}>
             Contact
           </NavLink>
@@ -148,9 +142,6 @@ export function Header() {
 
           <NavLink to="/pricing" className={mobileNavLinkClass} onClick={closeMenu}>
             Pricing
-          </NavLink>
-          <NavLink to="/reviews" className={mobileNavLinkClass} onClick={closeMenu}>
-            Reviews
           </NavLink>
           <NavLink to="/contact" className={mobileNavLinkClass} onClick={closeMenu}>
             Contact

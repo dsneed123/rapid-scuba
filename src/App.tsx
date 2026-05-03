@@ -10,26 +10,14 @@ const HomePage = lazy(() =>
 const HullCleaningPage = lazy(() =>
   import('@/pages/HullCleaningPage').then((m) => ({ default: m.HullCleaningPage }))
 )
-const UnderwaterWeldingPage = lazy(() =>
-  import('@/pages/UnderwaterWeldingPage').then((m) => ({ default: m.UnderwaterWeldingPage }))
-)
 const PropellerCleaningPage = lazy(() =>
   import('@/pages/PropellerCleaningPage').then((m) => ({ default: m.PropellerCleaningPage }))
-)
-const BoatRepairPage = lazy(() =>
-  import('@/pages/BoatRepairPage').then((m) => ({ default: m.BoatRepairPage }))
-)
-const ZincAnodePage = lazy(() =>
-  import('@/pages/ZincAnodePage').then((m) => ({ default: m.ZincAnodePage }))
 )
 const HullInspectionPage = lazy(() =>
   import('@/pages/HullInspectionPage').then((m) => ({ default: m.HullInspectionPage }))
 )
 const PricingPage = lazy(() =>
   import('@/pages/PricingPage').then((m) => ({ default: m.PricingPage }))
-)
-const ReviewsPage = lazy(() =>
-  import('@/pages/ReviewsPage').then((m) => ({ default: m.ReviewsPage }))
 )
 const ContactPage = lazy(() =>
   import('@/pages/ContactPage').then((m) => ({ default: m.ContactPage }))
@@ -71,34 +59,10 @@ function App() {
             }
           />
           <Route
-            path="underwater-welding-seattle"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <UnderwaterWeldingPage />
-              </Suspense>
-            }
-          />
-          <Route
             path="propeller-cleaning-seattle"
             element={
               <Suspense fallback={<PageLoader />}>
                 <PropellerCleaningPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="boat-repair-underwater-seattle"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <BoatRepairPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="zinc-anode-replacement-seattle"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <ZincAnodePage />
               </Suspense>
             }
           />
@@ -115,14 +79,6 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <PricingPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="reviews"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <ReviewsPage />
               </Suspense>
             }
           />

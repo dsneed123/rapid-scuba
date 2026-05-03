@@ -381,18 +381,18 @@ export function CostHullCleaningPage() {
               </Link>
             </div>
             <div className="info-box">
-              <h3>Underwater Welding Seattle</h3>
+              <h3>Hull Inspection Seattle</h3>
               <p>
-                Structural repairs performed in-water at your berth. Hull cracks, through-hull
-                reinforcement, running gear repairs — without hauling out. Combined visits save
-                mobilization costs.
+                Comprehensive below-waterline inspection with HD video documentation.
+                Pre-purchase surveys, annual assessments, and insurance documentation —
+                all performed at your slip.
               </p>
               <Link
-                to="/underwater-welding-seattle"
+                to="/hull-inspection-seattle"
                 className="btn btn--primary"
                 style={{ marginTop: '1rem', display: 'inline-block' }}
               >
-                View Underwater Welding
+                View Hull Inspection
               </Link>
             </div>
           </div>

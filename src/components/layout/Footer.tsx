@@ -33,25 +33,20 @@ export function Footer() {
             <a href="mailto:info@rapidscuba.com">info@rapidscuba.com</a>
           </div>
           <div className="footer__hours">
-            <p>Mon–Sat: 7am – 6pm</p>
-            <p>Emergency: 24/7</p>
+            <p>Friday to Sunday: 7am – 6pm</p>
           </div>
         </div>
 
         <div className="footer__links">
           <h4>Services</h4>
           <Link to="/hull-cleaning-seattle">Hull Cleaning</Link>
-          <Link to="/underwater-welding-seattle">Underwater Welding</Link>
           <Link to="/propeller-cleaning-seattle">Propeller Cleaning</Link>
-          <Link to="/boat-repair-underwater-seattle">Underwater Boat Repair</Link>
-          <Link to="/zinc-anode-replacement-seattle">Zinc Anode Replacement</Link>
           <Link to="/hull-inspection-seattle">Hull Inspection</Link>
         </div>
 
         <div className="footer__links">
           <h4>Company</h4>
           <Link to="/pricing">Pricing</Link>
-          <Link to="/reviews">Reviews</Link>
           <Link to="/contact">Contact</Link>
           <Link to="/blog/how-often-clean-boat-hull-seattle">Blog</Link>
         </div>

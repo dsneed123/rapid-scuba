@@ -255,7 +255,7 @@ export function UnderwaterWeldingRepairPage() {
               For Seattle dock and marina owners, pairing an annual diver inspection with anode
               replacement is the most cost-effective way to get ahead of structural deterioration
               before it reaches the point where major repair or replacement is required.{' '}
-              <Link to="/underwater-welding-seattle">See our underwater welding service page</Link>{' '}
+              <Link to="/contact">Contact us</Link>{' '}
               for full details on vessel and dock repair capabilities.
             </p>
           </div>
@@ -378,18 +378,18 @@ export function UnderwaterWeldingRepairPage() {
           </p>
           <div className="page-content__grid" style={{ marginTop: '2rem' }}>
             <div className="info-box">
-              <h3>Underwater Welding Seattle</h3>
+              <h3>Hull Inspection Seattle</h3>
               <p>
-                Certified wet welding for hull repairs, running gear, through-hull reinforcement,
-                and structural vessel repairs — performed in-water at your berth without
-                hauling out.
+                Comprehensive below-waterline inspection with HD video documentation.
+                Pre-purchase surveys, annual assessments, and insurance documentation —
+                all performed at your slip.
               </p>
               <Link
-                to="/underwater-welding-seattle"
+                to="/hull-inspection-seattle"
                 className="btn btn--primary"
                 style={{ marginTop: '1rem', display: 'inline-block' }}
               >
-                View Underwater Welding
+                View Hull Inspection
               </Link>
             </div>
             <div className="info-box">

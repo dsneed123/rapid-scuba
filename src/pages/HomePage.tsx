@@ -49,10 +49,10 @@ export function HomePage() {
         <div className="container hero__inner">
           <h1 className="hero__title">
             Seattle's Premier<br />
-            Underwater Welding &amp; Hull Cleaning
+            Underwater Hull Cleaning
           </h1>
           <p className="hero__subtitle">
-            ADCI-Certified Commercial Divers Serving Puget Sound, Lake Union &amp; Lake Washington — Same-Day Service Available
+            ADCI &amp; AWS Certified Divers Serving Puget Sound, Lake Union &amp; Lake Washington — Same-Day Service Available
           </p>
           <div className="hero__actions">
             <Link to="/contact" className="btn btn--primary btn--lg">
@@ -71,15 +71,7 @@ export function HomePage() {
         <div className="container trust-bar__inner">
           <div className="trust-bar__item">
             <strong>ADCI &amp; AWS</strong>
-            <span>Certified Divers &amp; Welders</span>
-          </div>
-          <div className="trust-bar__item">
-            <strong>24/7</strong>
-            <span>Emergency Response</span>
-          </div>
-          <div className="trust-bar__item">
-            <strong>47,000+</strong>
-            <span>WA Registered Vessels</span>
+            <span>Certified Divers</span>
           </div>
         </div>
       </section>
@@ -90,17 +82,10 @@ export function HomePage() {
           <div className="about__text">
             <h2 className="section__title">Seattle's Most Trusted Underwater Services Team</h2>
             <p className="about__lead">
-              Rapid Scuba is Seattle's go-to underwater services provider. Our ADCI-certified
-              commercial divers and AWS D3.6-certified
-              underwater welders deliver professional below-waterline services — without the cost
-              or downtime of dry-docking. We come to your slip.
-            </p>
-            <p>
-              We service vessels at <strong>Shilshole Bay Marina</strong>, <strong>Eastlake Marina</strong>,{' '}
-              <strong>Portage Bay</strong>, <strong>Lake Union</strong>, <strong>Lake Washington</strong>,{' '}
-              <strong>Elliott Bay</strong>, and every marina and anchorage across Puget Sound. From
-              28-foot sailboats to 200-foot commercial tugs, our divers bring the job to your berth — often
-              same-day.
+              Rapid Scuba is Seattle's go-to underwater services provider. Our
+              ADCI-certified commercial divers and AWS D3.6-certified underwater welders
+              deliver professional below-waterline services — without the cost or downtime
+              of dry-docking. We come to your slip.
             </p>
             <ul className="about__highlights">
               <li>ADCI-certified commercial divers &amp; AWS D3.6 underwater welders</li>
@@ -163,8 +148,8 @@ export function HomePage() {
             <div className="info-box">
               <h3>Shilshole Bay Marina — Ballard</h3>
               <p>
-                The largest marina in the Pacific Northwest with 1,400+ slips, Shilshole Bay Marina
-                is one of our most active service locations. Hull cleaning Shilshole Bay is needed
+                The largest marina in the Pacific Northwest with 1,400+ slips, Shilshole Bay Marina is
+                one of our most active service locations. Hull cleaning Shilshole Bay is needed
                 year-round due to the marina's direct saltwater exposure and strong biofouling
                 pressure from Puget Sound tidal exchange. We also perform zinc anode replacement
                 Shilshole Bay for vessels experiencing accelerated corrosion from neighboring shore
@@ -176,19 +161,20 @@ export function HomePage() {
               <p>
                 Lake Union's mix of liveaboard houseboats, classic sailboats, wooden vessels, and
                 marina restaurants makes it one of Seattle's most diverse mooring areas. Hull
-                cleaning Lake Union targets freshwater algae and slime rather than barnacles —
-                a different fouling profile than saltwater locations. Underwater welding Lake Union
-                is common on older wooden and steel vessels at Westlake Marina and Lake Union Drydock.
+                cleaning Lake Union targets freshwater algae and slime rather than barnacles — a
+                different fouling profile than saltwater locations. Underwater cleaning in welding
+                Lake Union is common on older wooden and steel vessels at Westlake Marina and
+                Lake Union Drydock.
               </p>
             </div>
             <div className="info-box">
               <h3>Eastlake &amp; Portage Bay — Quiet Moorage</h3>
               <p>
                 Eastlake and Portage Bay offer calm, protected freshwater moorage close to the
-                University of Washington. Hull cleaning Eastlake and propeller cleaning Portage Bay
-                follow the same freshwater schedule as Lake Union — every 3–6 months for most
-                vessels. The proximity to the Ship Canal makes these some of the most conveniently
-                accessible locations for our dive team.
+                University of Washington. Hull cleaning at Eastlake and propeller cleaning Portage
+                Bay follow the same freshwater schedule as Lake Union due to algae and slime
+                buildups — every 3–6 months for most vessels. The proximity to the Ship Canal
+                makes these some of the most conveniently accessible locations for our dive team.
               </p>
             </div>
             <div className="info-box">
@@ -196,7 +182,7 @@ export function HomePage() {
               <p>
                 Elliott Bay Marina sits on Seattle's downtown waterfront and sees heavy commercial
                 traffic alongside recreational vessels. Saltwater exposure, ferry wakes, and dense
-                mooring conditions make hull cleaning Elliott Bay one of the most frequently
+                mooring conditions make hull cleaning Elliott Bay one of the most frequently critical
                 scheduled services in our rotation. Underwater welding Elliott Bay is common for
                 dock hardware, piling repairs, and commercial vessel structural work.
               </p>
@@ -207,8 +193,9 @@ export function HomePage() {
                 Lake Washington's freshwater marinas — including Kirkland Marina, Carillon Point,
                 and Meydenbauer Bay on the Bellevue side — require hull cleaning Lake Washington
                 on a longer interval than saltwater locations. Algae and biofilm accumulate quickly
-                in the warm summer months. Zinc anode replacement Lake Washington uses aluminum
-                anodes rather than zinc, which are better suited to freshwater conductivity levels.
+                in the warm summer months. Zinc anode replacement Lake Washington uses
+                aluminum anodes rather than zinc, which are better suited to freshwater conductivity
+                levels.
               </p>
             </div>
             <div className="info-box">
@@ -216,9 +203,10 @@ export function HomePage() {
               <p>
                 We serve Bainbridge Island marinas including Eagle Harbor and Port Madison via
                 ferry and private vessel. Hull cleaning Bainbridge Island and propeller cleaning
-                Bainbridge Island follow Puget Sound saltwater schedules — every 60–90 days during
-                summer. Our crew regularly makes the crossing for both scheduled maintenance and
-                emergency dive response on vessels based at Eagle Harbor Marina.
+                Bainbridge Island follow Puget Sound saltwater schedules — every 60–90 days
+                during summer. Our crew regularly makes the crossing for both scheduled
+                maintenance and emergency dive response on vessels based at Eagle Harbor
+                Marina.
               </p>
             </div>
           </div>

@@ -212,11 +212,8 @@ export function ContactPage() {
                   >
                     <option value="">Select a service…</option>
                     <option value="hull-cleaning">Hull Cleaning</option>
-                    <option value="underwater-welding">Underwater Welding</option>
                     <option value="propeller-polishing">Propeller Polishing</option>
-                    <option value="zinc-replacement">Zinc Anode Replacement</option>
                     <option value="inspection">Hull Inspection</option>
-                    <option value="emergency">Emergency Service</option>
                     <option value="other">Other</option>
                   </select>
                   {errors.service && <span className="form-error">{errors.service.message}</span>}
@@ -284,8 +281,7 @@ export function ContactPage() {
                   <span className="contact-info__icon">🕐</span>
                   <div>
                     <p className="contact-info__label">Hours</p>
-                    <p className="contact-info__value">Mon–Sat: 7am – 6pm</p>
-                    <p className="contact-info__value">Emergency: 24/7</p>
+                    <p className="contact-info__value">Friday to Sunday: 7am – 6pm</p>
                   </div>
                 </div>
                 <div className="contact-info__item">

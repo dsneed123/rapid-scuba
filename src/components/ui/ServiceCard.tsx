@@ -3,11 +3,7 @@ import type { Service } from '@/types'
 
 const SERVICE_ROUTES: Record<string, string> = {
   'hull-cleaning': '/hull-cleaning-seattle',
-  'underwater-welding': '/underwater-welding-seattle',
-  'propeller-polishing': '/propeller-cleaning-seattle',
-  'zinc-replacement': '/zinc-anode-replacement-seattle',
   'inspection': '/hull-inspection-seattle',
-  'emergency': '/contact',
 }
 
 type Props = {

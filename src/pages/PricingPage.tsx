@@ -7,28 +7,25 @@ const PACKAGES = [
   {
     tier: 'Small Boat',
     size: 'Up to 30 ft',
-    price: '$3,000 – $3,500',
+    price: '$500',
     icon: '⛵',
     features: [
       'Underwater hull cleaning & scrubbing',
       'Barnacle, algae & marine growth removal',
-      'Minimal welding repairs',
-      'Standard emergency repair coverage',
-      'Before/after photo report',
+      'HD video documentation',
+      'Propeller inspection included',
       'Visual inspection included',
     ],
   },
   {
     tier: 'Medium Boat',
     size: '31 – 60 ft',
-    price: '$3,500 – $4,250',
+    price: '$1,000',
     icon: '🚤',
     featured: true,
     features: [
       'Extensive underwater cleaning & scrubbing',
       'Full hull barnacle & growth removal',
-      'Moderate welding repairs',
-      'Emergency repair coverage',
       'HD video documentation',
       'Propeller inspection included',
     ],
@@ -36,27 +33,17 @@ const PACKAGES = [
   {
     tier: 'Large Boat',
     size: '61 ft +',
-    price: '$4,250 – $5,000+',
+    price: '$1,500',
     icon: '🚢',
     features: [
       'Full underwater cleaning & scrubbing',
       'Complete hull restoration',
-      'Extensive welding repairs',
-      'Priority emergency repair',
-      'HD video & written report',
-      'Zinc anode inspection included',
+      'HD video documentation',
+      'Propeller inspection included',
     ],
   },
 ]
 
-const ADD_ONS = [
-  { name: 'Propeller Cleaning & Polish', price: 'From $75/prop' },
-  { name: 'Zinc Anode Replacement', price: 'From $30/anode + parts' },
-  { name: 'Underwater Hull Inspection (standalone)', price: 'From $200' },
-  { name: 'HD Video Documentation Add-On', price: '$75' },
-  { name: '24/7 Emergency Dive Call-Out', price: 'From $500' },
-  { name: 'Underwater Welding (additional scope)', price: '$300–$500/hr' },
-]
 
 export function PricingPage() {
   return (
@@ -66,8 +53,8 @@ export function PricingPage() {
           <span className="page-hero__label">Transparent Pricing</span>
           <h1>Seattle Underwater Services Pricing</h1>
           <p>
-            All-inclusive packages by vessel size. Every package includes cleaning, scrubbing,
-            welding, and emergency repair — performed in-water at your slip.
+            All-inclusive packages by vessel size. Every package includes
+            cleaning, scrubbing, and inspection — performed in-water at your slip.
           </p>
         </div>
       </section>
@@ -109,30 +96,6 @@ export function PricingPage() {
         </div>
       </section>
 
-      {/* Add-ons */}
-      <section
-        className="about"
-        style={{
-          padding: '64px 0',
-          borderTop: '1px solid var(--gray-200)',
-          borderBottom: '1px solid var(--gray-200)',
-        }}
-      >
-        <div className="container">
-          <h2 className="section__title">Add-On Services</h2>
-          <p className="section__subtitle">
-            Available as standalone services or add-ons to any package.
-          </p>
-          <div className="card-grid" style={{ marginTop: '32px' }}>
-            {ADD_ONS.map(({ name, price }) => (
-              <div key={name} className="card" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-                <h3 className="card__title" style={{ margin: 0, fontSize: '15px' }}>{name}</h3>
-                <span style={{ fontWeight: 700, color: 'var(--brand-dark)', whiteSpace: 'nowrap', fontSize: '15px' }}>{price}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* What's included */}
       <section className="section">
