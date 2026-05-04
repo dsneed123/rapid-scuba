@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Bar,
@@ -364,43 +364,249 @@ export function StaffDashboardPage() {
         )}
 
         <h2 style={SECTION_TITLE}>Recent activity</h2>
-        <div style={CARD_STYLE}>
-          {data.recentActivity.length === 0 ? (
-            <p style={{ color: 'var(--gray-500)' }}>No activity yet.</p>
-          ) : (
-            <div style={{ display: 'grid', gap: 8 }}>
-              {data.recentActivity.map((row) => (
-                <div
-                  key={`${row.type}-${row.id}`}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '8px 0',
-                    borderBottom: '1px solid var(--gray-100)',
-                    fontSize: 14,
-                  }}
-                >
-                  <span>
-                    <strong style={{ marginRight: 8 }}>
-                      {row.type === 'booking' ? 'Booking' : 'Inquiry'}
-                    </strong>
-                    {row.name}
-                    {row.service && (
-                      <span style={{ color: 'var(--gray-500)' }}> · {row.service}</span>
-                    )}
-                  </span>
-                  <span style={{ color: 'var(--gray-500)', fontSize: 13 }}>
-                    {new Date(row.createdAt).toLocaleString()} · {row.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <ActivityFeed rows={data.recentActivity} />
       </div>
     </section>
   )
+}
+
+function ActivityFeed({ rows }: { rows: api.ActivityRow[] }) {
+  const [filter, setFilter] = useState<'all' | 'inquiry' | 'booking'>('all')
+  const filtered = useMemo(
+    () => (filter === 'all' ? rows : rows.filter((r) => r.type === filter)),
+    [filter, rows],
+  )
+
+  if (rows.length === 0) {
+    return (
+      <div style={CARD_STYLE}>
+        <p style={{ color: 'var(--gray-500)' }}>No activity yet.</p>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        {(['all', 'inquiry', 'booking'] as const).map((opt) => (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => setFilter(opt)}
+            style={{
+              padding: '6px 14px',
+              borderRadius: 999,
+              border: '1px solid var(--gray-200)',
+              background: filter === opt ? '#0ea5e9' : 'white',
+              color: filter === opt ? 'white' : 'var(--gray-700)',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            {opt === 'all'
+              ? 'All'
+              : opt === 'inquiry'
+                ? 'Inquiries'
+                : 'Bookings'}
+          </button>
+        ))}
+      </div>
+      <div style={{ display: 'grid', gap: 12 }}>
+        {filtered.map((row) => (
+          <ActivityCard key={`${row.type}-${row.id}`} row={row} />
+        ))}
+      </div>
+    </>
+  )
+}
+
+function ActivityCard({ row }: { row: api.ActivityRow }) {
+  const [expanded, setExpanded] = useState(false)
+  const isBooking = row.type === 'booking'
+
+  const fields: { label: string; value: string }[] = [
+    { label: 'Email', value: row.email },
+    { label: 'Phone', value: row.phone },
+    { label: 'Service', value: row.service || '—' },
+    { label: 'Location', value: row.location || '—' },
+  ]
+
+  if (isBooking) {
+    fields.push(
+      { label: 'Vessel type', value: row.vesselType ?? '—' },
+      {
+        label: 'Vessel length',
+        value: row.vesselLengthFt != null ? `${row.vesselLengthFt} ft` : '—',
+      },
+      { label: 'Preferred date', value: row.preferredDate ?? '—' },
+      { label: 'Notes', value: row.notes || '—' },
+    )
+  } else {
+    fields.push(
+      { label: 'Vessel length', value: row.vesselLengthDisplay || '—' },
+      { label: 'Message', value: row.message || '—' },
+    )
+  }
+
+  fields.push(
+    { label: 'Submitted', value: new Date(row.createdAt).toLocaleString() },
+    { label: 'Last updated', value: new Date(row.updatedAt).toLocaleString() },
+    { label: 'Source IP', value: row.sourceIp || '—' },
+    {
+      label: 'Linked user',
+      value: row.userId != null ? `User #${row.userId}` : '(guest)',
+    },
+  )
+
+  if (row.staffNotes) {
+    fields.push({ label: 'Staff notes', value: row.staffNotes })
+  }
+
+  return (
+    <div style={CARD_STYLE}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+          flexWrap: 'wrap',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              padding: '4px 8px',
+              borderRadius: 4,
+              background: isBooking ? '#dcfce7' : '#dbeafe',
+              color: isBooking ? '#166534' : '#1e40af',
+            }}
+          >
+            {isBooking ? 'Booking' : 'Inquiry'}
+          </span>
+          <strong style={{ fontSize: 16 }}>{row.name}</strong>
+          <span style={{ color: 'var(--gray-500)', fontSize: 14 }}>
+            {row.service || '(no service specified)'}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              padding: '4px 10px',
+              borderRadius: 999,
+              background: STATUS_BADGE_BG[row.status] ?? '#e5e7eb',
+              color: STATUS_BADGE_FG[row.status] ?? '#374151',
+            }}
+          >
+            {row.statusDisplay}
+          </span>
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            style={{
+              border: '1px solid var(--gray-200)',
+              background: 'white',
+              borderRadius: 6,
+              padding: '4px 10px',
+              fontSize: 13,
+              cursor: 'pointer',
+            }}
+          >
+            {expanded ? 'Hide' : 'Details'}
+          </button>
+          <a
+            href={row.adminUrl}
+            className="btn btn--primary"
+            style={{ fontSize: 13, padding: '4px 12px' }}
+          >
+            Edit in admin
+          </a>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          gap: 16,
+          marginTop: 8,
+          color: 'var(--gray-600)',
+          fontSize: 13,
+          flexWrap: 'wrap',
+        }}
+      >
+        <span>📧 {row.email}</span>
+        <span>📞 {row.phone}</span>
+        <span>📍 {row.location || '—'}</span>
+        <span style={{ marginLeft: 'auto', color: 'var(--gray-500)' }}>
+          {new Date(row.createdAt).toLocaleString()}
+        </span>
+      </div>
+
+      {expanded && (
+        <div
+          style={{
+            marginTop: 12,
+            paddingTop: 12,
+            borderTop: '1px solid var(--gray-100)',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 12,
+          }}
+        >
+          {fields.map((f) => (
+            <div key={f.label}>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: 'var(--gray-500)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  marginBottom: 2,
+                }}
+              >
+                {f.label}
+              </div>
+              <div
+                style={{
+                  fontSize: 14,
+                  color: 'var(--gray-800)',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {f.value}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const STATUS_BADGE_BG: Record<string, string> = {
+  new: '#f3f4f6',
+  contacted: '#dbeafe',
+  scheduled: '#fef3c7',
+  completed: '#dcfce7',
+  archived: '#f3f4f6',
+}
+const STATUS_BADGE_FG: Record<string, string> = {
+  new: '#374151',
+  contacted: '#1e40af',
+  scheduled: '#92400e',
+  completed: '#166534',
+  archived: '#6b7280',
 }
 
 function RankList({

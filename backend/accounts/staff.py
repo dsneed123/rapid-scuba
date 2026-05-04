@@ -119,28 +119,55 @@ def dashboard(request: HttpRequest) -> JsonResponse:  # noqa: ARG001
         "completed": status_counts.get(Status.COMPLETED.value, 0),
     }
 
-    # Recent activity feed — last 20 mixed events.
+    # Recent activity feed — last 30 mixed events with full details.
     feed: list[dict] = []
-    for o in inquiries.order_by("-created_at")[:20]:
+    for o in inquiries.order_by("-created_at")[:30]:
         feed.append({
             "type": "inquiry",
             "id": o.id,
             "name": o.name,
+            "email": o.email,
+            "phone": o.phone,
             "service": o.service,
+            "vesselLength": o.vessel_length,
+            "vesselLengthDisplay": o.get_vessel_length_display() if o.vessel_length else "",
+            "location": o.location,
+            "message": o.message,
             "status": o.status,
+            "statusDisplay": o.get_status_display(),
+            "staffNotes": o.staff_notes,
             "createdAt": o.created_at.isoformat(),
+            "updatedAt": o.updated_at.isoformat(),
+            "sourceIp": o.source_ip or "",
+            "userAgent": o.user_agent,
+            "userId": o.user_id,
+            "adminUrl": f"/admin/inquiries/contactinquiry/{o.id}/change/",
         })
-    for o in bookings.order_by("-created_at")[:20]:
+    for o in bookings.order_by("-created_at")[:30]:
         feed.append({
             "type": "booking",
             "id": o.id,
             "name": o.name,
+            "email": o.email,
+            "phone": o.phone,
             "service": o.service_id,
+            "vesselType": o.vessel_type,
+            "vesselLengthFt": o.vessel_length_ft,
+            "location": o.location,
+            "preferredDate": o.preferred_date.isoformat(),
+            "notes": o.notes,
             "status": o.status,
+            "statusDisplay": o.get_status_display(),
+            "staffNotes": o.staff_notes,
             "createdAt": o.created_at.isoformat(),
+            "updatedAt": o.updated_at.isoformat(),
+            "sourceIp": o.source_ip or "",
+            "userAgent": o.user_agent,
+            "userId": o.user_id,
+            "adminUrl": f"/admin/inquiries/bookingrequest/{o.id}/change/",
         })
     feed.sort(key=lambda x: x["createdAt"], reverse=True)
-    feed = feed[:20]
+    feed = feed[:30]
 
     # Optional: pull in analytics if the analytics app has data.
     analytics_block = _analytics_summary()

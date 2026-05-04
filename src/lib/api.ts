@@ -181,20 +181,41 @@ export const fetchMyBookings = () =>
 
 // ───── Staff dashboard ─────
 
+export type ActivityRow = {
+  type: 'inquiry' | 'booking'
+  id: number
+  name: string
+  email: string
+  phone: string
+  service: string
+  location: string
+  status: string
+  statusDisplay: string
+  staffNotes: string
+  createdAt: string
+  updatedAt: string
+  sourceIp: string
+  userAgent: string
+  userId: number | null
+  adminUrl: string
+  // Inquiry-only
+  vesselLength?: string
+  vesselLengthDisplay?: string
+  message?: string
+  // Booking-only
+  vesselType?: string
+  vesselLengthFt?: number
+  preferredDate?: string
+  notes?: string
+}
+
 export type DashboardData = {
   totals: { inquiries: number; bookings: number; new: number; completed: number }
   leadsPerDay: { date: string; inquiries: number; bookings: number; total: number }[]
   statusFunnel: { status: string; label: string; count: number }[]
   topServices: { service: string; count: number }[]
   topLocations: { location: string; count: number }[]
-  recentActivity: {
-    type: 'inquiry' | 'booking'
-    id: number
-    name: string
-    service: string
-    status: string
-    createdAt: string
-  }[]
+  recentActivity: ActivityRow[]
   analytics: {
     available: boolean
     totals?: { pageviews: number; events: number; uniqueSessions: number }
