@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useAuth } from '@/contexts/AuthContext'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -21,6 +22,7 @@ function mobileNavLinkClass({ isActive }: { isActive: boolean }) {
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const { user } = useAuth()
 
   const isServiceActive = SERVICE_LINKS.some((s) => location.pathname === s.to)
 
@@ -85,8 +87,26 @@ export function Header() {
           <NavLink to="/contact" className={navLinkClass}>
             Contact
           </NavLink>
+          {user ? (
+            <NavLink to="/account" className={navLinkClass}>
+              {user.first_name || 'Account'}
+            </NavLink>
+          ) : (
+            <NavLink to="/login" className={navLinkClass}>
+              Log in
+            </NavLink>
+          )}
+          {user?.is_staff && (
+            <NavLink to="/staff" className={navLinkClass}>
+              Dashboard
+            </NavLink>
+          )}
 
-          <a href={PHONE_HREF} className="btn btn--primary header__phone-btn">
+          <a
+            href={PHONE_HREF}
+            className="btn btn--primary header__phone-btn"
+            data-track="header-phone"
+          >
             📞 {PHONE}
           </a>
         </nav>
@@ -146,6 +166,32 @@ export function Header() {
           <NavLink to="/contact" className={mobileNavLinkClass} onClick={closeMenu}>
             Contact
           </NavLink>
+          {user ? (
+            <NavLink
+              to="/account"
+              className={mobileNavLinkClass}
+              onClick={closeMenu}
+            >
+              My account
+            </NavLink>
+          ) : (
+            <NavLink
+              to="/login"
+              className={mobileNavLinkClass}
+              onClick={closeMenu}
+            >
+              Log in
+            </NavLink>
+          )}
+          {user?.is_staff && (
+            <NavLink
+              to="/staff"
+              className={mobileNavLinkClass}
+              onClick={closeMenu}
+            >
+              Dashboard
+            </NavLink>
+          )}
 
           <a href={PHONE_HREF} className="btn btn--primary header__mobile-phone">
             📞 {PHONE}

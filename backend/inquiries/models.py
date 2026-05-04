@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -17,6 +18,14 @@ class VesselLengthBucket(models.TextChoices):
 
 class ContactInquiry(models.Model):
     """Lead from the contact page free-quote form."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="contact_inquiries",
+    )
 
     name = models.CharField(max_length=120)
     email = models.EmailField()
@@ -54,6 +63,14 @@ class ContactInquiry(models.Model):
 
 class BookingRequest(models.Model):
     """Lead from the structured booking form (vessel type + preferred date)."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="booking_requests",
+    )
 
     name = models.CharField(max_length=120)
     email = models.EmailField()

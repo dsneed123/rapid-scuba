@@ -3,12 +3,14 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Header } from './Header'
 import { Footer } from './Footer'
 import { ScrollToTop } from '@/components/ui/ScrollToTop'
+import { useAnalytics } from '@/hooks/useAnalytics'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
 
 export function Layout() {
   const location = useLocation()
+  useAnalytics()
 
   // Scroll to top on every route change
   useEffect(() => {

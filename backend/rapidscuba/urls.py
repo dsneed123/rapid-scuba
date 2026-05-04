@@ -16,7 +16,9 @@ def spa_root(_request):
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/", include("accounts.urls")),
     path("api/", include("inquiries.urls")),
+    path("api/", include("analytics.urls")),
     # React SPA — uses HashRouter, so all client-side routes come in as "/".
     path("", spa_root, name="spa-root"),
 ]

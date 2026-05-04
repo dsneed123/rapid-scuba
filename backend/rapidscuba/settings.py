@@ -46,7 +46,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
+    "accounts",
     "inquiries",
+    "analytics",
 ]
 
 MIDDLEWARE = [
@@ -105,7 +107,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# Non-manifest variant — won't 500 on missing files. Manifest version is
+# stricter (great for cache busting, brittle for our React-build-mixed-with-
+# Django-admin layout).
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 # Serve the React build (everything in dist/ — index.html, assets/, vite.svg)
 # at the root URL. Django still wins for any path it has a route for, so

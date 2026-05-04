@@ -85,6 +85,7 @@ def create_contact_inquiry(request: HttpRequest) -> JsonResponse:
     def create(data: dict, req: HttpRequest) -> ContactInquiry:
         return ContactInquiry.objects.create(
             **data,
+            user=req.user if req.user.is_authenticated else None,
             source_ip=_client_ip(req),
             user_agent=(req.META.get("HTTP_USER_AGENT") or "")[:300],
         )
@@ -109,6 +110,7 @@ def create_booking_request(request: HttpRequest) -> JsonResponse:
     def create(data: dict, req: HttpRequest) -> BookingRequest:
         return BookingRequest.objects.create(
             **data,
+            user=req.user if req.user.is_authenticated else None,
             source_ip=_client_ip(req),
             user_agent=(req.META.get("HTTP_USER_AGENT") or "")[:300],
         )
@@ -131,3 +133,55 @@ def create_booking_request(request: HttpRequest) -> JsonResponse:
 @require_http_methods(["GET"])
 def health(_request: HttpRequest) -> JsonResponse:
     return JsonResponse({"status": "ok"})
+
+
+def _serialize_inquiry(o: ContactInquiry) -> dict:
+    return {
+        "id": o.id,
+        "name": o.name,
+        "email": o.email,
+        "phone": o.phone,
+        "service": o.service,
+        "vesselLength": o.vessel_length,
+        "location": o.location,
+        "message": o.message,
+        "status": o.status,
+        "statusDisplay": o.get_status_display(),
+        "createdAt": o.created_at.isoformat(),
+        "updatedAt": o.updated_at.isoformat(),
+    }
+
+
+def _serialize_booking(o: BookingRequest) -> dict:
+    return {
+        "id": o.id,
+        "name": o.name,
+        "email": o.email,
+        "phone": o.phone,
+        "serviceId": o.service_id,
+        "vesselType": o.vessel_type,
+        "vesselLengthFt": o.vessel_length_ft,
+        "location": o.location,
+        "preferredDate": o.preferred_date.isoformat(),
+        "notes": o.notes,
+        "status": o.status,
+        "statusDisplay": o.get_status_display(),
+        "createdAt": o.created_at.isoformat(),
+        "updatedAt": o.updated_at.isoformat(),
+    }
+
+
+@require_http_methods(["GET"])
+def my_inquiries(request: HttpRequest) -> JsonResponse:
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required"}, status=401)
+    rows = list(request.user.contact_inquiries.all().order_by("-created_at"))
+    return JsonResponse({"inquiries": [_serialize_inquiry(r) for r in rows]})
+
+
+@require_http_methods(["GET"])
+def my_bookings(request: HttpRequest) -> JsonResponse:
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required"}, status=401)
+    rows = list(request.user.booking_requests.all().order_by("-created_at"))
+    return JsonResponse({"bookings": [_serialize_booking(r) for r in rows]})

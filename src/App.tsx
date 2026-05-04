@@ -1,8 +1,9 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import { Layout } from '@/components/layout/Layout'
 import { PageLoader } from '@/components/ui/PageLoader'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const HomePage = lazy(() =>
   import('@/pages/HomePage').then((m) => ({ default: m.HomePage }))
@@ -36,94 +37,70 @@ const UnderwaterWeldingRepairPage = lazy(() =>
     default: m.UnderwaterWeldingRepairPage,
   }))
 )
+const SignupPage = lazy(() =>
+  import('@/pages/account/SignupPage').then((m) => ({ default: m.SignupPage }))
+)
+const LoginPage = lazy(() =>
+  import('@/pages/account/LoginPage').then((m) => ({ default: m.LoginPage }))
+)
+const AccountPage = lazy(() =>
+  import('@/pages/account/AccountPage').then((m) => ({ default: m.AccountPage }))
+)
+const StaffDashboardPage = lazy(() =>
+  import('@/pages/account/StaffDashboardPage').then((m) => ({
+    default: m.StaffDashboardPage,
+  }))
+)
+
+function lazyRoute(Component: LazyExoticComponent<ComponentType>) {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Component />
+    </Suspense>
+  )
+}
 
 function App() {
   return (
     <HashRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route
-            index
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <HomePage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="hull-cleaning-seattle"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <HullCleaningPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="propeller-cleaning-seattle"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <PropellerCleaningPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="hull-inspection-seattle"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <HullInspectionPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="pricing"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <PricingPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="contact"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <ContactPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="blog/how-often-clean-boat-hull-seattle"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <HowOftenCleanPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="blog/cost-hull-cleaning-seattle-marinas"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <CostHullCleaningPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="blog/barnacle-removal-seattle-boats"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <BarnacleRemovalPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="blog/underwater-welding-repair-seattle-docks"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <UnderwaterWeldingRepairPage />
-              </Suspense>
-            }
-          />
-        </Route>
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={lazyRoute(HomePage)} />
+            <Route path="hull-cleaning-seattle" element={lazyRoute(HullCleaningPage)} />
+            <Route
+              path="propeller-cleaning-seattle"
+              element={lazyRoute(PropellerCleaningPage)}
+            />
+            <Route
+              path="hull-inspection-seattle"
+              element={lazyRoute(HullInspectionPage)}
+            />
+            <Route path="pricing" element={lazyRoute(PricingPage)} />
+            <Route path="contact" element={lazyRoute(ContactPage)} />
+            <Route path="signup" element={lazyRoute(SignupPage)} />
+            <Route path="login" element={lazyRoute(LoginPage)} />
+            <Route path="account" element={lazyRoute(AccountPage)} />
+            <Route path="staff" element={lazyRoute(StaffDashboardPage)} />
+            <Route
+              path="blog/how-often-clean-boat-hull-seattle"
+              element={lazyRoute(HowOftenCleanPage)}
+            />
+            <Route
+              path="blog/cost-hull-cleaning-seattle-marinas"
+              element={lazyRoute(CostHullCleaningPage)}
+            />
+            <Route
+              path="blog/barnacle-removal-seattle-boats"
+              element={lazyRoute(BarnacleRemovalPage)}
+            />
+            <Route
+              path="blog/underwater-welding-repair-seattle-docks"
+              element={lazyRoute(UnderwaterWeldingRepairPage)}
+            />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </HashRouter>
   )
 }

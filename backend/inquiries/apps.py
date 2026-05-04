@@ -5,3 +5,6 @@ class InquiriesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "inquiries"
     verbose_name = "Customer inquiries"
+
+    def ready(self):
+        from . import signals  # noqa: F401

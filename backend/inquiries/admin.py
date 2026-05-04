@@ -19,9 +19,10 @@ class ContactInquiryAdmin(admin.ModelAdmin):
     search_fields = ("name", "email", "phone", "location", "message")
     list_editable = ("status",)
     date_hierarchy = "created_at"
+    autocomplete_fields = ("user",)
     readonly_fields = ("created_at", "updated_at", "source_ip", "user_agent")
     fieldsets = (
-        ("Customer", {"fields": ("name", "email", "phone")}),
+        ("Customer", {"fields": ("user", "name", "email", "phone")}),
         ("Request", {"fields": ("service", "vessel_length", "location", "message")}),
         ("Workflow", {"fields": ("status", "staff_notes")}),
         (
@@ -51,9 +52,10 @@ class BookingRequestAdmin(admin.ModelAdmin):
     search_fields = ("name", "email", "phone", "location", "notes")
     list_editable = ("status",)
     date_hierarchy = "created_at"
+    autocomplete_fields = ("user",)
     readonly_fields = ("created_at", "updated_at", "source_ip", "user_agent")
     fieldsets = (
-        ("Customer", {"fields": ("name", "email", "phone")}),
+        ("Customer", {"fields": ("user", "name", "email", "phone")}),
         (
             "Booking",
             {
