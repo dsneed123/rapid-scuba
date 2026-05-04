@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { submitContactInquiry } from '@/lib/api'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
-
-// Replace YOUR_FORM_ID with your Formspree form ID (https://formspree.io)
-const FORMSPREE_URL = 'https://formspree.io/f/YOUR_FORM_ID'
 
 const HOW_IT_WORKS = [
   {
@@ -67,16 +65,8 @@ export function ContactPage() {
   const onSubmit = async (data: ContactFormData) => {
     setSubmitError(false)
     try {
-      const res = await fetch(FORMSPREE_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(data),
-      })
-      if (res.ok) {
-        setSubmitted(true)
-      } else {
-        setSubmitError(true)
-      }
+      await submitContactInquiry(data)
+      setSubmitted(true)
     } catch {
       setSubmitError(true)
     }
