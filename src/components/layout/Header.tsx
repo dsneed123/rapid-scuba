@@ -101,6 +101,11 @@ export function Header() {
               Dashboard
             </NavLink>
           )}
+          {user?.is_staff && (
+            <a href="/admin/" className="header__nav-link">
+              Admin
+            </a>
+          )}
 
           <a
             href={PHONE_HREF}
@@ -191,6 +196,15 @@ export function Header() {
             >
               Dashboard
             </NavLink>
+          )}
+          {user?.is_staff && (
+            <a
+              href="/admin/"
+              className="header__mobile-link"
+              onClick={closeMenu}
+            >
+              Admin
+            </a>
           )}
 
           <a href={PHONE_HREF} className="btn btn--primary header__mobile-phone">
