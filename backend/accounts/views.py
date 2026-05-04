@@ -98,15 +98,28 @@ def login_view(request: HttpRequest) -> JsonResponse:
     if err:
         return err
 
-    email = (body.get("email") or "").strip().lower()
+    identifier = (body.get("email") or "").strip()
     password = body.get("password") or ""
 
-    if not email or not password:
+    if not identifier or not password:
         return JsonResponse(
             {"errors": {"email": "Email and password required"}}, status=400
         )
 
-    user = authenticate(request, username=email, password=password)
+    # The "email" field accepts either an email address or a username, so
+    # superusers created via createsuperuser (whose username might be e.g.
+    # "admin", not their email) can also log in here.
+    user = authenticate(request, username=identifier, password=password)
+    if user is None:
+        candidate = (
+            User.objects.filter(email__iexact=identifier).first()
+            or User.objects.filter(username__iexact=identifier).first()
+        )
+        if candidate is not None:
+            user = authenticate(
+                request, username=candidate.username, password=password
+            )
+
     if user is None:
         return JsonResponse(
             {"error": "Invalid email or password"}, status=401
