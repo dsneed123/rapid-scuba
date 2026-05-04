@@ -129,10 +129,10 @@ export function ContactPage() {
 
             {submitted ? (
               <div className="booking-success" role="status">
-                <h3>✅ Message Sent!</h3>
+                <h3>✅ Request Received</h3>
                 <p>
-                  Thanks for reaching out. We'll review your request and follow up within one
-                  business day.
+                  Thanks — someone from our team will contact you shortly at the email
+                  and phone number you provided.
                 </p>
               </div>
             ) : (
