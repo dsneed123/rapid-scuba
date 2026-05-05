@@ -232,6 +232,24 @@ export const fetchTickets = (filter: { status?: string; q?: string } = {}) => {
   return get<TicketsData>(`/api/staff/tickets/${qs ? '?' + qs : ''}`)
 }
 
+export type StaffCreateTicketPayload = {
+  name: string
+  email: string
+  phone: string
+  service?: string
+  vesselLength?: string
+  location?: string
+  message?: string
+  status?: string
+  scheduledAt?: string | null
+  scheduledDurationMinutes?: number
+  quotedAmount?: string | null
+  staffNotes?: string
+}
+
+export const staffCreateTicket = (data: StaffCreateTicketPayload) =>
+  post<{ request: ActivityRow }>('/api/staff/tickets/create/', data)
+
 // ───── Staff: edit a request ─────
 
 export type StaffInquiryUpdate = {

@@ -13,6 +13,11 @@ urlpatterns = [
         name="staff-inquiry-detail",
     ),
     path("staff/tickets/", views.staff_tickets, name="staff-tickets"),
+    path(
+        "staff/tickets/create/",
+        views.staff_create_ticket,
+        name="staff-create-ticket",
+    ),
     path("staff/calendar/", views.staff_calendar, name="staff-calendar"),
     path("health/", views.health, name="health"),
 ]

@@ -332,6 +332,7 @@ function TicketsTab({ onChange }: { onChange: () => Promise<void> }) {
   const [statusFilter, setStatusFilter] = useState<string>('') // '' = all
   const [view, setView] = useState<'kanban' | 'list'>('kanban')
   const [debouncedQ, setDebouncedQ] = useState('')
+  const [creating, setCreating] = useState(false)
 
   // Debounce search to avoid a request per keystroke.
   useEffect(() => {
@@ -457,6 +458,28 @@ function TicketsTab({ onChange }: { onChange: () => Promise<void> }) {
             </button>
           ))}
         </div>
+
+        <button
+          type="button"
+          onClick={() => setCreating(true)}
+          style={{
+            background: TOKENS.accent,
+            color: 'white',
+            border: 'none',
+            borderRadius: 10,
+            padding: '8px 16px',
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            boxShadow: '0 1px 4px rgba(14,165,233,0.4)',
+          }}
+        >
+          <span style={{ fontSize: 16, lineHeight: 1 }}>＋</span>
+          New ticket
+        </button>
       </div>
 
       {/* Status filter chips */}
@@ -514,7 +537,331 @@ function TicketsTab({ onChange }: { onChange: () => Promise<void> }) {
       ) : (
         <ListView tickets={tickets} onChange={handleChange} />
       )}
+
+      {creating && (
+        <CreateTicketDrawer
+          onClose={() => setCreating(false)}
+          onCreated={async () => {
+            setCreating(false)
+            await handleChange()
+          }}
+        />
+      )}
     </>
+  )
+}
+
+function CreateTicketDrawer({
+  onClose,
+  onCreated,
+}: {
+  onClose: () => void
+  onCreated: () => Promise<void>
+}) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [service, setService] = useState('')
+  const [vesselLength, setVesselLength] = useState('')
+  const [location, setLocation] = useState('')
+  const [message, setMessage] = useState('')
+  const [status, setStatus] = useState('new')
+  const [scheduledAtLocal, setScheduledAtLocal] = useState('')
+  const [duration, setDuration] = useState('120')
+  const [quotedAmount, setQuotedAmount] = useState('')
+  const [staffNotes, setStaffNotes] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setBusy(true)
+    setErrors({})
+    try {
+      await api.staffCreateTicket({
+        name,
+        email,
+        phone,
+        service: service || undefined,
+        vesselLength: vesselLength || undefined,
+        location: location || undefined,
+        message: message || undefined,
+        status,
+        scheduledAt: scheduledAtLocal
+          ? new Date(scheduledAtLocal).toISOString()
+          : null,
+        scheduledDurationMinutes: Number(duration) || 120,
+        quotedAmount: quotedAmount.trim() === '' ? null : quotedAmount.trim(),
+        staffNotes: staffNotes || undefined,
+      })
+      await onCreated()
+    } catch (err) {
+      const fe =
+        err && typeof err === 'object' && 'fieldErrors' in err
+          ? (err as { fieldErrors?: Record<string, string> }).fieldErrors
+          : undefined
+      if (fe) setErrors(fe)
+      else setErrors({ _: 'Failed to create ticket. Try again.' })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div
+      role="dialog"
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(15,23,42,0.5)',
+        backdropFilter: 'blur(4px)',
+        zIndex: 1000,
+        display: 'flex',
+        justifyContent: 'flex-end',
+      }}
+    >
+      <form
+        onSubmit={submit}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: 'min(560px, 100%)',
+          background: TOKENS.panel,
+          height: '100%',
+          overflowY: 'auto',
+          padding: '1.5rem',
+          boxShadow: '-8px 0 32px rgba(15,23,42,0.18)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 14,
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 4,
+          }}
+        >
+          <div>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 22,
+                fontWeight: 700,
+                letterSpacing: '-0.02em',
+              }}
+            >
+              New ticket
+            </h2>
+            <div style={{ fontSize: 13, color: TOKENS.textMuted, marginTop: 2 }}>
+              Walk-up customer or phone-in. They'll see this if they sign up
+              with the same email.
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            style={{
+              border: 'none',
+              background: TOKENS.borderSoft,
+              borderRadius: 8,
+              padding: '6px 10px',
+              cursor: 'pointer',
+              fontSize: 16,
+              color: TOKENS.textMuted,
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        <Field label="Customer name *">
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            style={inputStyle}
+          />
+          {errors.name && <ErrorText>{errors.name}</ErrorText>}
+        </Field>
+
+        <div style={twoCol}>
+          <Field label="Email *">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={inputStyle}
+            />
+            {errors.email && <ErrorText>{errors.email}</ErrorText>}
+          </Field>
+          <Field label="Phone *">
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              style={inputStyle}
+            />
+            {errors.phone && <ErrorText>{errors.phone}</ErrorText>}
+          </Field>
+        </div>
+
+        <div style={twoCol}>
+          <Field label="Service">
+            <select
+              value={service}
+              onChange={(e) => setService(e.target.value)}
+              style={inputStyle}
+            >
+              <option value="">—</option>
+              <option value="hull-cleaning">Hull cleaning</option>
+              <option value="propeller-polishing">Propeller polishing</option>
+              <option value="inspection">Hull inspection</option>
+              <option value="zinc-anode">Zinc anode replacement</option>
+              <option value="boat-repair">Boat repair</option>
+              <option value="underwater-welding">Underwater welding</option>
+              <option value="other">Other</option>
+            </select>
+          </Field>
+          <Field label="Vessel length">
+            <select
+              value={vesselLength}
+              onChange={(e) => setVesselLength(e.target.value)}
+              style={inputStyle}
+            >
+              <option value="">—</option>
+              <option value="under-30">Under 30 ft</option>
+              <option value="31-60">31–60 ft</option>
+              <option value="61-plus">61 ft+</option>
+            </select>
+          </Field>
+        </div>
+
+        <Field label="Location / marina">
+          <input
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="e.g. Shilshole Bay, slip C-42"
+            style={inputStyle}
+          />
+        </Field>
+
+        <Field label="Message / details">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows={3}
+            style={{ ...inputStyle, fontFamily: 'inherit' }}
+          />
+        </Field>
+
+        <div
+          style={{
+            paddingTop: 8,
+            marginTop: 4,
+            borderTop: `1px solid ${TOKENS.borderSoft}`,
+          }}
+        >
+          <SectionTitle>Scheduling</SectionTitle>
+          <div style={twoCol}>
+            <Field label="Status">
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                style={inputStyle}
+              >
+                {STATUS_OPTIONS.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Quoted amount (USD)">
+              <input
+                type="number"
+                min={0}
+                step={0.01}
+                value={quotedAmount}
+                onChange={(e) => setQuotedAmount(e.target.value)}
+                placeholder="e.g. 750"
+                style={inputStyle}
+              />
+            </Field>
+          </div>
+          <div style={twoCol}>
+            <Field label="Scheduled at">
+              <input
+                type="datetime-local"
+                value={scheduledAtLocal}
+                onChange={(e) => setScheduledAtLocal(e.target.value)}
+                style={inputStyle}
+              />
+            </Field>
+            <Field label="Duration (minutes)">
+              <input
+                type="number"
+                min={0}
+                max={1440}
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                style={inputStyle}
+              />
+            </Field>
+          </div>
+        </div>
+
+        <Field label="Staff notes (internal)">
+          <textarea
+            value={staffNotes}
+            onChange={(e) => setStaffNotes(e.target.value)}
+            rows={3}
+            style={{ ...inputStyle, fontFamily: 'inherit' }}
+          />
+        </Field>
+
+        {errors._ && <div className="form-error-banner">{errors._}</div>}
+
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: 8,
+            marginTop: 8,
+            paddingTop: 16,
+            borderTop: `1px solid ${TOKENS.borderSoft}`,
+          }}
+        >
+          <button type="button" className="btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={busy}
+            className="btn btn--primary"
+          >
+            {busy ? 'Creating…' : 'Create ticket'}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+const twoCol: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+  gap: 12,
+}
+
+function ErrorText({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ marginTop: 4, color: '#dc2626', fontSize: 13 }}>{children}</div>
   )
 }
 

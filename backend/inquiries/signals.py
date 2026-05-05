@@ -13,6 +13,8 @@ from django.db.models.signals import post_init, post_save
 from django.dispatch import receiver
 from django.utils import timezone
 
+from django.contrib.auth import get_user_model
+
 from .models import ContactInquiry, Status
 
 log = logging.getLogger(__name__)
@@ -81,3 +83,21 @@ def _email_status(sender, instance, created, **kwargs):  # noqa: ARG001
         log.exception("Failed to send status-change email")
 
     instance._initial_status = new
+
+
+@receiver(post_save, sender=get_user_model())
+def _link_orphan_inquiries_to_new_user(sender, instance, created, **kwargs):  # noqa: ARG001
+    """When a user signs up (or is created any way), link any orphan
+    inquiries whose email matches.
+
+    A staff member can create a ticket for a walk-up customer who doesn't
+    have an account yet. When that customer later signs up using the same
+    email, this signal binds the existing tickets to their new account so
+    they appear under /account.
+    """
+    if not created or not instance.email:
+        return
+    ContactInquiry.objects.filter(
+        email__iexact=instance.email,
+        user__isnull=True,
+    ).update(user=instance)

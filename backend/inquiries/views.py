@@ -223,6 +223,64 @@ def staff_inquiry_detail(request: HttpRequest, pk: int) -> JsonResponse:
 
 
 @_staff_required
+@require_http_methods(["POST"])
+def staff_create_ticket(request: HttpRequest) -> JsonResponse:
+    """Staff creates a ticket on behalf of a walk-up / phone-in customer."""
+    body, err = _parse_json(request)
+    if err:
+        return err
+
+    cleaned, errors = schemas.validate_contact_inquiry(body)
+    if errors:
+        return JsonResponse({"errors": errors}, status=400)
+
+    obj = ContactInquiry(
+        **cleaned,
+        source_ip=_client_ip(request),
+        user_agent="(staff-created)",
+    )
+
+    # Optional staff-only fields.
+    if "status" in body:
+        new_status = (body.get("status") or "").strip()
+        if new_status in {s.value for s in Status}:
+            obj.status = new_status
+
+    if body.get("scheduledAt"):
+        from django.utils.dateparse import parse_datetime
+
+        parsed = parse_datetime(str(body["scheduledAt"]))
+        if parsed is not None:
+            if timezone.is_naive(parsed):
+                parsed = timezone.make_aware(parsed)
+            obj.scheduled_at = parsed
+
+    if body.get("scheduledDurationMinutes") is not None:
+        try:
+            minutes = int(body["scheduledDurationMinutes"])
+            if 0 <= minutes <= 24 * 60:
+                obj.scheduled_duration_minutes = minutes
+        except (TypeError, ValueError):
+            pass
+
+    if body.get("quotedAmount") is not None and body["quotedAmount"] != "":
+        try:
+            from decimal import Decimal
+
+            amount = Decimal(str(body["quotedAmount"]))
+            if 0 <= amount <= Decimal("99999999.99"):
+                obj.quoted_amount = amount
+        except Exception:
+            pass
+
+    if "staffNotes" in body:
+        obj.staff_notes = (body.get("staffNotes") or "")[:5000]
+
+    obj.save()
+    return JsonResponse({"request": _serialize(obj)}, status=201)
+
+
+@_staff_required
 @require_http_methods(["GET"])
 def staff_tickets(request: HttpRequest) -> JsonResponse:
     """All tickets, with optional filters. Server-side search + status filter."""
