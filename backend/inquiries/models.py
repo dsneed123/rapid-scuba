@@ -62,6 +62,14 @@ class ContactInquiry(models.Model):
         help_text="Estimated duration in minutes. Default 2 hours.",
     )
 
+    quoted_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Quoted price in USD. Visible to the customer on /account.",
+    )
+
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 

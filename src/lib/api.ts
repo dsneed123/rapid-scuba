@@ -155,6 +155,7 @@ export type MyRequest = {
   statusDisplay: string
   scheduledAt: string | null
   scheduledDurationMinutes: number
+  quotedAmount: string | null
   staffNotes: string
   createdAt: string
   updatedAt: string
@@ -179,6 +180,7 @@ export type ActivityRow = {
   statusDisplay: string
   scheduledAt: string | null
   scheduledDurationMinutes: number
+  quotedAmount: string | null
   staffNotes: string
   createdAt: string
   updatedAt: string
@@ -215,12 +217,28 @@ export type DashboardData = {
 export const fetchDashboard = () =>
   get<DashboardData>('/api/staff/dashboard/')
 
+// ───── Staff: tickets ─────
+
+export type TicketsData = {
+  tickets: ActivityRow[]
+  total: number
+}
+
+export const fetchTickets = (filter: { status?: string; q?: string } = {}) => {
+  const params = new URLSearchParams()
+  if (filter.status) params.set('status', filter.status)
+  if (filter.q) params.set('q', filter.q)
+  const qs = params.toString()
+  return get<TicketsData>(`/api/staff/tickets/${qs ? '?' + qs : ''}`)
+}
+
 // ───── Staff: edit a request ─────
 
 export type StaffInquiryUpdate = {
   status?: string
   scheduledAt?: string | null
   scheduledDurationMinutes?: number
+  quotedAmount?: string | null
   staffNotes?: string
 }
 
@@ -243,6 +261,7 @@ export type CalendarAppointment = {
   statusDisplay: string
   scheduledAt: string
   scheduledDurationMinutes: number
+  quotedAmount: string | null
   adminUrl: string
 }
 

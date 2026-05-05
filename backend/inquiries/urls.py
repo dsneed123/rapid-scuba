@@ -12,6 +12,7 @@ urlpatterns = [
         views.staff_inquiry_detail,
         name="staff-inquiry-detail",
     ),
+    path("staff/tickets/", views.staff_tickets, name="staff-tickets"),
     path("staff/calendar/", views.staff_calendar, name="staff-calendar"),
     path("health/", views.health, name="health"),
 ]

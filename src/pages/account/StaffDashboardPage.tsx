@@ -18,7 +18,25 @@ import {
 import { useAuth } from '@/contexts/AuthContext'
 import * as api from '@/lib/api'
 
-const COLORS = [
+// ───── Design tokens ─────
+
+const TOKENS = {
+  bg: '#f8fafc',
+  panel: '#ffffff',
+  panelMuted: '#f9fafb',
+  border: '#e5e7eb',
+  borderSoft: '#f3f4f6',
+  text: '#111827',
+  textMuted: '#6b7280',
+  textSubtle: '#9ca3af',
+  accent: '#0ea5e9',
+  accentHover: '#0284c7',
+  shadow: '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.04)',
+  shadowSoft: '0 1px 2px rgba(15,23,42,0.04)',
+  shadowHover: '0 4px 16px rgba(15,23,42,0.08), 0 2px 4px rgba(15,23,42,0.04)',
+}
+
+const CHART_COLORS = [
   '#0ea5e9',
   '#10b981',
   '#f59e0b',
@@ -31,66 +49,92 @@ const COLORS = [
   '#84cc16',
 ]
 
-const STATUS_OPTIONS: { value: string; label: string }[] = [
-  { value: 'new', label: 'New' },
-  { value: 'contacted', label: 'Contacted' },
-  { value: 'scheduled', label: 'Scheduled' },
-  { value: 'completed', label: 'Completed' },
-  { value: 'archived', label: 'Archived' },
-]
-
-const STATUS_BADGE_BG: Record<string, string> = {
-  new: '#f3f4f6',
-  contacted: '#dbeafe',
-  scheduled: '#fef3c7',
-  completed: '#dcfce7',
-  archived: '#f3f4f6',
-}
-const STATUS_BADGE_FG: Record<string, string> = {
-  new: '#374151',
-  contacted: '#1e40af',
-  scheduled: '#92400e',
-  completed: '#166534',
-  archived: '#6b7280',
+const STATUS_META: Record<
+  string,
+  { label: string; bg: string; fg: string; dot: string }
+> = {
+  new: { label: 'New', bg: '#eff6ff', fg: '#1d4ed8', dot: '#3b82f6' },
+  contacted: { label: 'Contacted', bg: '#ecfeff', fg: '#0e7490', dot: '#06b6d4' },
+  scheduled: { label: 'Scheduled', bg: '#fef3c7', fg: '#92400e', dot: '#f59e0b' },
+  completed: { label: 'Completed', bg: '#dcfce7', fg: '#166534', dot: '#10b981' },
+  archived: { label: 'Archived', bg: '#f1f5f9', fg: '#475569', dot: '#94a3b8' },
 }
 
-const CARD_STYLE: React.CSSProperties = {
-  background: 'white',
-  border: '1px solid var(--gray-200)',
-  borderRadius: 12,
+const STATUS_ORDER = ['new', 'contacted', 'scheduled', 'completed', 'archived']
+
+const STATUS_OPTIONS = STATUS_ORDER.map((v) => ({
+  value: v,
+  label: STATUS_META[v].label,
+}))
+
+// ───── Reusable bits ─────
+
+const card = (extra: React.CSSProperties = {}): React.CSSProperties => ({
+  background: TOKENS.panel,
+  border: `1px solid ${TOKENS.border}`,
+  borderRadius: 14,
   padding: '1.25rem',
-  boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-}
-
-const STAT_VALUE: React.CSSProperties = {
-  fontSize: 32,
-  fontWeight: 700,
-  color: '#111827',
-  margin: 0,
-}
-
-const STAT_LABEL: React.CSSProperties = {
-  fontSize: 13,
-  color: 'var(--gray-600)',
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  margin: 0,
-  marginTop: 4,
-}
-
-const SECTION_TITLE: React.CSSProperties = {
-  marginTop: '2rem',
-  marginBottom: '1rem',
-  fontSize: 18,
-  fontWeight: 700,
-}
+  boxShadow: TOKENS.shadow,
+  ...extra,
+})
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div style={CARD_STYLE}>
-      <p style={STAT_VALUE}>{value.toLocaleString()}</p>
-      <p style={STAT_LABEL}>{label}</p>
+    <div style={card()}>
+      <div
+        style={{
+          fontSize: 32,
+          fontWeight: 700,
+          color: TOKENS.text,
+          letterSpacing: '-0.02em',
+          lineHeight: 1.1,
+        }}
+      >
+        {value.toLocaleString()}
+      </div>
+      <div
+        style={{
+          fontSize: 12,
+          color: TOKENS.textMuted,
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          fontWeight: 600,
+          marginTop: 6,
+        }}
+      >
+        {label}
+      </div>
     </div>
+  )
+}
+
+function StatusPill({ status }: { status: string }) {
+  const m = STATUS_META[status] ?? STATUS_META.new
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        background: m.bg,
+        color: m.fg,
+        padding: '4px 10px',
+        borderRadius: 999,
+        fontSize: 12,
+        fontWeight: 600,
+        letterSpacing: '0.02em',
+      }}
+    >
+      <span
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: 999,
+          background: m.dot,
+        }}
+      />
+      {m.label}
+    </span>
   )
 }
 
@@ -99,19 +143,18 @@ function shortDate(iso: string): string {
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
-type Tab = 'requests' | 'calendar' | 'analytics'
+type Tab = 'tickets' | 'calendar' | 'overview' | 'analytics'
 
 export function StaffDashboardPage() {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
   const [data, setData] = useState<api.DashboardData | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [tab, setTab] = useState<Tab>('requests')
+  const [tab, setTab] = useState<Tab>('tickets')
 
   const reloadDashboard = async () => {
     try {
-      const d = await api.fetchDashboard()
-      setData(d)
+      setData(await api.fetchDashboard())
     } catch {
       setError('Failed to load dashboard data.')
     }
@@ -146,7 +189,7 @@ export function StaffDashboardPage() {
 
   if (loading || !user) {
     return (
-      <section className="page-content">
+      <section className="page-content" style={{ background: TOKENS.bg }}>
         <div className="container">Loading…</div>
       </section>
     )
@@ -155,7 +198,7 @@ export function StaffDashboardPage() {
 
   if (error) {
     return (
-      <section className="page-content">
+      <section className="page-content" style={{ background: TOKENS.bg }}>
         <div className="container">
           <div className="form-error-banner">{error}</div>
         </div>
@@ -164,27 +207,48 @@ export function StaffDashboardPage() {
   }
   if (!data) {
     return (
-      <section className="page-content">
+      <section className="page-content" style={{ background: TOKENS.bg }}>
         <div className="container">Loading dashboard…</div>
       </section>
     )
   }
 
   return (
-    <section className="page-content">
-      <div className="container" style={{ maxWidth: 1280 }}>
+    <section className="page-content" style={{ background: TOKENS.bg }}>
+      <div className="container" style={{ maxWidth: 1320 }}>
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'baseline',
+            alignItems: 'center',
             marginBottom: '1.5rem',
             flexWrap: 'wrap',
             gap: 12,
           }}
         >
-          <h1 style={{ margin: 0 }}>Staff dashboard</h1>
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div>
+            <h1
+              style={{
+                margin: 0,
+                fontSize: 28,
+                fontWeight: 700,
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Staff dashboard
+            </h1>
+            <p
+              style={{
+                margin: 0,
+                marginTop: 4,
+                color: TOKENS.textMuted,
+                fontSize: 14,
+              }}
+            >
+              Manage tickets, schedule appointments, and review performance.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
             <Link to="/account" className="btn">
               My account
             </Link>
@@ -194,12 +258,12 @@ export function StaffDashboardPage() {
           </div>
         </div>
 
-        {/* Headline stats — always visible */}
+        {/* Stat strip */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: 16,
+            gap: 12,
             marginBottom: '1.5rem',
           }}
         >
@@ -209,281 +273,540 @@ export function StaffDashboardPage() {
           <StatCard label="Completed" value={data.totals.completed} />
         </div>
 
-        {/* Tabs */}
+        {/* Tab bar */}
         <div
           style={{
             display: 'flex',
             gap: 4,
-            borderBottom: '1px solid var(--gray-200)',
+            background: TOKENS.panel,
+            border: `1px solid ${TOKENS.border}`,
+            borderRadius: 12,
+            padding: 4,
             marginBottom: '1.5rem',
+            boxShadow: TOKENS.shadowSoft,
+            width: 'fit-content',
+            maxWidth: '100%',
+            overflowX: 'auto',
           }}
         >
-          {(['requests', 'calendar', 'analytics'] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setTab(t)}
-              style={{
-                padding: '12px 20px',
-                background: 'transparent',
-                border: 'none',
-                borderBottom:
-                  tab === t ? '3px solid #0ea5e9' : '3px solid transparent',
-                marginBottom: -1,
-                fontSize: 15,
-                fontWeight: 600,
-                color: tab === t ? '#0ea5e9' : 'var(--gray-600)',
-                cursor: 'pointer',
-                textTransform: 'capitalize',
-              }}
-            >
-              {t}
-            </button>
-          ))}
+          {(['tickets', 'calendar', 'overview', 'analytics'] as const).map(
+            (t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                style={{
+                  padding: '8px 16px',
+                  background: tab === t ? TOKENS.accent : 'transparent',
+                  color: tab === t ? 'white' : TOKENS.textMuted,
+                  border: 'none',
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textTransform: 'capitalize',
+                  transition: 'all 0.15s ease',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {t}
+              </button>
+            ),
+          )}
         </div>
 
-        {tab === 'requests' && (
-          <RequestsTab data={data} reloadDashboard={reloadDashboard} />
-        )}
+        {tab === 'tickets' && <TicketsTab onChange={reloadDashboard} />}
         {tab === 'calendar' && <CalendarTab />}
+        {tab === 'overview' && <OverviewTab data={data} />}
         {tab === 'analytics' && <AnalyticsTab data={data} />}
       </div>
     </section>
   )
 }
 
-// ───── Tab 1: Requests (charts + activity feed with inline actions) ─────
+// ───── Tab: TICKETS (the main workspace) ─────
 
-function RequestsTab({
-  data,
-  reloadDashboard,
-}: {
-  data: api.DashboardData
-  reloadDashboard: () => Promise<void>
-}) {
-  const days = data.requestsPerDay.map((d) => ({
-    date: shortDate(d.date),
-    count: d.count,
-  }))
+function TicketsTab({ onChange }: { onChange: () => Promise<void> }) {
+  const [tickets, setTickets] = useState<api.ActivityRow[] | null>(null)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<string>('') // '' = all
+  const [view, setView] = useState<'kanban' | 'list'>('kanban')
+  const [debouncedQ, setDebouncedQ] = useState('')
 
-  return (
-    <>
-      <h2 style={SECTION_TITLE}>Requests per day (last 30)</h2>
-      <div style={{ ...CARD_STYLE, padding: '1rem' }}>
-        <ResponsiveContainer width="100%" height={260}>
-          <LineChart data={days}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-            <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="count"
-              stroke={COLORS[0]}
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+  // Debounce search to avoid a request per keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQ(search), 250)
+    return () => clearTimeout(t)
+  }, [search])
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-          gap: 16,
-          marginTop: 16,
-        }}
-      >
-        <div style={CARD_STYLE}>
-          <h3 style={{ marginTop: 0, marginBottom: 12 }}>Status funnel</h3>
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={data.statusFunnel}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-              <Tooltip />
-              <Bar dataKey="count" fill={COLORS[0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+  const reload = async () => {
+    const data = await api.fetchTickets({
+      status: statusFilter || undefined,
+      q: debouncedQ || undefined,
+    })
+    setTickets(data.tickets)
+  }
 
-        <div style={CARD_STYLE}>
-          <h3 style={{ marginTop: 0, marginBottom: 12 }}>Top services</h3>
-          {data.topServices.length === 0 ? (
-            <p style={{ color: 'var(--gray-500)' }}>No data yet.</p>
-          ) : (
-            <ResponsiveContainer width="100%" height={240}>
-              <PieChart>
-                <Pie
-                  data={data.topServices}
-                  dataKey="count"
-                  nameKey="service"
-                  outerRadius={80}
-                  label
-                >
-                  {data.topServices.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          )}
-        </div>
+  useEffect(() => {
+    let cancelled = false
+    api
+      .fetchTickets({
+        status: statusFilter || undefined,
+        q: debouncedQ || undefined,
+      })
+      .then((d) => {
+        if (!cancelled) setTickets(d.tickets)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [statusFilter, debouncedQ])
 
-        <div style={CARD_STYLE}>
-          <h3 style={{ marginTop: 0, marginBottom: 12 }}>Top locations</h3>
-          {data.topLocations.length === 0 ? (
-            <p style={{ color: 'var(--gray-500)' }}>No data yet.</p>
-          ) : (
-            <ResponsiveContainer width="100%" height={240}>
-              <BarChart
-                data={data.topLocations.slice(0, 8)}
-                layout="vertical"
-                margin={{ left: 30 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
-                <YAxis
-                  type="category"
-                  dataKey="location"
-                  tick={{ fontSize: 12 }}
-                  width={120}
-                />
-                <Tooltip />
-                <Bar dataKey="count" fill={COLORS[2]} />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </div>
-      </div>
-
-      <h2 style={SECTION_TITLE}>Recent activity</h2>
-      <ActivityFeed
-        rows={data.recentActivity}
-        onChange={reloadDashboard}
-      />
-    </>
-  )
-}
-
-function ActivityFeed({
-  rows,
-  onChange,
-}: {
-  rows: api.ActivityRow[]
-  onChange: () => Promise<void>
-}) {
-  const [filter, setFilter] = useState<'all' | string>('all')
-  const filtered = useMemo(
-    () => (filter === 'all' ? rows : rows.filter((r) => r.status === filter)),
-    [filter, rows],
-  )
-
-  if (rows.length === 0) {
-    return (
-      <div style={CARD_STYLE}>
-        <p style={{ color: 'var(--gray-500)' }}>No activity yet.</p>
-      </div>
-    )
+  const handleChange = async () => {
+    await Promise.all([reload(), onChange()])
   }
 
   return (
     <>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-        <FilterPill label="All" active={filter === 'all'} onClick={() => setFilter('all')} />
-        {STATUS_OPTIONS.map((s) => (
-          <FilterPill
-            key={s.value}
-            label={s.label}
-            active={filter === s.value}
-            onClick={() => setFilter(s.value)}
+      {/* Toolbar */}
+      <div
+        style={{
+          display: 'flex',
+          gap: 12,
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          marginBottom: 16,
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            flex: '1 1 280px',
+            maxWidth: 420,
+          }}
+        >
+          <span
+            style={{
+              position: 'absolute',
+              left: 14,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: TOKENS.textSubtle,
+              pointerEvents: 'none',
+              fontSize: 14,
+            }}
+          >
+            🔍
+          </span>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name, email, location, message…"
+            style={{
+              width: '100%',
+              padding: '10px 14px 10px 40px',
+              border: `1px solid ${TOKENS.border}`,
+              borderRadius: 10,
+              fontSize: 14,
+              background: TOKENS.panel,
+              outline: 'none',
+              boxShadow: TOKENS.shadowSoft,
+              transition: 'border-color 0.15s, box-shadow 0.15s',
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = TOKENS.accent
+              e.currentTarget.style.boxShadow = `0 0 0 3px rgba(14,165,233,0.15)`
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = TOKENS.border
+              e.currentTarget.style.boxShadow = TOKENS.shadowSoft
+            }}
           />
-        ))}
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            gap: 4,
+            background: TOKENS.panel,
+            border: `1px solid ${TOKENS.border}`,
+            borderRadius: 10,
+            padding: 3,
+            boxShadow: TOKENS.shadowSoft,
+            marginLeft: 'auto',
+          }}
+        >
+          {(['kanban', 'list'] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setView(v)}
+              style={{
+                padding: '6px 12px',
+                background: view === v ? TOKENS.text : 'transparent',
+                color: view === v ? 'white' : TOKENS.textMuted,
+                border: 'none',
+                borderRadius: 7,
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: 'pointer',
+                textTransform: 'capitalize',
+              }}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
       </div>
-      <div style={{ display: 'grid', gap: 12 }}>
-        {filtered.map((row) => (
-          <ActivityCard key={row.id} row={row} onChange={onChange} />
-        ))}
+
+      {/* Status filter chips */}
+      <div
+        style={{
+          display: 'flex',
+          gap: 6,
+          flexWrap: 'wrap',
+          marginBottom: 16,
+        }}
+      >
+        <FilterChip
+          label="All"
+          active={statusFilter === ''}
+          onClick={() => setStatusFilter('')}
+          count={tickets?.length}
+        />
+        {STATUS_OPTIONS.map((s) => {
+          const count = tickets?.filter((t) => t.status === s.value).length
+          return (
+            <FilterChip
+              key={s.value}
+              label={s.label}
+              active={statusFilter === s.value}
+              onClick={() =>
+                setStatusFilter(statusFilter === s.value ? '' : s.value)
+              }
+              count={statusFilter === s.value ? tickets?.length : count}
+              accentDot={STATUS_META[s.value].dot}
+            />
+          )
+        })}
       </div>
+
+      {tickets === null ? (
+        <p style={{ color: TOKENS.textMuted }}>Loading tickets…</p>
+      ) : tickets.length === 0 ? (
+        <div
+          style={{
+            ...card(),
+            textAlign: 'center',
+            padding: '3rem',
+          }}
+        >
+          <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>
+          <h3 style={{ margin: 0, marginBottom: 6 }}>No tickets match</h3>
+          <p style={{ color: TOKENS.textMuted, margin: 0 }}>
+            {search || statusFilter
+              ? 'Try clearing the filters.'
+              : 'Customer requests will appear here.'}
+          </p>
+        </div>
+      ) : view === 'kanban' ? (
+        <KanbanBoard tickets={tickets} onChange={handleChange} />
+      ) : (
+        <ListView tickets={tickets} onChange={handleChange} />
+      )}
     </>
   )
 }
 
-function FilterPill({
+function FilterChip({
   label,
   active,
   onClick,
+  count,
+  accentDot,
 }: {
   label: string
   active: boolean
   onClick: () => void
+  count?: number
+  accentDot?: string
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       style={{
-        padding: '6px 14px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        padding: '6px 12px',
         borderRadius: 999,
-        border: '1px solid var(--gray-200)',
-        background: active ? '#0ea5e9' : 'white',
-        color: active ? 'white' : 'var(--gray-700)',
+        border: `1px solid ${active ? TOKENS.text : TOKENS.border}`,
+        background: active ? TOKENS.text : TOKENS.panel,
+        color: active ? 'white' : TOKENS.text,
         fontSize: 13,
         fontWeight: 600,
         cursor: 'pointer',
+        transition: 'all 0.15s ease',
       }}
     >
+      {accentDot && (
+        <span
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: 999,
+            background: accentDot,
+          }}
+        />
+      )}
       {label}
+      {count !== undefined && (
+        <span
+          style={{
+            color: active ? 'rgba(255,255,255,0.7)' : TOKENS.textSubtle,
+            fontWeight: 500,
+            fontSize: 12,
+          }}
+        >
+          {count}
+        </span>
+      )}
     </button>
   )
 }
 
-function ActivityCard({
-  row,
+function KanbanBoard({
+  tickets,
   onChange,
 }: {
-  row: api.ActivityRow
+  tickets: api.ActivityRow[]
   onChange: () => Promise<void>
 }) {
-  const [expanded, setExpanded] = useState(false)
-  const [busy, setBusy] = useState(false)
-  const [scheduledAtLocal, setScheduledAtLocal] = useState(
-    isoToLocalInput(row.scheduledAt),
+  const columns = useMemo(() => {
+    return STATUS_ORDER.map((status) => ({
+      status,
+      meta: STATUS_META[status],
+      items: tickets.filter((t) => t.status === status),
+    }))
+  }, [tickets])
+
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+        gap: 12,
+        alignItems: 'flex-start',
+      }}
+    >
+      {columns.map((col) => (
+        <div
+          key={col.status}
+          style={{
+            background: col.meta.bg,
+            border: `1px solid ${TOKENS.border}`,
+            borderRadius: 14,
+            padding: 12,
+            minHeight: 200,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 12,
+              padding: '0 4px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 999,
+                  background: col.meta.dot,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: col.meta.fg,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                }}
+              >
+                {col.meta.label}
+              </span>
+            </div>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: col.meta.fg,
+                background: 'rgba(255,255,255,0.7)',
+                padding: '2px 8px',
+                borderRadius: 999,
+              }}
+            >
+              {col.items.length}
+            </span>
+          </div>
+
+          <div style={{ display: 'grid', gap: 8 }}>
+            {col.items.length === 0 ? (
+              <div
+                style={{
+                  fontSize: 12,
+                  color: TOKENS.textSubtle,
+                  textAlign: 'center',
+                  padding: '20px 8px',
+                  fontStyle: 'italic',
+                }}
+              >
+                No tickets
+              </div>
+            ) : (
+              col.items.map((t) => (
+                <KanbanCard key={t.id} ticket={t} onChange={onChange} />
+              ))
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
   )
-  const [staffNotes, setStaffNotes] = useState(row.staffNotes ?? '')
-  const [statusValue, setStatusValue] = useState(row.status)
+}
+
+function KanbanCard({
+  ticket,
+  onChange,
+}: {
+  ticket: api.ActivityRow
+  onChange: () => Promise<void>
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        style={{
+          textAlign: 'left',
+          background: 'white',
+          border: `1px solid ${TOKENS.border}`,
+          borderRadius: 10,
+          padding: 12,
+          cursor: 'pointer',
+          boxShadow: TOKENS.shadowSoft,
+          transition: 'transform 0.12s ease, box-shadow 0.12s ease',
+          display: 'block',
+          width: '100%',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-1px)'
+          e.currentTarget.style.boxShadow = TOKENS.shadowHover
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0)'
+          e.currentTarget.style.boxShadow = TOKENS.shadowSoft
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 600,
+            fontSize: 14,
+            marginBottom: 4,
+            color: TOKENS.text,
+          }}
+        >
+          {ticket.name}
+        </div>
+        <div style={{ fontSize: 12, color: TOKENS.textMuted, marginBottom: 6 }}>
+          {ticket.service || '(no service)'}
+        </div>
+        {ticket.location && (
+          <div style={{ fontSize: 12, color: TOKENS.textSubtle, marginBottom: 6 }}>
+            📍 {ticket.location}
+          </div>
+        )}
+        {ticket.scheduledAt && (
+          <div
+            style={{
+              fontSize: 12,
+              fontWeight: 600,
+              color: STATUS_META.scheduled.fg,
+              background: STATUS_META.scheduled.bg,
+              padding: '3px 8px',
+              borderRadius: 6,
+              display: 'inline-block',
+            }}
+          >
+            📅 {new Date(ticket.scheduledAt).toLocaleString(undefined, {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+            })}
+          </div>
+        )}
+        <div
+          style={{
+            fontSize: 11,
+            color: TOKENS.textSubtle,
+            marginTop: 8,
+            paddingTop: 8,
+            borderTop: `1px solid ${TOKENS.borderSoft}`,
+          }}
+        >
+          {new Date(ticket.createdAt).toLocaleDateString()}
+        </div>
+      </button>
+
+      {open && (
+        <TicketDrawer
+          ticket={ticket}
+          onClose={() => setOpen(false)}
+          onChange={onChange}
+        />
+      )}
+    </>
+  )
+}
+
+function ListView({
+  tickets,
+  onChange,
+}: {
+  tickets: api.ActivityRow[]
+  onChange: () => Promise<void>
+}) {
+  return (
+    <div style={{ display: 'grid', gap: 10 }}>
+      {tickets.map((t) => (
+        <ListRow key={t.id} ticket={t} onChange={onChange} />
+      ))}
+    </div>
+  )
+}
+
+function ListRow({
+  ticket,
+  onChange,
+}: {
+  ticket: api.ActivityRow
+  onChange: () => Promise<void>
+}) {
+  const [open, setOpen] = useState(false)
+  const [busy, setBusy] = useState(false)
 
   const apply = async (patch: api.StaffInquiryUpdate) => {
     setBusy(true)
     try {
-      await api.updateInquiry(row.id, patch)
-      await onChange()
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  const onResolve = () => apply({ status: 'completed' })
-  const onArchive = () => apply({ status: 'archived' })
-
-  const onSaveDetails = () => {
-    apply({
-      status: statusValue,
-      scheduledAt: scheduledAtLocal
-        ? new Date(scheduledAtLocal).toISOString()
-        : null,
-      staffNotes,
-    })
-  }
-
-  const onDelete = async () => {
-    if (!confirm('Delete this request? This cannot be undone.')) return
-    setBusy(true)
-    try {
-      await api.deleteInquiry(row.id)
+      await api.updateInquiry(ticket.id, patch)
       await onChange()
     } finally {
       setBusy(false)
@@ -491,258 +814,521 @@ function ActivityCard({
   }
 
   return (
-    <div style={CARD_STYLE}>
+    <>
       <div
         style={{
+          ...card({ padding: '14px 18px' }),
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 12,
+          gap: 16,
           flexWrap: 'wrap',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <strong style={{ fontSize: 16 }}>{row.name}</strong>
-          <span style={{ color: 'var(--gray-500)', fontSize: 14 }}>
-            {row.service || '(no service specified)'}
-          </span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <span
+        <div style={{ flex: '1 1 200px', minWidth: 0 }}>
+          <div
             style={{
-              fontSize: 12,
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-              padding: '4px 10px',
-              borderRadius: 999,
-              background: STATUS_BADGE_BG[row.status] ?? '#e5e7eb',
-              color: STATUS_BADGE_FG[row.status] ?? '#374151',
+              fontWeight: 600,
+              color: TOKENS.text,
+              fontSize: 15,
+              marginBottom: 2,
             }}
           >
-            {row.statusDisplay}
-          </span>
-          {row.status !== 'completed' && (
+            {ticket.name}
+          </div>
+          <div style={{ fontSize: 13, color: TOKENS.textMuted }}>
+            {ticket.email} · {ticket.phone}
+          </div>
+        </div>
+        <div style={{ flex: '1 1 200px', minWidth: 0 }}>
+          <div style={{ fontSize: 14, color: TOKENS.text }}>
+            {ticket.service || '(no service)'}
+          </div>
+          <div style={{ fontSize: 13, color: TOKENS.textSubtle }}>
+            {ticket.location || '—'}
+          </div>
+        </div>
+        <div style={{ flex: '0 0 auto' }}>
+          <StatusPill status={ticket.status} />
+        </div>
+        {ticket.scheduledAt && (
+          <div
+            style={{
+              fontSize: 12,
+              fontWeight: 600,
+              color: STATUS_META.scheduled.fg,
+              background: STATUS_META.scheduled.bg,
+              padding: '3px 8px',
+              borderRadius: 6,
+            }}
+          >
+            📅 {new Date(ticket.scheduledAt).toLocaleString(undefined, {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+            })}
+          </div>
+        )}
+        <div style={{ display: 'flex', gap: 6, marginLeft: 'auto' }}>
+          {ticket.status !== 'completed' && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => apply({ status: 'completed' })}
+              className="btn"
+              style={{
+                background: '#10b981',
+                color: 'white',
+                border: 'none',
+                fontSize: 13,
+                padding: '6px 12px',
+              }}
+            >
+              ✓ Resolve
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="btn"
+            style={{ fontSize: 13, padding: '6px 12px' }}
+          >
+            Open
+          </button>
+        </div>
+      </div>
+      {open && (
+        <TicketDrawer
+          ticket={ticket}
+          onClose={() => setOpen(false)}
+          onChange={onChange}
+        />
+      )}
+    </>
+  )
+}
+
+function TicketDrawer({
+  ticket,
+  onClose,
+  onChange,
+}: {
+  ticket: api.ActivityRow
+  onClose: () => void
+  onChange: () => Promise<void>
+}) {
+  const [statusValue, setStatusValue] = useState(ticket.status)
+  const [scheduledAtLocal, setScheduledAtLocal] = useState(
+    isoToLocalInput(ticket.scheduledAt),
+  )
+  const [staffNotes, setStaffNotes] = useState(ticket.staffNotes ?? '')
+  const [quotedAmount, setQuotedAmount] = useState(ticket.quotedAmount ?? '')
+  const [busy, setBusy] = useState(false)
+  const [savedFlash, setSavedFlash] = useState(false)
+
+  const save = async (extra: api.StaffInquiryUpdate = {}) => {
+    setBusy(true)
+    try {
+      await api.updateInquiry(ticket.id, {
+        status: statusValue,
+        scheduledAt: scheduledAtLocal
+          ? new Date(scheduledAtLocal).toISOString()
+          : null,
+        quotedAmount: quotedAmount.trim() === '' ? null : quotedAmount.trim(),
+        staffNotes,
+        ...extra,
+      })
+      await onChange()
+      setSavedFlash(true)
+      setTimeout(() => setSavedFlash(false), 1500)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const onResolve = async () => {
+    setStatusValue('completed')
+    await save({ status: 'completed' })
+    onClose()
+  }
+  const onClose_ = async () => {
+    setStatusValue('archived')
+    await save({ status: 'archived' })
+    onClose()
+  }
+
+  const onDelete = async () => {
+    if (!confirm('Delete this ticket forever? This cannot be undone.')) return
+    setBusy(true)
+    try {
+      await api.deleteInquiry(ticket.id)
+      await onChange()
+      onClose()
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div
+      role="dialog"
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(15,23,42,0.5)',
+        backdropFilter: 'blur(4px)',
+        zIndex: 1000,
+        display: 'flex',
+        justifyContent: 'flex-end',
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: 'min(560px, 100%)',
+          background: TOKENS.panel,
+          height: '100%',
+          overflowY: 'auto',
+          padding: '1.5rem',
+          boxShadow: '-8px 0 32px rgba(15,23,42,0.18)',
+          animation: 'slideIn 0.2s ease',
+        }}
+      >
+        <style>{`@keyframes slideIn { from { transform: translateX(20px); opacity: 0 } to { transform: translateX(0); opacity: 1 } }`}</style>
+
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 20,
+          }}
+        >
+          <div>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 22,
+                fontWeight: 700,
+                letterSpacing: '-0.02em',
+              }}
+            >
+              {ticket.name}
+            </h2>
+            <div style={{ fontSize: 13, color: TOKENS.textMuted, marginTop: 2 }}>
+              Ticket #{ticket.id} · {new Date(ticket.createdAt).toLocaleString()}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              border: 'none',
+              background: TOKENS.borderSoft,
+              borderRadius: 8,
+              padding: '6px 10px',
+              cursor: 'pointer',
+              fontSize: 16,
+              color: TOKENS.textMuted,
+            }}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Quick actions */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+          {ticket.status !== 'completed' && (
             <button
               type="button"
               disabled={busy}
               onClick={onResolve}
               style={{
+                flex: 1,
                 background: '#10b981',
                 color: 'white',
                 border: 'none',
-                borderRadius: 6,
-                padding: '4px 12px',
-                fontSize: 13,
+                padding: '10px 14px',
+                borderRadius: 10,
+                fontSize: 14,
                 fontWeight: 600,
                 cursor: 'pointer',
               }}
             >
-              Resolve
+              ✓ Resolve
             </button>
           )}
-          {row.status !== 'archived' && (
+          {ticket.status !== 'archived' && (
             <button
               type="button"
               disabled={busy}
-              onClick={onArchive}
+              onClick={onClose_}
               style={{
-                background: 'white',
-                color: 'var(--gray-700)',
-                border: '1px solid var(--gray-300)',
-                borderRadius: 6,
-                padding: '4px 12px',
-                fontSize: 13,
+                flex: 1,
+                background: TOKENS.panel,
+                color: TOKENS.text,
+                border: `1px solid ${TOKENS.border}`,
+                padding: '10px 14px',
+                borderRadius: 10,
+                fontSize: 14,
+                fontWeight: 600,
                 cursor: 'pointer',
               }}
             >
-              Close
+              Close ticket
             </button>
           )}
-          <button
-            type="button"
-            onClick={() => setExpanded((v) => !v)}
-            style={{
-              border: '1px solid var(--gray-200)',
-              background: 'white',
-              borderRadius: 6,
-              padding: '4px 10px',
-              fontSize: 13,
-              cursor: 'pointer',
-            }}
-          >
-            {expanded ? 'Hide' : 'Edit'}
-          </button>
         </div>
-      </div>
 
-      <div
-        style={{
-          display: 'flex',
-          gap: 16,
-          marginTop: 8,
-          color: 'var(--gray-600)',
-          fontSize: 13,
-          flexWrap: 'wrap',
-        }}
-      >
-        <span>📧 {row.email}</span>
-        <span>📞 {row.phone}</span>
-        <span>📍 {row.location || '—'}</span>
-        {row.scheduledAt && (
-          <span style={{ color: '#92400e', fontWeight: 600 }}>
-            📅 {new Date(row.scheduledAt).toLocaleString()}
-          </span>
-        )}
-        <span style={{ marginLeft: 'auto', color: 'var(--gray-500)' }}>
-          {new Date(row.createdAt).toLocaleString()}
-        </span>
-      </div>
+        {/* Customer info */}
+        <div style={{ ...card({ padding: '1rem', marginBottom: 16 }) }}>
+          <SectionTitle>Customer</SectionTitle>
+          <KV label="Email">
+            <a href={`mailto:${ticket.email}`} style={{ color: TOKENS.accent }}>
+              {ticket.email}
+            </a>
+          </KV>
+          <KV label="Phone">
+            <a href={`tel:${ticket.phone}`} style={{ color: TOKENS.accent }}>
+              {ticket.phone}
+            </a>
+          </KV>
+          <KV label="Linked user">
+            {ticket.userId != null ? `User #${ticket.userId}` : 'Guest'}
+          </KV>
+        </div>
 
-      {expanded && (
-        <div
-          style={{
-            marginTop: 12,
-            paddingTop: 12,
-            borderTop: '1px solid var(--gray-100)',
-            display: 'grid',
-            gap: 12,
-          }}
-        >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: 12,
-            }}
-          >
-            <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>
-                Status
-              </label>
-              <select
-                value={statusValue}
-                onChange={(e) => setStatusValue(e.target.value)}
+        {/* Request details */}
+        <div style={{ ...card({ padding: '1rem', marginBottom: 16 }) }}>
+          <SectionTitle>Request</SectionTitle>
+          <KV label="Service">{ticket.service || '—'}</KV>
+          <KV label="Vessel length">{ticket.vesselLengthDisplay || '—'}</KV>
+          <KV label="Location">{ticket.location || '—'}</KV>
+          {ticket.message && (
+            <div style={{ marginTop: 10 }}>
+              <div
                 style={{
-                  display: 'block',
-                  width: '100%',
-                  marginTop: 4,
-                  padding: '6px 8px',
-                  borderRadius: 6,
-                  border: '1px solid var(--gray-300)',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: TOKENS.textMuted,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  marginBottom: 4,
                 }}
               >
-                {STATUS_OPTIONS.map((s) => (
-                  <option key={s.value} value={s.value}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>
-                Scheduled at
-              </label>
-              <input
-                type="datetime-local"
-                value={scheduledAtLocal}
-                onChange={(e) => setScheduledAtLocal(e.target.value)}
+                Message
+              </div>
+              <div
                 style={{
-                  display: 'block',
-                  width: '100%',
-                  marginTop: 4,
-                  padding: '6px 8px',
-                  borderRadius: 6,
-                  border: '1px solid var(--gray-300)',
+                  background: TOKENS.panelMuted,
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  fontSize: 14,
+                  color: TOKENS.text,
+                  whiteSpace: 'pre-wrap',
+                  border: `1px solid ${TOKENS.borderSoft}`,
                 }}
-              />
+              >
+                {ticket.message}
+              </div>
             </div>
-          </div>
-          <div>
-            <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>
-              Staff notes
-            </label>
+          )}
+        </div>
+
+        {/* Workflow editor */}
+        <div style={{ ...card({ padding: '1rem', marginBottom: 16 }) }}>
+          <SectionTitle>Workflow</SectionTitle>
+          <Field label="Status">
+            <select
+              value={statusValue}
+              onChange={(e) => setStatusValue(e.target.value)}
+              style={inputStyle}
+            >
+              {STATUS_OPTIONS.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Scheduled at">
+            <input
+              type="datetime-local"
+              value={scheduledAtLocal}
+              onChange={(e) => setScheduledAtLocal(e.target.value)}
+              style={inputStyle}
+            />
+          </Field>
+          <Field label="Quoted amount (USD, visible to customer)">
+            <input
+              type="number"
+              min={0}
+              step={0.01}
+              value={quotedAmount}
+              onChange={(e) => setQuotedAmount(e.target.value)}
+              placeholder="e.g. 750"
+              style={inputStyle}
+            />
+          </Field>
+          <Field label="Staff notes (internal)">
             <textarea
               value={staffNotes}
               onChange={(e) => setStaffNotes(e.target.value)}
-              rows={3}
-              style={{
-                display: 'block',
-                width: '100%',
-                marginTop: 4,
-                padding: '6px 8px',
-                borderRadius: 6,
-                border: '1px solid var(--gray-300)',
-                fontFamily: 'inherit',
-                fontSize: 14,
-              }}
+              rows={4}
+              style={{ ...inputStyle, fontFamily: 'inherit' }}
             />
-          </div>
-          {row.message && (
-            <div
-              style={{
-                background: 'var(--gray-50)',
-                padding: '10px 12px',
-                borderRadius: 6,
-                fontSize: 14,
-                color: 'var(--gray-700)',
-              }}
-            >
-              <strong style={{ marginRight: 6 }}>Customer message:</strong>
-              {row.message}
-            </div>
-          )}
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              onClick={onDelete}
-              disabled={busy}
-              style={{
-                background: 'white',
-                color: '#dc2626',
-                border: '1px solid #fecaca',
-                borderRadius: 6,
-                padding: '6px 14px',
-                fontSize: 13,
-                cursor: 'pointer',
-              }}
-            >
-              Delete
-            </button>
-            <a
-              href={row.adminUrl}
-              className="btn"
-              style={{ fontSize: 13, padding: '6px 14px' }}
-            >
+          </Field>
+        </div>
+
+        {/* Footer */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: 20,
+            paddingTop: 16,
+            borderTop: `1px solid ${TOKENS.borderSoft}`,
+          }}
+        >
+          <button
+            type="button"
+            onClick={onDelete}
+            disabled={busy}
+            style={{
+              background: 'transparent',
+              color: '#dc2626',
+              border: 'none',
+              padding: '8px 0',
+              fontSize: 13,
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            Delete ticket
+          </button>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            {savedFlash && (
+              <span
+                style={{
+                  color: '#10b981',
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                ✓ Saved
+              </span>
+            )}
+            <a href={ticket.adminUrl} className="btn" style={{ fontSize: 13 }}>
               Open in admin
             </a>
             <button
               type="button"
-              onClick={onSaveDetails}
+              onClick={() => save()}
               disabled={busy}
               className="btn btn--primary"
-              style={{ fontSize: 13, padding: '6px 14px' }}
+              style={{ fontSize: 13 }}
             >
               {busy ? 'Saving…' : 'Save changes'}
             </button>
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        fontSize: 11,
+        fontWeight: 700,
+        color: TOKENS.textMuted,
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+        marginBottom: 8,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function KV({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        gap: 12,
+        padding: '6px 0',
+        fontSize: 14,
+        borderBottom: `1px solid ${TOKENS.borderSoft}`,
+      }}
+    >
+      <div style={{ flex: '0 0 110px', color: TOKENS.textMuted }}>{label}</div>
+      <div style={{ color: TOKENS.text, flex: 1, wordBreak: 'break-word' }}>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function Field({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <label
+        style={{
+          display: 'block',
+          fontSize: 11,
+          fontWeight: 700,
+          color: TOKENS.textMuted,
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          marginBottom: 4,
+        }}
+      >
+        {label}
+      </label>
+      {children}
+    </div>
+  )
+}
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '8px 10px',
+  border: `1px solid ${TOKENS.border}`,
+  borderRadius: 8,
+  fontSize: 14,
+  background: TOKENS.panel,
+  outline: 'none',
 }
 
 function isoToLocalInput(iso: string | null): string {
   if (!iso) return ''
   const d = new Date(iso)
-  // Format as YYYY-MM-DDTHH:MM in local time for datetime-local input.
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
     d.getHours(),
   )}:${pad(d.getMinutes())}`
 }
 
-// ───── Tab 2: Calendar ─────
+// ───── Tab: CALENDAR ─────
 
 function CalendarTab() {
   const [monthStart, setMonthStart] = useState(() => firstOfMonth(new Date()))
@@ -785,15 +1371,24 @@ function CalendarTab() {
           justifyContent: 'space-between',
           alignItems: 'center',
           marginBottom: 16,
-          marginTop: '0.5rem',
         }}
       >
-        <h2 style={{ margin: 0 }}>{monthLabel}</h2>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <h2
+          style={{
+            margin: 0,
+            fontSize: 22,
+            fontWeight: 700,
+            letterSpacing: '-0.02em',
+          }}
+        >
+          {monthLabel}
+        </h2>
+        <div style={{ display: 'flex', gap: 6 }}>
           <button
             type="button"
             className="btn"
             onClick={() => setMonthStart(addMonths(monthStart, -1))}
+            style={{ fontSize: 13, padding: '6px 12px' }}
           >
             ← Prev
           </button>
@@ -801,6 +1396,7 @@ function CalendarTab() {
             type="button"
             className="btn"
             onClick={() => setMonthStart(firstOfMonth(new Date()))}
+            style={{ fontSize: 13, padding: '6px 12px' }}
           >
             Today
           </button>
@@ -808,6 +1404,7 @@ function CalendarTab() {
             type="button"
             className="btn"
             onClick={() => setMonthStart(addMonths(monthStart, 1))}
+            style={{ fontSize: 13, padding: '6px 12px' }}
           >
             Next →
           </button>
@@ -816,120 +1413,125 @@ function CalendarTab() {
 
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: 1,
-          background: 'var(--gray-200)',
-          borderRadius: 8,
-          overflow: 'hidden',
-          border: '1px solid var(--gray-200)',
+          ...card({ padding: 0, overflow: 'hidden' }),
         }}
       >
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
-          <div
-            key={d}
-            style={{
-              background: 'var(--gray-50)',
-              padding: '8px 12px',
-              fontSize: 12,
-              fontWeight: 700,
-              color: 'var(--gray-600)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
-            {d}
-          </div>
-        ))}
-        {days.map((day, i) => {
-          const inMonth = day.getMonth() === monthStart.getMonth()
-          const key = toIsoDate(day)
-          const apps = byDay.get(key) ?? []
-          const isToday = sameDay(day, new Date())
-          return (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gap: 1,
+            background: TOKENS.borderSoft,
+          }}
+        >
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
             <div
-              key={i}
+              key={d}
               style={{
-                background: inMonth ? 'white' : '#fafafa',
-                padding: 8,
-                minHeight: 110,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 4,
-                opacity: inMonth ? 1 : 0.5,
+                background: TOKENS.panelMuted,
+                padding: '10px 12px',
+                fontSize: 11,
+                fontWeight: 700,
+                color: TOKENS.textMuted,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
               }}
             >
+              {d}
+            </div>
+          ))}
+          {days.map((day, i) => {
+            const inMonth = day.getMonth() === monthStart.getMonth()
+            const key = toIsoDate(day)
+            const apps = byDay.get(key) ?? []
+            const isToday = sameDay(day, new Date())
+            return (
               <div
+                key={i}
                 style={{
-                  fontSize: 13,
-                  fontWeight: isToday ? 700 : 500,
-                  color: isToday ? '#0ea5e9' : 'var(--gray-700)',
-                  marginBottom: 2,
+                  background: inMonth ? TOKENS.panel : TOKENS.panelMuted,
+                  padding: 8,
+                  minHeight: 110,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 4,
+                  opacity: inMonth ? 1 : 0.4,
                 }}
               >
-                {day.getDate()}
-                {isToday && (
-                  <span
-                    style={{
-                      marginLeft: 6,
-                      fontSize: 10,
-                      background: '#0ea5e9',
-                      color: 'white',
-                      padding: '1px 6px',
-                      borderRadius: 4,
-                    }}
-                  >
-                    TODAY
-                  </span>
-                )}
-              </div>
-              {apps.map((a) => (
                 <div
-                  key={a.id}
-                  title={`${a.name} — ${a.service || 'service'} at ${a.location}`}
                   style={{
-                    background:
-                      a.status === 'completed'
-                        ? '#d1fae5'
-                        : a.status === 'scheduled'
-                          ? '#fef3c7'
-                          : '#dbeafe',
-                    color:
-                      a.status === 'completed'
-                        ? '#065f46'
-                        : a.status === 'scheduled'
-                          ? '#92400e'
-                          : '#1e40af',
-                    fontSize: 11,
-                    fontWeight: 600,
-                    padding: '3px 6px',
-                    borderRadius: 4,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
+                    fontSize: 13,
+                    fontWeight: isToday ? 700 : 500,
+                    color: isToday ? TOKENS.accent : TOKENS.text,
+                    marginBottom: 2,
                   }}
                 >
-                  {new Date(a.scheduledAt).toLocaleTimeString(undefined, {
-                    hour: 'numeric',
-                    minute: '2-digit',
-                  })}{' '}
-                  {a.name}
+                  {day.getDate()}
+                  {isToday && (
+                    <span
+                      style={{
+                        marginLeft: 6,
+                        fontSize: 10,
+                        background: TOKENS.accent,
+                        color: 'white',
+                        padding: '1px 6px',
+                        borderRadius: 4,
+                        fontWeight: 700,
+                      }}
+                    >
+                      TODAY
+                    </span>
+                  )}
                 </div>
-              ))}
-            </div>
-          )
-        })}
+                {apps.map((a) => {
+                  const m = STATUS_META[a.status] ?? STATUS_META.scheduled
+                  return (
+                    <div
+                      key={a.id}
+                      title={`${a.name} — ${a.service || 'service'} at ${a.location}`}
+                      style={{
+                        background: m.bg,
+                        color: m.fg,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        padding: '3px 6px',
+                        borderRadius: 5,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        borderLeft: `2px solid ${m.dot}`,
+                      }}
+                    >
+                      {new Date(a.scheduledAt).toLocaleTimeString(undefined, {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                      })}{' '}
+                      {a.name}
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })}
+        </div>
       </div>
 
-      <h3 style={{ ...SECTION_TITLE, marginTop: '2rem' }}>
+      <h3
+        style={{
+          marginTop: '2rem',
+          marginBottom: 12,
+          fontSize: 16,
+          fontWeight: 700,
+        }}
+      >
         Appointments this month ({calendar?.appointments.length ?? 0})
       </h3>
       {loading ? (
-        <p>Loading…</p>
+        <p style={{ color: TOKENS.textMuted }}>Loading…</p>
       ) : !calendar || calendar.appointments.length === 0 ? (
-        <p style={{ color: 'var(--gray-500)' }}>
-          No appointments scheduled in this month yet. Set a "Scheduled at" date
-          on a request from the Requests tab to populate the calendar.
+        <p style={{ color: TOKENS.textMuted }}>
+          Nothing scheduled in this month yet. Set "Scheduled at" on a ticket
+          from the Tickets tab to populate the calendar.
         </p>
       ) : (
         <div style={{ display: 'grid', gap: 8 }}>
@@ -937,8 +1539,7 @@ function CalendarTab() {
             <div
               key={a.id}
               style={{
-                ...CARD_STYLE,
-                padding: '12px 16px',
+                ...card({ padding: '12px 16px' }),
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -947,30 +1548,16 @@ function CalendarTab() {
               }}
             >
               <div>
-                <strong>{a.name}</strong>
-                <span style={{ color: 'var(--gray-500)', marginLeft: 8 }}>
+                <strong style={{ color: TOKENS.text }}>{a.name}</strong>
+                <span style={{ color: TOKENS.textMuted, marginLeft: 8 }}>
                   {a.service || 'Service'} · {a.location || '—'}
                 </span>
               </div>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: 12 }}
-              >
-                <span style={{ color: 'var(--gray-700)', fontSize: 14 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ color: TOKENS.text, fontSize: 14 }}>
                   {new Date(a.scheduledAt).toLocaleString()}
                 </span>
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    padding: '3px 8px',
-                    borderRadius: 999,
-                    background: STATUS_BADGE_BG[a.status] ?? '#e5e7eb',
-                    color: STATUS_BADGE_FG[a.status] ?? '#374151',
-                  }}
-                >
-                  {a.statusDisplay}
-                </span>
+                <StatusPill status={a.status} />
               </div>
             </div>
           ))}
@@ -998,7 +1585,7 @@ function sameDay(a: Date, b: Date): boolean {
   )
 }
 function buildMonthGrid(monthStart: Date): Date[] {
-  const firstWeekday = monthStart.getDay() // 0 Sun … 6 Sat
+  const firstWeekday = monthStart.getDay()
   const start = new Date(monthStart)
   start.setDate(1 - firstWeekday)
   const days: Date[] = []
@@ -1010,15 +1597,140 @@ function buildMonthGrid(monthStart: Date): Date[] {
   return days
 }
 
-// ───── Tab 3: Analytics ─────
+// ───── Tab: OVERVIEW (charts only) ─────
+
+function OverviewTab({ data }: { data: api.DashboardData }) {
+  const days = data.requestsPerDay.map((d) => ({
+    date: shortDate(d.date),
+    count: d.count,
+  }))
+
+  return (
+    <>
+      <h2
+        style={{
+          margin: 0,
+          marginBottom: 16,
+          fontSize: 16,
+          fontWeight: 700,
+          color: TOKENS.text,
+        }}
+      >
+        Requests per day (last 30)
+      </h2>
+      <div style={{ ...card({ padding: '1rem' }) }}>
+        <ResponsiveContainer width="100%" height={260}>
+          <LineChart data={days}>
+            <CartesianGrid strokeDasharray="3 3" stroke={TOKENS.border} />
+            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+            <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="count"
+              stroke={CHART_COLORS[0]}
+              strokeWidth={2.5}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+          gap: 12,
+          marginTop: 16,
+        }}
+      >
+        <div style={card()}>
+          <h3 style={{ marginTop: 0, marginBottom: 12, fontSize: 15 }}>
+            Status funnel
+          </h3>
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={data.statusFunnel}>
+              <CartesianGrid strokeDasharray="3 3" stroke={TOKENS.border} />
+              <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Bar dataKey="count" fill={CHART_COLORS[0]} radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div style={card()}>
+          <h3 style={{ marginTop: 0, marginBottom: 12, fontSize: 15 }}>
+            Top services
+          </h3>
+          {data.topServices.length === 0 ? (
+            <p style={{ color: TOKENS.textMuted }}>No data yet.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={240}>
+              <PieChart>
+                <Pie
+                  data={data.topServices}
+                  dataKey="count"
+                  nameKey="service"
+                  outerRadius={80}
+                  label
+                >
+                  {data.topServices.map((_, i) => (
+                    <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        <div style={card()}>
+          <h3 style={{ marginTop: 0, marginBottom: 12, fontSize: 15 }}>
+            Top locations
+          </h3>
+          {data.topLocations.length === 0 ? (
+            <p style={{ color: TOKENS.textMuted }}>No data yet.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart
+                data={data.topLocations.slice(0, 8)}
+                layout="vertical"
+                margin={{ left: 30 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke={TOKENS.border} />
+                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
+                <YAxis
+                  type="category"
+                  dataKey="location"
+                  tick={{ fontSize: 12 }}
+                  width={120}
+                />
+                <Tooltip />
+                <Bar
+                  dataKey="count"
+                  fill={CHART_COLORS[2]}
+                  radius={[0, 6, 6, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}
+
+// ───── Tab: ANALYTICS ─────
 
 function AnalyticsTab({ data }: { data: api.DashboardData }) {
   if (!data.analytics.available) {
     return (
-      <div style={{ ...CARD_STYLE, padding: '2rem', textAlign: 'center' }}>
-        <p style={{ color: 'var(--gray-600)', margin: 0 }}>
+      <div style={{ ...card({ padding: '3rem', textAlign: 'center' }) }}>
+        <p style={{ color: TOKENS.textMuted, margin: 0 }}>
           No analytics data yet. Visit a few pages on the live site to start
-          collecting page views, then return here.
+          collecting page views.
         </p>
       </div>
     )
@@ -1032,7 +1744,7 @@ function AnalyticsTab({ data }: { data: api.DashboardData }) {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: 16,
+          gap: 12,
           marginBottom: '1rem',
         }}
       >
@@ -1041,8 +1753,18 @@ function AnalyticsTab({ data }: { data: api.DashboardData }) {
         <StatCard label="Tracked events" value={a.totals?.events ?? 0} />
       </div>
 
-      <h2 style={SECTION_TITLE}>Traffic (last 30 days)</h2>
-      <div style={{ ...CARD_STYLE, padding: '1rem' }}>
+      <h2
+        style={{
+          margin: 0,
+          marginBottom: 12,
+          marginTop: '1.5rem',
+          fontSize: 16,
+          fontWeight: 700,
+        }}
+      >
+        Traffic (last 30 days)
+      </h2>
+      <div style={{ ...card({ padding: '1rem' }) }}>
         <ResponsiveContainer width="100%" height={240}>
           <LineChart
             data={(a.pageviewsPerDay ?? []).map((d) => ({
@@ -1050,15 +1772,15 @@ function AnalyticsTab({ data }: { data: api.DashboardData }) {
               views: d.count,
             }))}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke={TOKENS.border} />
             <XAxis dataKey="date" tick={{ fontSize: 12 }} />
             <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
             <Tooltip />
             <Line
               type="monotone"
               dataKey="views"
-              stroke={COLORS[3]}
-              strokeWidth={2}
+              stroke={CHART_COLORS[3]}
+              strokeWidth={2.5}
               dot={false}
             />
           </LineChart>
@@ -1069,16 +1791,13 @@ function AnalyticsTab({ data }: { data: api.DashboardData }) {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-          gap: 16,
+          gap: 12,
           marginTop: 16,
         }}
       >
         <RankList
           title="Top pages"
-          items={(a.topPaths ?? []).map((r) => ({
-            label: r.path,
-            count: r.count,
-          }))}
+          items={(a.topPaths ?? []).map((r) => ({ label: r.path, count: r.count }))}
         />
         <RankList
           title="Top referrers"
@@ -1121,10 +1840,10 @@ function RankList({
   items: { label: string; count: number }[]
 }) {
   return (
-    <div style={CARD_STYLE}>
-      <h3 style={{ marginTop: 0, marginBottom: 12 }}>{title}</h3>
+    <div style={card()}>
+      <h3 style={{ marginTop: 0, marginBottom: 12, fontSize: 15 }}>{title}</h3>
       {items.length === 0 ? (
-        <p style={{ color: 'var(--gray-500)' }}>No data yet.</p>
+        <p style={{ color: TOKENS.textMuted }}>No data yet.</p>
       ) : (
         <ol style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {items.slice(0, 10).map((item, i) => (
@@ -1133,8 +1852,8 @@ function RankList({
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '6px 0',
-                borderBottom: '1px solid var(--gray-100)',
+                padding: '8px 0',
+                borderBottom: `1px solid ${TOKENS.borderSoft}`,
                 fontSize: 14,
               }}
             >
@@ -1144,11 +1863,12 @@ function RankList({
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
                   marginRight: 12,
+                  color: TOKENS.text,
                 }}
               >
                 {item.label || '(empty)'}
               </span>
-              <strong>{item.count}</strong>
+              <strong style={{ color: TOKENS.text }}>{item.count}</strong>
             </li>
           ))}
         </ol>

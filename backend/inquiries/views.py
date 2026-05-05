@@ -78,6 +78,7 @@ def _serialize(o: ContactInquiry) -> dict:
         "statusDisplay": o.get_status_display(),
         "scheduledAt": o.scheduled_at.isoformat() if o.scheduled_at else None,
         "scheduledDurationMinutes": o.scheduled_duration_minutes,
+        "quotedAmount": str(o.quoted_amount) if o.quoted_amount is not None else None,
         "staffNotes": o.staff_notes,
         "createdAt": o.created_at.isoformat(),
         "updatedAt": o.updated_at.isoformat(),
@@ -199,11 +200,81 @@ def staff_inquiry_detail(request: HttpRequest, pk: int) -> JsonResponse:
     if "staffNotes" in body:
         obj.staff_notes = (body.get("staffNotes") or "")[:5000]
 
+    if "quotedAmount" in body:
+        raw = body.get("quotedAmount")
+        if raw in (None, ""):
+            obj.quoted_amount = None
+        else:
+            try:
+                from decimal import Decimal, InvalidOperation
+
+                amount = Decimal(str(raw))
+                if amount < 0 or amount > Decimal("99999999.99"):
+                    raise InvalidOperation
+                obj.quoted_amount = amount
+            except Exception:
+                errors["quotedAmount"] = "Must be a positive decimal (USD)"
+
     if errors:
         return JsonResponse({"errors": errors}, status=400)
 
     obj.save()
     return JsonResponse({"request": _serialize(obj)})
+
+
+@_staff_required
+@require_http_methods(["GET"])
+def staff_tickets(request: HttpRequest) -> JsonResponse:
+    """All tickets, with optional filters. Server-side search + status filter."""
+    qs = ContactInquiry.objects.all()
+
+    status = (request.GET.get("status") or "").strip()
+    if status:
+        qs = qs.filter(status=status)
+
+    search = (request.GET.get("q") or "").strip()
+    if search:
+        from django.db.models import Q
+
+        qs = qs.filter(
+            Q(name__icontains=search)
+            | Q(email__icontains=search)
+            | Q(phone__icontains=search)
+            | Q(location__icontains=search)
+            | Q(service__icontains=search)
+            | Q(message__icontains=search)
+        )
+
+    qs = qs.order_by("-created_at")[:500]
+
+    rows = []
+    for o in qs:
+        rows.append({
+            "id": o.id,
+            "name": o.name,
+            "email": o.email,
+            "phone": o.phone,
+            "service": o.service,
+            "vesselLength": o.vessel_length,
+            "vesselLengthDisplay": (
+                o.get_vessel_length_display() if o.vessel_length else ""
+            ),
+            "location": o.location,
+            "message": o.message,
+            "status": o.status,
+            "statusDisplay": o.get_status_display(),
+            "scheduledAt": o.scheduled_at.isoformat() if o.scheduled_at else None,
+            "scheduledDurationMinutes": o.scheduled_duration_minutes,
+            "quotedAmount": str(o.quoted_amount) if o.quoted_amount is not None else None,
+            "staffNotes": o.staff_notes,
+            "createdAt": o.created_at.isoformat(),
+            "updatedAt": o.updated_at.isoformat(),
+            "sourceIp": o.source_ip or "",
+            "userAgent": o.user_agent,
+            "userId": o.user_id,
+            "adminUrl": f"/admin/inquiries/contactinquiry/{o.id}/change/",
+        })
+    return JsonResponse({"tickets": rows, "total": len(rows)})
 
 
 @_staff_required
@@ -245,6 +316,7 @@ def staff_calendar(request: HttpRequest) -> JsonResponse:
             "statusDisplay": o.get_status_display(),
             "scheduledAt": o.scheduled_at.isoformat() if o.scheduled_at else None,
             "scheduledDurationMinutes": o.scheduled_duration_minutes,
+            "quotedAmount": str(o.quoted_amount) if o.quoted_amount is not None else None,
             "adminUrl": f"/admin/inquiries/contactinquiry/{o.id}/change/",
         })
 

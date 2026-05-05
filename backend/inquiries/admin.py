@@ -32,6 +32,7 @@ class ContactInquiryAdmin(admin.ModelAdmin):
                     "status",
                     "scheduled_at",
                     "scheduled_duration_minutes",
+                    "quoted_amount",
                     "staff_notes",
                 )
             },
