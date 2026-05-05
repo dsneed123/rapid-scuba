@@ -79,6 +79,8 @@ async function request<TResponse>(
 
 const get = <T>(path: string) => request<T>('GET', path)
 const post = <T>(path: string, body?: unknown) => request<T>('POST', path, body ?? {})
+const patch = <T>(path: string, body: unknown) => request<T>('PATCH', path, body)
+const del = <T>(path: string) => request<T>('DELETE', path)
 
 // ───── Auth ─────
 
@@ -107,7 +109,20 @@ export const login = (data: { email: string; password: string }) =>
 
 export const logout = () => post<{ status: string }>('/api/auth/logout/')
 
-// ───── Inquiries ─────
+export type ProfileUpdate = {
+  firstName?: string
+  lastName?: string
+  email?: string
+  password?: string
+  currentPassword?: string
+}
+
+export const updateProfile = (data: ProfileUpdate) =>
+  patch<{ user: User }>('/api/auth/me/', data)
+
+export const deleteAccount = () => del<{ status: string }>('/api/auth/me/')
+
+// ───── Quote requests (public) ─────
 
 export type ContactInquiryPayload = {
   name: string
@@ -119,78 +134,51 @@ export type ContactInquiryPayload = {
   message?: string
 }
 
-export type BookingRequestPayload = {
-  name: string
-  email: string
-  phone: string
-  serviceId: string
-  vesselType: string
-  vesselLength: number
-  location: string
-  preferredDate: string
-  notes?: string
-}
-
 export type InquiryReceipt = { id: number; status: 'received' }
 
 export const submitContactInquiry = (data: ContactInquiryPayload) =>
   post<InquiryReceipt>('/api/inquiries/', data)
 
-export const submitBookingRequest = (data: BookingRequestPayload) =>
-  post<InquiryReceipt>('/api/bookings/', data)
+// ───── My requests (logged-in user) ─────
 
-// ───── My submissions ─────
-
-export type MyInquiry = {
+export type MyRequest = {
   id: number
   name: string
   email: string
   phone: string
   service: string
   vesselLength: string
+  vesselLengthDisplay: string
   location: string
   message: string
   status: string
   statusDisplay: string
+  scheduledAt: string | null
+  scheduledDurationMinutes: number
+  staffNotes: string
   createdAt: string
   updatedAt: string
 }
 
-export type MyBooking = {
-  id: number
-  name: string
-  email: string
-  phone: string
-  serviceId: string
-  vesselType: string
-  vesselLengthFt: number
-  location: string
-  preferredDate: string
-  notes: string
-  status: string
-  statusDisplay: string
-  createdAt: string
-  updatedAt: string
-}
-
-export const fetchMyInquiries = () =>
-  get<{ inquiries: MyInquiry[] }>('/api/me/inquiries/')
-
-export const fetchMyBookings = () =>
-  get<{ bookings: MyBooking[] }>('/api/me/bookings/')
+export const fetchMyRequests = () =>
+  get<{ requests: MyRequest[] }>('/api/me/requests/')
 
 // ───── Staff dashboard ─────
 
 export type ActivityRow = {
-  type: 'inquiry' | 'booking'
   id: number
   name: string
   email: string
   phone: string
   service: string
+  vesselLength: string
+  vesselLengthDisplay: string
   location: string
+  message: string
   status: string
   statusDisplay: string
+  scheduledAt: string | null
+  scheduledDurationMinutes: number
   staffNotes: string
   createdAt: string
   updatedAt: string
@@ -198,20 +186,16 @@ export type ActivityRow = {
   userAgent: string
   userId: number | null
   adminUrl: string
-  // Inquiry-only
-  vesselLength?: string
-  vesselLengthDisplay?: string
-  message?: string
-  // Booking-only
-  vesselType?: string
-  vesselLengthFt?: number
-  preferredDate?: string
-  notes?: string
 }
 
 export type DashboardData = {
-  totals: { inquiries: number; bookings: number; new: number; completed: number }
-  leadsPerDay: { date: string; inquiries: number; bookings: number; total: number }[]
+  totals: {
+    requests: number
+    new: number
+    scheduled: number
+    completed: number
+  }
+  requestsPerDay: { date: string; count: number }[]
   statusFunnel: { status: string; label: string; count: number }[]
   topServices: { service: string; count: number }[]
   topLocations: { location: string; count: number }[]
@@ -230,6 +214,46 @@ export type DashboardData = {
 
 export const fetchDashboard = () =>
   get<DashboardData>('/api/staff/dashboard/')
+
+// ───── Staff: edit a request ─────
+
+export type StaffInquiryUpdate = {
+  status?: string
+  scheduledAt?: string | null
+  scheduledDurationMinutes?: number
+  staffNotes?: string
+}
+
+export const updateInquiry = (id: number, data: StaffInquiryUpdate) =>
+  patch<{ request: ActivityRow }>(`/api/staff/inquiries/${id}/`, data)
+
+export const deleteInquiry = (id: number) =>
+  del<{ status: string }>(`/api/staff/inquiries/${id}/`)
+
+// ───── Staff calendar ─────
+
+export type CalendarAppointment = {
+  id: number
+  name: string
+  email: string
+  phone: string
+  service: string
+  location: string
+  status: string
+  statusDisplay: string
+  scheduledAt: string
+  scheduledDurationMinutes: number
+  adminUrl: string
+}
+
+export type CalendarData = {
+  from: string
+  to: string
+  appointments: CalendarAppointment[]
+}
+
+export const fetchCalendar = (from: string, to: string) =>
+  get<CalendarData>(`/api/staff/calendar/?from=${from}&to=${to}`)
 
 // ───── Analytics tracking ─────
 

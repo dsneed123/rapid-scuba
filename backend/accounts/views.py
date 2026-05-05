@@ -135,8 +135,77 @@ def logout_view(request: HttpRequest) -> JsonResponse:
     return JsonResponse({"status": "logged_out"})
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["GET", "PATCH", "DELETE"])
 def me(request: HttpRequest) -> JsonResponse:
+    if request.method == "GET":
+        if not request.user.is_authenticated:
+            return JsonResponse({"user": None}, status=200)
+        return JsonResponse({"user": _user_dict(request.user)})
+
     if not request.user.is_authenticated:
-        return JsonResponse({"user": None}, status=200)
-    return JsonResponse({"user": _user_dict(request.user)})
+        return JsonResponse({"error": "Authentication required"}, status=401)
+
+    user = request.user
+
+    if request.method == "DELETE":
+        # Permanently delete the user. Their inquiries' user_id becomes NULL
+        # (SET_NULL on the FK) so the lead history is preserved.
+        user.delete()
+        logout(request)
+        return JsonResponse({"status": "deleted"})
+
+    # PATCH — partial profile update.
+    body, err = _parse(request)
+    if err:
+        return err
+
+    errors: dict[str, str] = {}
+
+    if "firstName" in body:
+        user.first_name = (body.get("firstName") or "").strip()[:30]
+
+    if "lastName" in body:
+        user.last_name = (body.get("lastName") or "").strip()[:150]
+
+    if "email" in body:
+        new_email = (body.get("email") or "").strip().lower()
+        if not new_email or not EMAIL_RE.match(new_email):
+            errors["email"] = "Valid email required"
+        elif (
+            User.objects.filter(email__iexact=new_email)
+            .exclude(pk=user.pk)
+            .exists()
+        ):
+            errors["email"] = "Another account already uses this email"
+        else:
+            user.email = new_email
+            # Keep username == email for users created via signup.
+            if user.username == user.username.lower() and "@" in user.username:
+                user.username = new_email
+
+    new_password = body.get("password")
+    if new_password is not None:
+        if not isinstance(new_password, str) or len(new_password) < 8:
+            errors["password"] = "Password must be at least 8 characters"
+        else:
+            current = body.get("currentPassword")
+            if not current or not user.check_password(current):
+                errors["currentPassword"] = (
+                    "Current password is required to change password"
+                )
+            else:
+                user.set_password(new_password)
+
+    if errors:
+        return JsonResponse({"errors": errors}, status=400)
+
+    user.save()
+
+    # If the password changed, the session was invalidated by Django's
+    # update_session_auth_hash protocol; re-login to keep the user.
+    if new_password and "password" not in errors:
+        from django.contrib.auth import login as _login
+
+        _login(request, user)
+
+    return JsonResponse({"user": _user_dict(user)})

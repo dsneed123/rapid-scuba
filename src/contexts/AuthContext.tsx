@@ -21,6 +21,8 @@ type AuthState = {
   login: (data: { email: string; password: string }) => Promise<api.User>
   logout: () => Promise<void>
   refresh: () => Promise<void>
+  updateProfile: (data: api.ProfileUpdate) => Promise<api.User>
+  deleteAccount: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthState | null>(null)
@@ -81,9 +83,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const updateProfile = useCallback(async (data: api.ProfileUpdate) => {
+    const res = await api.updateProfile(data)
+    setUser(res.user)
+    return res.user
+  }, [])
+
+  const deleteAccount = useCallback(async () => {
+    await api.deleteAccount()
+    setUser(null)
+  }, [])
+
   const value = useMemo<AuthState>(
-    () => ({ user, loading, signup, login, logout, refresh }),
-    [user, loading, signup, login, logout, refresh],
+    () => ({
+      user,
+      loading,
+      signup,
+      login,
+      logout,
+      refresh,
+      updateProfile,
+      deleteAccount,
+    }),
+    [user, loading, signup, login, logout, refresh, updateProfile, deleteAccount],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

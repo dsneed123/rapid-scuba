@@ -31,6 +31,29 @@ const COLORS = [
   '#84cc16',
 ]
 
+const STATUS_OPTIONS: { value: string; label: string }[] = [
+  { value: 'new', label: 'New' },
+  { value: 'contacted', label: 'Contacted' },
+  { value: 'scheduled', label: 'Scheduled' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'archived', label: 'Archived' },
+]
+
+const STATUS_BADGE_BG: Record<string, string> = {
+  new: '#f3f4f6',
+  contacted: '#dbeafe',
+  scheduled: '#fef3c7',
+  completed: '#dcfce7',
+  archived: '#f3f4f6',
+}
+const STATUS_BADGE_FG: Record<string, string> = {
+  new: '#374151',
+  contacted: '#1e40af',
+  scheduled: '#92400e',
+  completed: '#166534',
+  archived: '#6b7280',
+}
+
 const CARD_STYLE: React.CSSProperties = {
   background: 'white',
   border: '1px solid var(--gray-200)',
@@ -76,11 +99,23 @@ function shortDate(iso: string): string {
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
+type Tab = 'requests' | 'calendar' | 'analytics'
+
 export function StaffDashboardPage() {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
   const [data, setData] = useState<api.DashboardData | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [tab, setTab] = useState<Tab>('requests')
+
+  const reloadDashboard = async () => {
+    try {
+      const d = await api.fetchDashboard()
+      setData(d)
+    } catch {
+      setError('Failed to load dashboard data.')
+    }
+  }
 
   useEffect(() => {
     if (loading) return
@@ -135,12 +170,6 @@ export function StaffDashboardPage() {
     )
   }
 
-  const leadDays = data.leadsPerDay.map((d) => ({
-    date: shortDate(d.date),
-    inquiries: d.inquiries,
-    bookings: d.bookings,
-  }))
-
   return (
     <section className="page-content">
       <div className="container" style={{ maxWidth: 1280 }}>
@@ -165,215 +194,191 @@ export function StaffDashboardPage() {
           </div>
         </div>
 
+        {/* Headline stats — always visible */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
             gap: 16,
+            marginBottom: '1.5rem',
           }}
         >
-          <StatCard label="Inquiries" value={data.totals.inquiries} />
-          <StatCard label="Bookings" value={data.totals.bookings} />
+          <StatCard label="Total requests" value={data.totals.requests} />
           <StatCard label="New (unworked)" value={data.totals.new} />
+          <StatCard label="Scheduled" value={data.totals.scheduled} />
           <StatCard label="Completed" value={data.totals.completed} />
-          {data.analytics.available && data.analytics.totals && (
-            <>
-              <StatCard
-                label="Page views (all-time)"
-                value={data.analytics.totals.pageviews}
-              />
-              <StatCard
-                label="Unique sessions"
-                value={data.analytics.totals.uniqueSessions}
-              />
-            </>
-          )}
         </div>
 
-        <h2 style={SECTION_TITLE}>Leads per day (last 30)</h2>
-        <div style={{ ...CARD_STYLE, padding: '1rem' }}>
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={leadDays}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="inquiries"
-                stroke={COLORS[0]}
-                strokeWidth={2}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="bookings"
-                stroke={COLORS[1]}
-                strokeWidth={2}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
+        {/* Tabs */}
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-            gap: 16,
-            marginTop: 16,
+            display: 'flex',
+            gap: 4,
+            borderBottom: '1px solid var(--gray-200)',
+            marginBottom: '1.5rem',
           }}
         >
-          <div style={CARD_STYLE}>
-            <h3 style={{ marginTop: 0, marginBottom: 12 }}>Status funnel</h3>
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={data.statusFunnel}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Bar dataKey="count" fill={COLORS[0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div style={CARD_STYLE}>
-            <h3 style={{ marginTop: 0, marginBottom: 12 }}>Top services</h3>
-            {data.topServices.length === 0 ? (
-              <p style={{ color: 'var(--gray-500)' }}>No data yet.</p>
-            ) : (
-              <ResponsiveContainer width="100%" height={260}>
-                <PieChart>
-                  <Pie
-                    data={data.topServices}
-                    dataKey="count"
-                    nameKey="service"
-                    outerRadius={90}
-                    label
-                  >
-                    {data.topServices.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-          </div>
-
-          <div style={CARD_STYLE}>
-            <h3 style={{ marginTop: 0, marginBottom: 12 }}>Top locations</h3>
-            {data.topLocations.length === 0 ? (
-              <p style={{ color: 'var(--gray-500)' }}>No data yet.</p>
-            ) : (
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart
-                  data={data.topLocations.slice(0, 8)}
-                  layout="vertical"
-                  margin={{ left: 30 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
-                  <YAxis
-                    type="category"
-                    dataKey="location"
-                    tick={{ fontSize: 12 }}
-                    width={120}
-                  />
-                  <Tooltip />
-                  <Bar dataKey="count" fill={COLORS[2]} />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </div>
-        </div>
-
-        {data.analytics.available && (
-          <>
-            <h2 style={SECTION_TITLE}>Site traffic</h2>
-            <div style={{ ...CARD_STYLE, padding: '1rem' }}>
-              <ResponsiveContainer width="100%" height={240}>
-                <LineChart
-                  data={(data.analytics.pageviewsPerDay ?? []).map((d) => ({
-                    date: shortDate(d.date),
-                    views: d.count,
-                  }))}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="views"
-                    stroke={COLORS[3]}
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
-            <div
+          {(['requests', 'calendar', 'analytics'] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setTab(t)}
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-                gap: 16,
-                marginTop: 16,
+                padding: '12px 20px',
+                background: 'transparent',
+                border: 'none',
+                borderBottom:
+                  tab === t ? '3px solid #0ea5e9' : '3px solid transparent',
+                marginBottom: -1,
+                fontSize: 15,
+                fontWeight: 600,
+                color: tab === t ? '#0ea5e9' : 'var(--gray-600)',
+                cursor: 'pointer',
+                textTransform: 'capitalize',
               }}
             >
-              <RankList
-                title="Top pages"
-                items={(data.analytics.topPaths ?? []).map((r) => ({
-                  label: r.path,
-                  count: r.count,
-                }))}
-              />
-              <RankList
-                title="Top referrers"
-                items={(data.analytics.topReferrers ?? []).map((r) => ({
-                  label: r.referrer,
-                  count: r.count,
-                }))}
-              />
-              <RankList
-                title="Top traffic sources (UTM)"
-                items={(data.analytics.topSources ?? []).map((r) => ({
-                  label: r.source,
-                  count: r.count,
-                }))}
-              />
-              <RankList
-                title="Top exit pages"
-                items={(data.analytics.topExitPaths ?? []).map((r) => ({
-                  label: r.path,
-                  count: r.count,
-                }))}
-              />
-              <RankList
-                title="Top click targets"
-                items={(data.analytics.topClicks ?? []).map((r) => ({
-                  label: r.target,
-                  count: r.count,
-                }))}
-              />
-            </div>
-          </>
-        )}
+              {t}
+            </button>
+          ))}
+        </div>
 
-        <h2 style={SECTION_TITLE}>Recent activity</h2>
-        <ActivityFeed rows={data.recentActivity} />
+        {tab === 'requests' && (
+          <RequestsTab data={data} reloadDashboard={reloadDashboard} />
+        )}
+        {tab === 'calendar' && <CalendarTab />}
+        {tab === 'analytics' && <AnalyticsTab data={data} />}
       </div>
     </section>
   )
 }
 
-function ActivityFeed({ rows }: { rows: api.ActivityRow[] }) {
-  const [filter, setFilter] = useState<'all' | 'inquiry' | 'booking'>('all')
+// ───── Tab 1: Requests (charts + activity feed with inline actions) ─────
+
+function RequestsTab({
+  data,
+  reloadDashboard,
+}: {
+  data: api.DashboardData
+  reloadDashboard: () => Promise<void>
+}) {
+  const days = data.requestsPerDay.map((d) => ({
+    date: shortDate(d.date),
+    count: d.count,
+  }))
+
+  return (
+    <>
+      <h2 style={SECTION_TITLE}>Requests per day (last 30)</h2>
+      <div style={{ ...CARD_STYLE, padding: '1rem' }}>
+        <ResponsiveContainer width="100%" height={260}>
+          <LineChart data={days}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+            <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="count"
+              stroke={COLORS[0]}
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+          gap: 16,
+          marginTop: 16,
+        }}
+      >
+        <div style={CARD_STYLE}>
+          <h3 style={{ marginTop: 0, marginBottom: 12 }}>Status funnel</h3>
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={data.statusFunnel}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Bar dataKey="count" fill={COLORS[0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div style={CARD_STYLE}>
+          <h3 style={{ marginTop: 0, marginBottom: 12 }}>Top services</h3>
+          {data.topServices.length === 0 ? (
+            <p style={{ color: 'var(--gray-500)' }}>No data yet.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={240}>
+              <PieChart>
+                <Pie
+                  data={data.topServices}
+                  dataKey="count"
+                  nameKey="service"
+                  outerRadius={80}
+                  label
+                >
+                  {data.topServices.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        <div style={CARD_STYLE}>
+          <h3 style={{ marginTop: 0, marginBottom: 12 }}>Top locations</h3>
+          {data.topLocations.length === 0 ? (
+            <p style={{ color: 'var(--gray-500)' }}>No data yet.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart
+                data={data.topLocations.slice(0, 8)}
+                layout="vertical"
+                margin={{ left: 30 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
+                <YAxis
+                  type="category"
+                  dataKey="location"
+                  tick={{ fontSize: 12 }}
+                  width={120}
+                />
+                <Tooltip />
+                <Bar dataKey="count" fill={COLORS[2]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      <h2 style={SECTION_TITLE}>Recent activity</h2>
+      <ActivityFeed
+        rows={data.recentActivity}
+        onChange={reloadDashboard}
+      />
+    </>
+  )
+}
+
+function ActivityFeed({
+  rows,
+  onChange,
+}: {
+  rows: api.ActivityRow[]
+  onChange: () => Promise<void>
+}) {
+  const [filter, setFilter] = useState<'all' | string>('all')
   const filtered = useMemo(
-    () => (filter === 'all' ? rows : rows.filter((r) => r.type === filter)),
+    () => (filter === 'all' ? rows : rows.filter((r) => r.status === filter)),
     [filter, rows],
   )
 
@@ -387,80 +392,102 @@ function ActivityFeed({ rows }: { rows: api.ActivityRow[] }) {
 
   return (
     <>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-        {(['all', 'inquiry', 'booking'] as const).map((opt) => (
-          <button
-            key={opt}
-            type="button"
-            onClick={() => setFilter(opt)}
-            style={{
-              padding: '6px 14px',
-              borderRadius: 999,
-              border: '1px solid var(--gray-200)',
-              background: filter === opt ? '#0ea5e9' : 'white',
-              color: filter === opt ? 'white' : 'var(--gray-700)',
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            {opt === 'all'
-              ? 'All'
-              : opt === 'inquiry'
-                ? 'Inquiries'
-                : 'Bookings'}
-          </button>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+        <FilterPill label="All" active={filter === 'all'} onClick={() => setFilter('all')} />
+        {STATUS_OPTIONS.map((s) => (
+          <FilterPill
+            key={s.value}
+            label={s.label}
+            active={filter === s.value}
+            onClick={() => setFilter(s.value)}
+          />
         ))}
       </div>
       <div style={{ display: 'grid', gap: 12 }}>
         {filtered.map((row) => (
-          <ActivityCard key={`${row.type}-${row.id}`} row={row} />
+          <ActivityCard key={row.id} row={row} onChange={onChange} />
         ))}
       </div>
     </>
   )
 }
 
-function ActivityCard({ row }: { row: api.ActivityRow }) {
+function FilterPill({
+  label,
+  active,
+  onClick,
+}: {
+  label: string
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        padding: '6px 14px',
+        borderRadius: 999,
+        border: '1px solid var(--gray-200)',
+        background: active ? '#0ea5e9' : 'white',
+        color: active ? 'white' : 'var(--gray-700)',
+        fontSize: 13,
+        fontWeight: 600,
+        cursor: 'pointer',
+      }}
+    >
+      {label}
+    </button>
+  )
+}
+
+function ActivityCard({
+  row,
+  onChange,
+}: {
+  row: api.ActivityRow
+  onChange: () => Promise<void>
+}) {
   const [expanded, setExpanded] = useState(false)
-  const isBooking = row.type === 'booking'
+  const [busy, setBusy] = useState(false)
+  const [scheduledAtLocal, setScheduledAtLocal] = useState(
+    isoToLocalInput(row.scheduledAt),
+  )
+  const [staffNotes, setStaffNotes] = useState(row.staffNotes ?? '')
+  const [statusValue, setStatusValue] = useState(row.status)
 
-  const fields: { label: string; value: string }[] = [
-    { label: 'Email', value: row.email },
-    { label: 'Phone', value: row.phone },
-    { label: 'Service', value: row.service || '—' },
-    { label: 'Location', value: row.location || '—' },
-  ]
-
-  if (isBooking) {
-    fields.push(
-      { label: 'Vessel type', value: row.vesselType ?? '—' },
-      {
-        label: 'Vessel length',
-        value: row.vesselLengthFt != null ? `${row.vesselLengthFt} ft` : '—',
-      },
-      { label: 'Preferred date', value: row.preferredDate ?? '—' },
-      { label: 'Notes', value: row.notes || '—' },
-    )
-  } else {
-    fields.push(
-      { label: 'Vessel length', value: row.vesselLengthDisplay || '—' },
-      { label: 'Message', value: row.message || '—' },
-    )
+  const apply = async (patch: api.StaffInquiryUpdate) => {
+    setBusy(true)
+    try {
+      await api.updateInquiry(row.id, patch)
+      await onChange()
+    } finally {
+      setBusy(false)
+    }
   }
 
-  fields.push(
-    { label: 'Submitted', value: new Date(row.createdAt).toLocaleString() },
-    { label: 'Last updated', value: new Date(row.updatedAt).toLocaleString() },
-    { label: 'Source IP', value: row.sourceIp || '—' },
-    {
-      label: 'Linked user',
-      value: row.userId != null ? `User #${row.userId}` : '(guest)',
-    },
-  )
+  const onResolve = () => apply({ status: 'completed' })
+  const onArchive = () => apply({ status: 'archived' })
 
-  if (row.staffNotes) {
-    fields.push({ label: 'Staff notes', value: row.staffNotes })
+  const onSaveDetails = () => {
+    apply({
+      status: statusValue,
+      scheduledAt: scheduledAtLocal
+        ? new Date(scheduledAtLocal).toISOString()
+        : null,
+      staffNotes,
+    })
+  }
+
+  const onDelete = async () => {
+    if (!confirm('Delete this request? This cannot be undone.')) return
+    setBusy(true)
+    try {
+      await api.deleteInquiry(row.id)
+      await onChange()
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
@@ -475,26 +502,12 @@ function ActivityCard({ row }: { row: api.ActivityRow }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-              padding: '4px 8px',
-              borderRadius: 4,
-              background: isBooking ? '#dcfce7' : '#dbeafe',
-              color: isBooking ? '#166534' : '#1e40af',
-            }}
-          >
-            {isBooking ? 'Booking' : 'Inquiry'}
-          </span>
           <strong style={{ fontSize: 16 }}>{row.name}</strong>
           <span style={{ color: 'var(--gray-500)', fontSize: 14 }}>
             {row.service || '(no service specified)'}
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <span
             style={{
               fontSize: 12,
@@ -509,6 +522,43 @@ function ActivityCard({ row }: { row: api.ActivityRow }) {
           >
             {row.statusDisplay}
           </span>
+          {row.status !== 'completed' && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onResolve}
+              style={{
+                background: '#10b981',
+                color: 'white',
+                border: 'none',
+                borderRadius: 6,
+                padding: '4px 12px',
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              Resolve
+            </button>
+          )}
+          {row.status !== 'archived' && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onArchive}
+              style={{
+                background: 'white',
+                color: 'var(--gray-700)',
+                border: '1px solid var(--gray-300)',
+                borderRadius: 6,
+                padding: '4px 12px',
+                fontSize: 13,
+                cursor: 'pointer',
+              }}
+            >
+              Close
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
@@ -521,15 +571,8 @@ function ActivityCard({ row }: { row: api.ActivityRow }) {
               cursor: 'pointer',
             }}
           >
-            {expanded ? 'Hide' : 'Details'}
+            {expanded ? 'Hide' : 'Edit'}
           </button>
-          <a
-            href={row.adminUrl}
-            className="btn btn--primary"
-            style={{ fontSize: 13, padding: '4px 12px' }}
-          >
-            Edit in admin
-          </a>
         </div>
       </div>
 
@@ -546,6 +589,11 @@ function ActivityCard({ row }: { row: api.ActivityRow }) {
         <span>📧 {row.email}</span>
         <span>📞 {row.phone}</span>
         <span>📍 {row.location || '—'}</span>
+        {row.scheduledAt && (
+          <span style={{ color: '#92400e', fontWeight: 600 }}>
+            📅 {new Date(row.scheduledAt).toLocaleString()}
+          </span>
+        )}
         <span style={{ marginLeft: 'auto', color: 'var(--gray-500)' }}>
           {new Date(row.createdAt).toLocaleString()}
         </span>
@@ -558,55 +606,511 @@ function ActivityCard({ row }: { row: api.ActivityRow }) {
             paddingTop: 12,
             borderTop: '1px solid var(--gray-100)',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             gap: 12,
           }}
         >
-          {fields.map((f) => (
-            <div key={f.label}>
-              <div
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: 12,
+            }}
+          >
+            <div>
+              <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>
+                Status
+              </label>
+              <select
+                value={statusValue}
+                onChange={(e) => setStatusValue(e.target.value)}
                 style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: 'var(--gray-500)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  marginBottom: 2,
+                  display: 'block',
+                  width: '100%',
+                  marginTop: 4,
+                  padding: '6px 8px',
+                  borderRadius: 6,
+                  border: '1px solid var(--gray-300)',
                 }}
               >
-                {f.label}
-              </div>
-              <div
-                style={{
-                  fontSize: 14,
-                  color: 'var(--gray-800)',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                }}
-              >
-                {f.value}
-              </div>
+                {STATUS_OPTIONS.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
             </div>
-          ))}
+            <div>
+              <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>
+                Scheduled at
+              </label>
+              <input
+                type="datetime-local"
+                value={scheduledAtLocal}
+                onChange={(e) => setScheduledAtLocal(e.target.value)}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  marginTop: 4,
+                  padding: '6px 8px',
+                  borderRadius: 6,
+                  border: '1px solid var(--gray-300)',
+                }}
+              />
+            </div>
+          </div>
+          <div>
+            <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>
+              Staff notes
+            </label>
+            <textarea
+              value={staffNotes}
+              onChange={(e) => setStaffNotes(e.target.value)}
+              rows={3}
+              style={{
+                display: 'block',
+                width: '100%',
+                marginTop: 4,
+                padding: '6px 8px',
+                borderRadius: 6,
+                border: '1px solid var(--gray-300)',
+                fontFamily: 'inherit',
+                fontSize: 14,
+              }}
+            />
+          </div>
+          {row.message && (
+            <div
+              style={{
+                background: 'var(--gray-50)',
+                padding: '10px 12px',
+                borderRadius: 6,
+                fontSize: 14,
+                color: 'var(--gray-700)',
+              }}
+            >
+              <strong style={{ marginRight: 6 }}>Customer message:</strong>
+              {row.message}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={onDelete}
+              disabled={busy}
+              style={{
+                background: 'white',
+                color: '#dc2626',
+                border: '1px solid #fecaca',
+                borderRadius: 6,
+                padding: '6px 14px',
+                fontSize: 13,
+                cursor: 'pointer',
+              }}
+            >
+              Delete
+            </button>
+            <a
+              href={row.adminUrl}
+              className="btn"
+              style={{ fontSize: 13, padding: '6px 14px' }}
+            >
+              Open in admin
+            </a>
+            <button
+              type="button"
+              onClick={onSaveDetails}
+              disabled={busy}
+              className="btn btn--primary"
+              style={{ fontSize: 13, padding: '6px 14px' }}
+            >
+              {busy ? 'Saving…' : 'Save changes'}
+            </button>
+          </div>
         </div>
       )}
     </div>
   )
 }
 
-const STATUS_BADGE_BG: Record<string, string> = {
-  new: '#f3f4f6',
-  contacted: '#dbeafe',
-  scheduled: '#fef3c7',
-  completed: '#dcfce7',
-  archived: '#f3f4f6',
+function isoToLocalInput(iso: string | null): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  // Format as YYYY-MM-DDTHH:MM in local time for datetime-local input.
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours(),
+  )}:${pad(d.getMinutes())}`
 }
-const STATUS_BADGE_FG: Record<string, string> = {
-  new: '#374151',
-  contacted: '#1e40af',
-  scheduled: '#92400e',
-  completed: '#166534',
-  archived: '#6b7280',
+
+// ───── Tab 2: Calendar ─────
+
+function CalendarTab() {
+  const [monthStart, setMonthStart] = useState(() => firstOfMonth(new Date()))
+  const [calendar, setCalendar] = useState<api.CalendarData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setLoading(true)
+    const start = monthStart
+    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0)
+    api
+      .fetchCalendar(toIsoDate(start), toIsoDate(end))
+      .then((d) => setCalendar(d))
+      .finally(() => setLoading(false))
+  }, [monthStart])
+
+  const days = useMemo(() => buildMonthGrid(monthStart), [monthStart])
+  const byDay = useMemo(() => {
+    const map = new Map<string, api.CalendarAppointment[]>()
+    if (!calendar) return map
+    for (const a of calendar.appointments) {
+      const key = a.scheduledAt.slice(0, 10)
+      const arr = map.get(key) ?? []
+      arr.push(a)
+      map.set(key, arr)
+    }
+    return map
+  }, [calendar])
+
+  const monthLabel = monthStart.toLocaleString(undefined, {
+    month: 'long',
+    year: 'numeric',
+  })
+
+  return (
+    <>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 16,
+          marginTop: '0.5rem',
+        }}
+      >
+        <h2 style={{ margin: 0 }}>{monthLabel}</h2>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => setMonthStart(addMonths(monthStart, -1))}
+          >
+            ← Prev
+          </button>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => setMonthStart(firstOfMonth(new Date()))}
+          >
+            Today
+          </button>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => setMonthStart(addMonths(monthStart, 1))}
+          >
+            Next →
+          </button>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          gap: 1,
+          background: 'var(--gray-200)',
+          borderRadius: 8,
+          overflow: 'hidden',
+          border: '1px solid var(--gray-200)',
+        }}
+      >
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
+          <div
+            key={d}
+            style={{
+              background: 'var(--gray-50)',
+              padding: '8px 12px',
+              fontSize: 12,
+              fontWeight: 700,
+              color: 'var(--gray-600)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            {d}
+          </div>
+        ))}
+        {days.map((day, i) => {
+          const inMonth = day.getMonth() === monthStart.getMonth()
+          const key = toIsoDate(day)
+          const apps = byDay.get(key) ?? []
+          const isToday = sameDay(day, new Date())
+          return (
+            <div
+              key={i}
+              style={{
+                background: inMonth ? 'white' : '#fafafa',
+                padding: 8,
+                minHeight: 110,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+                opacity: inMonth ? 1 : 0.5,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: isToday ? 700 : 500,
+                  color: isToday ? '#0ea5e9' : 'var(--gray-700)',
+                  marginBottom: 2,
+                }}
+              >
+                {day.getDate()}
+                {isToday && (
+                  <span
+                    style={{
+                      marginLeft: 6,
+                      fontSize: 10,
+                      background: '#0ea5e9',
+                      color: 'white',
+                      padding: '1px 6px',
+                      borderRadius: 4,
+                    }}
+                  >
+                    TODAY
+                  </span>
+                )}
+              </div>
+              {apps.map((a) => (
+                <div
+                  key={a.id}
+                  title={`${a.name} — ${a.service || 'service'} at ${a.location}`}
+                  style={{
+                    background:
+                      a.status === 'completed'
+                        ? '#d1fae5'
+                        : a.status === 'scheduled'
+                          ? '#fef3c7'
+                          : '#dbeafe',
+                    color:
+                      a.status === 'completed'
+                        ? '#065f46'
+                        : a.status === 'scheduled'
+                          ? '#92400e'
+                          : '#1e40af',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    padding: '3px 6px',
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {new Date(a.scheduledAt).toLocaleTimeString(undefined, {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                  })}{' '}
+                  {a.name}
+                </div>
+              ))}
+            </div>
+          )
+        })}
+      </div>
+
+      <h3 style={{ ...SECTION_TITLE, marginTop: '2rem' }}>
+        Appointments this month ({calendar?.appointments.length ?? 0})
+      </h3>
+      {loading ? (
+        <p>Loading…</p>
+      ) : !calendar || calendar.appointments.length === 0 ? (
+        <p style={{ color: 'var(--gray-500)' }}>
+          No appointments scheduled in this month yet. Set a "Scheduled at" date
+          on a request from the Requests tab to populate the calendar.
+        </p>
+      ) : (
+        <div style={{ display: 'grid', gap: 8 }}>
+          {calendar.appointments.map((a) => (
+            <div
+              key={a.id}
+              style={{
+                ...CARD_STYLE,
+                padding: '12px 16px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: 12,
+                flexWrap: 'wrap',
+              }}
+            >
+              <div>
+                <strong>{a.name}</strong>
+                <span style={{ color: 'var(--gray-500)', marginLeft: 8 }}>
+                  {a.service || 'Service'} · {a.location || '—'}
+                </span>
+              </div>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: 12 }}
+              >
+                <span style={{ color: 'var(--gray-700)', fontSize: 14 }}>
+                  {new Date(a.scheduledAt).toLocaleString()}
+                </span>
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    padding: '3px 8px',
+                    borderRadius: 999,
+                    background: STATUS_BADGE_BG[a.status] ?? '#e5e7eb',
+                    color: STATUS_BADGE_FG[a.status] ?? '#374151',
+                  }}
+                >
+                  {a.statusDisplay}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  )
+}
+
+function firstOfMonth(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), 1)
+}
+function addMonths(d: Date, delta: number): Date {
+  return new Date(d.getFullYear(), d.getMonth() + delta, 1)
+}
+function toIsoDate(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+function sameDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  )
+}
+function buildMonthGrid(monthStart: Date): Date[] {
+  const firstWeekday = monthStart.getDay() // 0 Sun … 6 Sat
+  const start = new Date(monthStart)
+  start.setDate(1 - firstWeekday)
+  const days: Date[] = []
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(start)
+    d.setDate(start.getDate() + i)
+    days.push(d)
+  }
+  return days
+}
+
+// ───── Tab 3: Analytics ─────
+
+function AnalyticsTab({ data }: { data: api.DashboardData }) {
+  if (!data.analytics.available) {
+    return (
+      <div style={{ ...CARD_STYLE, padding: '2rem', textAlign: 'center' }}>
+        <p style={{ color: 'var(--gray-600)', margin: 0 }}>
+          No analytics data yet. Visit a few pages on the live site to start
+          collecting page views, then return here.
+        </p>
+      </div>
+    )
+  }
+
+  const a = data.analytics
+
+  return (
+    <>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gap: 16,
+          marginBottom: '1rem',
+        }}
+      >
+        <StatCard label="Page views" value={a.totals?.pageviews ?? 0} />
+        <StatCard label="Unique sessions" value={a.totals?.uniqueSessions ?? 0} />
+        <StatCard label="Tracked events" value={a.totals?.events ?? 0} />
+      </div>
+
+      <h2 style={SECTION_TITLE}>Traffic (last 30 days)</h2>
+      <div style={{ ...CARD_STYLE, padding: '1rem' }}>
+        <ResponsiveContainer width="100%" height={240}>
+          <LineChart
+            data={(a.pageviewsPerDay ?? []).map((d) => ({
+              date: shortDate(d.date),
+              views: d.count,
+            }))}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+            <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="views"
+              stroke={COLORS[3]}
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+          gap: 16,
+          marginTop: 16,
+        }}
+      >
+        <RankList
+          title="Top pages"
+          items={(a.topPaths ?? []).map((r) => ({
+            label: r.path,
+            count: r.count,
+          }))}
+        />
+        <RankList
+          title="Top referrers"
+          items={(a.topReferrers ?? []).map((r) => ({
+            label: r.referrer,
+            count: r.count,
+          }))}
+        />
+        <RankList
+          title="Top sources (UTM)"
+          items={(a.topSources ?? []).map((r) => ({
+            label: r.source,
+            count: r.count,
+          }))}
+        />
+        <RankList
+          title="Top exit pages"
+          items={(a.topExitPaths ?? []).map((r) => ({
+            label: r.path,
+            count: r.count,
+          }))}
+        />
+        <RankList
+          title="Top click targets"
+          items={(a.topClicks ?? []).map((r) => ({
+            label: r.target,
+            count: r.count,
+          }))}
+        />
+      </div>
+    </>
+  )
 }
 
 function RankList({

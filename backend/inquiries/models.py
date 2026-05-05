@@ -17,7 +17,12 @@ class VesselLengthBucket(models.TextChoices):
 
 
 class ContactInquiry(models.Model):
-    """Lead from the contact page free-quote form."""
+    """A "Request a Free Quote" submission from the contact page.
+
+    Despite the legacy class name, this is the *only* lead model. The original
+    ``BookingRequest`` model was deprecated and dropped — every form submission
+    now writes here.
+    """
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -46,6 +51,17 @@ class ContactInquiry(models.Model):
         blank=True, help_text="Internal notes — not visible to the customer."
     )
 
+    scheduled_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="When the dive is scheduled. Sets the calendar entry.",
+    )
+    scheduled_duration_minutes = models.PositiveIntegerField(
+        default=120,
+        help_text="Estimated duration in minutes. Default 2 hours.",
+    )
+
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -54,50 +70,8 @@ class ContactInquiry(models.Model):
 
     class Meta:
         ordering = ("-created_at",)
-        verbose_name = "Contact inquiry"
-        verbose_name_plural = "Contact inquiries"
+        verbose_name = "Quote request"
+        verbose_name_plural = "Quote requests"
 
     def __str__(self) -> str:
         return f"{self.name} <{self.email}> — {self.service or 'general'}"
-
-
-class BookingRequest(models.Model):
-    """Lead from the structured booking form (vessel type + preferred date)."""
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="booking_requests",
-    )
-
-    name = models.CharField(max_length=120)
-    email = models.EmailField()
-    phone = models.CharField(max_length=40)
-
-    service_id = models.CharField(max_length=80)
-    vessel_type = models.CharField(max_length=80)
-    vessel_length_ft = models.PositiveIntegerField()
-    location = models.CharField(max_length=200)
-    preferred_date = models.DateField()
-    notes = models.TextField(blank=True)
-
-    status = models.CharField(
-        max_length=20, choices=Status.choices, default=Status.NEW, db_index=True
-    )
-    staff_notes = models.TextField(blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    source_ip = models.GenericIPAddressField(null=True, blank=True)
-    user_agent = models.CharField(max_length=300, blank=True)
-
-    class Meta:
-        ordering = ("-created_at",)
-        verbose_name = "Booking request"
-        verbose_name_plural = "Booking requests"
-
-    def __str__(self) -> str:
-        return f"{self.name} — {self.service_id} on {self.preferred_date}"

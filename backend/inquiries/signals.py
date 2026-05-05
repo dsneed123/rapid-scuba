@@ -1,4 +1,4 @@
-"""Email customers when their booking/inquiry status changes.
+"""Email customers when their request status changes.
 
 We track the previous status by stashing it on the instance during
 ``post_init`` and comparing against the new value in ``post_save``.
@@ -11,8 +11,9 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models.signals import post_init, post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
-from .models import BookingRequest, ContactInquiry, Status
+from .models import ContactInquiry, Status
 
 log = logging.getLogger(__name__)
 
@@ -32,11 +33,17 @@ STATUS_MESSAGES = {
 }
 
 
-def _stash_initial(instance) -> None:
+@receiver(post_init, sender=ContactInquiry)
+def _stash_initial(sender, instance, **kwargs):  # noqa: ARG001
     instance._initial_status = instance.status if instance.pk else None
 
 
-def _maybe_email(instance, kind: str) -> None:
+@receiver(post_save, sender=ContactInquiry)
+def _email_status(sender, instance, created, **kwargs):  # noqa: ARG001
+    if created:
+        instance._initial_status = instance.status
+        return
+
     initial = getattr(instance, "_initial_status", None)
     new = instance.status
     if initial is None or initial == new:
@@ -48,8 +55,14 @@ def _maybe_email(instance, kind: str) -> None:
     if not to_email:
         return
 
-    body = STATUS_MESSAGES.get(new, f"Your {kind} status is now: {new}.")
-    subject = f"[RapidScuba] Your {kind} is now {instance.get_status_display()}"
+    body = STATUS_MESSAGES.get(new, f"Your request status is now: {new}.")
+    if new == Status.SCHEDULED and instance.scheduled_at:
+        local_time = timezone.localtime(instance.scheduled_at)
+        body += (
+            f"\n\nScheduled time: {local_time.strftime('%A, %B %-d at %-I:%M %p')}"
+        )
+
+    subject = f"[RapidScuba] Your request is now {instance.get_status_display()}"
 
     try:
         send_mail(
@@ -67,32 +80,4 @@ def _maybe_email(instance, kind: str) -> None:
     except Exception:
         log.exception("Failed to send status-change email")
 
-    # Reset the stash so subsequent saves in the same instance lifecycle
-    # don't double-send.
     instance._initial_status = new
-
-
-@receiver(post_init, sender=ContactInquiry)
-def _stash_inquiry(sender, instance, **kwargs):  # noqa: ARG001
-    _stash_initial(instance)
-
-
-@receiver(post_init, sender=BookingRequest)
-def _stash_booking(sender, instance, **kwargs):  # noqa: ARG001
-    _stash_initial(instance)
-
-
-@receiver(post_save, sender=ContactInquiry)
-def _email_inquiry_status(sender, instance, created, **kwargs):  # noqa: ARG001
-    if created:
-        instance._initial_status = instance.status
-        return
-    _maybe_email(instance, "inquiry")
-
-
-@receiver(post_save, sender=BookingRequest)
-def _email_booking_status(sender, instance, created, **kwargs):  # noqa: ARG001
-    if created:
-        instance._initial_status = instance.status
-        return
-    _maybe_email(instance, "booking")

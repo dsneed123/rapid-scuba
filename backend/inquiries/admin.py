@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import BookingRequest, ContactInquiry
+from .models import ContactInquiry
 
 
 @admin.register(ContactInquiry)
@@ -14,8 +14,9 @@ class ContactInquiryAdmin(admin.ModelAdmin):
         "vessel_length",
         "location",
         "status",
+        "scheduled_at",
     )
-    list_filter = ("status", "service", "vessel_length", "created_at")
+    list_filter = ("status", "service", "vessel_length", "scheduled_at", "created_at")
     search_fields = ("name", "email", "phone", "location", "message")
     list_editable = ("status",)
     date_hierarchy = "created_at"
@@ -24,52 +25,17 @@ class ContactInquiryAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Customer", {"fields": ("user", "name", "email", "phone")}),
         ("Request", {"fields": ("service", "vessel_length", "location", "message")}),
-        ("Workflow", {"fields": ("status", "staff_notes")}),
         (
-            "Metadata",
-            {
-                "classes": ("collapse",),
-                "fields": ("created_at", "updated_at", "source_ip", "user_agent"),
-            },
-        ),
-    )
-
-
-@admin.register(BookingRequest)
-class BookingRequestAdmin(admin.ModelAdmin):
-    list_display = (
-        "created_at",
-        "name",
-        "email",
-        "phone",
-        "service_id",
-        "vessel_type",
-        "vessel_length_ft",
-        "preferred_date",
-        "status",
-    )
-    list_filter = ("status", "service_id", "vessel_type", "preferred_date", "created_at")
-    search_fields = ("name", "email", "phone", "location", "notes")
-    list_editable = ("status",)
-    date_hierarchy = "created_at"
-    autocomplete_fields = ("user",)
-    readonly_fields = ("created_at", "updated_at", "source_ip", "user_agent")
-    fieldsets = (
-        ("Customer", {"fields": ("user", "name", "email", "phone")}),
-        (
-            "Booking",
+            "Workflow",
             {
                 "fields": (
-                    "service_id",
-                    "vessel_type",
-                    "vessel_length_ft",
-                    "location",
-                    "preferred_date",
-                    "notes",
+                    "status",
+                    "scheduled_at",
+                    "scheduled_duration_minutes",
+                    "staff_notes",
                 )
             },
         ),
-        ("Workflow", {"fields": ("status", "staff_notes")}),
         (
             "Metadata",
             {
