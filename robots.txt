@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
 
+# Don't crawl private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /staff
+Disallow: /login
+Disallow: /signup
+
 Sitemap: https://rapidscuba.com/sitemap.xml
