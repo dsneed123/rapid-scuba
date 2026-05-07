@@ -5,16 +5,95 @@
     <link rel="icon" type="image/png" href="/images/Logo For RapidScuba Clean & Emergency Repair.png" />
     <link rel="apple-touch-icon" href="/images/Logo For RapidScuba Clean & Emergency Repair.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RapidScuba | Seattle Marine Services</title>
+    <meta name="theme-color" content="#0ea5e9" />
+
+    <title>RapidScuba — Seattle Hull Cleaning, Propeller Polishing & Underwater Inspection</title>
+    <meta
+      name="description"
+      content="ADCI-certified divers serving Seattle and Puget Sound marinas. In-water hull cleaning, propeller polishing, and underwater hull inspection. No haul-out required. Free quote in 24 hours."
+    />
+    <meta name="keywords" content="Seattle hull cleaning, underwater hull cleaning, propeller polishing Seattle, propeller cleaning Seattle, underwater inspection Seattle, hull inspection Seattle, scuba dive boat services, Shilshole Bay, Lake Union, Elliott Bay, Puget Sound" />
+    <meta name="author" content="RapidScuba" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+
+    <link rel="canonical" href="https://rapidscuba.com/" />
+
+    <!-- Open Graph -->
     <meta property="og:title" content="RapidScuba | Seattle Marine Services" />
-    <meta property="og:description" content="Professional underwater marine services in Seattle — hull cleaning, propeller cleaning, hull inspection, and more." />
+    <meta
+      property="og:description"
+      content="Professional underwater marine services in Seattle — hull cleaning, propeller cleaning, hull inspection, and more. Free quote in 24 hours."
+    />
     <meta property="og:image" content="https://rapidscuba.com/images/og-preview.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:url" content="https://rapidscuba.com" />
+    <meta property="og:url" content="https://rapidscuba.com/" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="RapidScuba" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="RapidScuba | Seattle Marine Services" />
+    <meta
+      name="twitter:description"
+      content="Professional underwater marine services in Seattle. Free quote in 24 hours."
+    />
     <meta name="twitter:image" content="https://rapidscuba.com/images/og-preview.png" />
+
+    <!-- LocalBusiness JSON-LD for rich results -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "@id": "https://rapidscuba.com/",
+        "name": "RapidScuba",
+        "description": "Professional underwater marine services in Seattle. ADCI-certified divers providing in-water hull cleaning, propeller polishing, and underwater hull inspection — no haul-out required.",
+        "url": "https://rapidscuba.com/",
+        "telephone": "+1-206-240-2687",
+        "email": "info@rapidscuba.com",
+        "image": "https://rapidscuba.com/images/og-preview.png",
+        "priceRange": "$$",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Seattle",
+          "addressRegion": "WA",
+          "addressCountry": "US"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 47.6062,
+          "longitude": -122.3321
+        },
+        "areaServed": [
+          { "@type": "City", "name": "Seattle" },
+          { "@type": "Place", "name": "Puget Sound" },
+          { "@type": "Place", "name": "Shilshole Bay Marina" },
+          { "@type": "Place", "name": "Lake Union" },
+          { "@type": "Place", "name": "Elliott Bay" },
+          { "@type": "Place", "name": "Bainbridge Island" }
+        ],
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Friday", "Saturday", "Sunday"],
+            "opens": "07:00",
+            "closes": "18:00"
+          }
+        ],
+        "sameAs": []
+      }
+    </script>
+    <!-- Legacy hash-route redirect: old bookmarks like /#/contact → /contact -->
+    <script>
+      (function () {
+        if (location.hash && location.hash.indexOf('#/') === 0) {
+          var clean = location.hash.slice(2)
+          if (clean && clean.charAt(0) !== '/') clean = '/' + clean
+          history.replaceState(null, '', clean || '/')
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { submitContactInquiry } from '@/lib/api'
+import { useDocumentHead } from '@/hooks/useDocumentHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -53,6 +54,12 @@ type ContactFormData = {
 }
 
 export function ContactPage() {
+  useDocumentHead({
+    title: 'Contact RapidScuba — Free Quote for Seattle Hull Cleaning',
+    description:
+      'Request a free quote for hull cleaning, propeller polishing, or underwater inspection in Seattle. Call (206) 240-2687 or fill out the form. We respond within one business day.',
+    canonical: 'https://rapidscuba.com/contact',
+  })
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState(false)
 
@@ -201,9 +208,9 @@ export function ContactPage() {
                     aria-invalid={!!errors.service}
                   >
                     <option value="">Select a service…</option>
-                    <option value="hull-cleaning">Hull Cleaning</option>
-                    <option value="propeller-polishing">Propeller Polishing</option>
-                    <option value="inspection">Hull Inspection</option>
+                    <option value="hull-cleaning">Hull cleaning</option>
+                    <option value="propeller-polishing">Propeller polishing</option>
+                    <option value="inspection">Underwater inspection</option>
                     <option value="other">Other</option>
                   </select>
                   {errors.service && <span className="form-error">{errors.service.message}</span>}

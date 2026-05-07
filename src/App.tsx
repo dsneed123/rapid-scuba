@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import { Layout } from '@/components/layout/Layout'
 import { PageLoader } from '@/components/ui/PageLoader'
@@ -62,7 +62,7 @@ function lazyRoute(Component: LazyExoticComponent<ComponentType>) {
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <AuthProvider>
         <Routes>
           <Route element={<Layout />}>
@@ -101,7 +101,7 @@ function App() {
           </Route>
         </Routes>
       </AuthProvider>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
 

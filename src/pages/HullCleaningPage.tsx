@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useDocumentHead } from '@/hooks/useDocumentHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -32,6 +33,12 @@ const serviceSchema = {
 }
 
 export function HullCleaningPage() {
+  useDocumentHead({
+    title: 'Hull Cleaning Seattle | In-Water Hull Service | RapidScuba',
+    description:
+      'Professional underwater hull cleaning in Seattle by ADCI-certified divers. Barnacle, algae, and biofouling removal at your slip — no haul-out. Serving Shilshole Bay, Lake Union, Eastlake, Elliott Bay, and Puget Sound marinas. Free quote.',
+    canonical: 'https://rapidscuba.com/hull-cleaning-seattle',
+  })
   return (
     <>
       <script

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useDocumentHead } from '@/hooks/useDocumentHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -32,6 +33,12 @@ const serviceSchema = {
 }
 
 export function PropellerCleaningPage() {
+  useDocumentHead({
+    title: 'Propeller Polishing Seattle | Prop Cleaning | RapidScuba',
+    description:
+      'Restore fuel efficiency and reduce vibration with professional propeller polishing in Seattle. Same-day in-water service at Shilshole Bay, Lake Union, Elliott Bay, and Puget Sound marinas. ADCI-certified divers. Free quote.',
+    canonical: 'https://rapidscuba.com/propeller-cleaning-seattle',
+  })
   return (
     <>
       <script

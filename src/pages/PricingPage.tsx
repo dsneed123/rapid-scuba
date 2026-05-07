@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useDocumentHead } from '@/hooks/useDocumentHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -46,6 +47,12 @@ const PACKAGES = [
 
 
 export function PricingPage() {
+  useDocumentHead({
+    title: 'Pricing — Hull Cleaning, Propeller Polishing, Inspection | RapidScuba Seattle',
+    description:
+      'Transparent pricing for in-water hull cleaning, propeller polishing, and underwater inspection in Seattle. Packages from $500. No haul-out fees, free quote within 24 hours.',
+    canonical: 'https://rapidscuba.com/pricing',
+  })
   return (
     <>
       <section className="page-hero">

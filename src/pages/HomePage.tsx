@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ServiceCard } from '@/components/ui/ServiceCard'
 import { SERVICES } from '@/lib/services'
+import { useDocumentHead } from '@/hooks/useDocumentHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -37,6 +38,13 @@ const localBusinessSchema = {
 }
 
 export function HomePage() {
+  useDocumentHead({
+    title:
+      'RapidScuba — Seattle Hull Cleaning, Propeller Polishing & Underwater Marine Services',
+    description:
+      'ADCI-certified divers serving Seattle marinas — Shilshole, Lake Union, Eastlake, Elliott Bay. In-water hull cleaning, propeller polishing, hull inspection, zinc replacement, underwater welding. Free quote in 24 hours.',
+    canonical: 'https://rapidscuba.com/',
+  })
   return (
     <>
       <script

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useDocumentHead } from '@/hooks/useDocumentHead'
 
 const PHONE = '206-240-2687'
 const PHONE_HREF = 'tel:+12062402687'
@@ -32,6 +33,13 @@ const serviceSchema = {
 }
 
 export function HullInspectionPage() {
+  useDocumentHead({
+    title:
+      'Hull Inspection Seattle | Pre-Purchase Survey & Insurance | RapidScuba',
+    description:
+      'Below-waterline hull inspection in Seattle with HD underwater video. Insurance compliance, pre-purchase surveys, annual maintenance. Photos and report delivered same day. ADCI-certified divers.',
+    canonical: 'https://rapidscuba.com/hull-inspection-seattle',
+  })
   return (
     <>
       <script
